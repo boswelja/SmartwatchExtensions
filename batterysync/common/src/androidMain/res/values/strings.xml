@@ -7,4 +7,5 @@
     <string name="low_notification_title">%s Low Battery</string>
     <string name="low_notification_desc">Your %s battery is at or below %s%%</string>
 
+    <string name="battery_notification_channel_title">Device Battery Alerts</string>
 </resources>

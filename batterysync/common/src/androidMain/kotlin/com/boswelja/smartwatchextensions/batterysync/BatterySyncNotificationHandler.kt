@@ -1,8 +1,10 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.boswelja.smartwatchextensions.batterysync.common.R
 
@@ -44,6 +46,7 @@ actual abstract class BatterySyncNotificationHandler(
         targetUid: String,
         batteryStats: BatteryStats
     ) {
+        createNotificationChannel()
         val deviceName = getDeviceName(targetUid)
         val notification = createBaseNotificationBuilder()
             .setSmallIcon(R.drawable.battery_full)
@@ -70,6 +73,7 @@ actual abstract class BatterySyncNotificationHandler(
         targetUid: String,
         batteryStats: BatteryStats
     ) {
+        createNotificationChannel()
         val deviceName = getDeviceName(targetUid)
         val notification = createBaseNotificationBuilder()
             .setSmallIcon(R.drawable.battery_alert)
@@ -95,14 +99,19 @@ actual abstract class BatterySyncNotificationHandler(
     /**
      * Create a [PendingIntent] to launch the app.
      */
-    private fun createLaunchPendingIntent(): PendingIntent {
-        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-        return PendingIntent.getActivity(
-            context,
-            START_ACTIVITY_REQUEST_CODE,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
+    private fun createLaunchPendingIntent(): PendingIntent? {
+        return try {
+            val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+            PendingIntent.getActivity(
+                context,
+                START_ACTIVITY_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        } catch (ignored: Exception) {
+            null
+        }
+
     }
 
     private fun createBaseNotificationBuilder(): NotificationCompat.Builder {
@@ -110,6 +119,18 @@ actual abstract class BatterySyncNotificationHandler(
             .setContentIntent(createLaunchPendingIntent())
             .setLocalOnly(true)
             .setOnlyAlertOnce(true)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    context.getString(R.string.battery_notification_channel_title),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            )
+        }
     }
 
     private fun calculateNotificationId(targetUid: String): Int = "$targetUid-batterysync".hashCode()
