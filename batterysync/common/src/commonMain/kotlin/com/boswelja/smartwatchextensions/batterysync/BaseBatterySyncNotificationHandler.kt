@@ -54,12 +54,16 @@ abstract class BaseBatterySyncNotificationHandler {
      */
     suspend fun handleNotificationsFor(targetUid: String, batteryStats: BatteryStats) {
         if (batteryStats.charging && getChargeNotificationsEnabled(targetUid)) {
-            if (batteryStats.percent >= getChargeThreshold(targetUid)) {
+            if (!getNotificationAlreadySent(targetUid) && batteryStats.percent >= getChargeThreshold(targetUid)) {
                 postChargeNotificationFor(targetUid, batteryStats)
+            } else {
+                cancelNotificationFor(targetUid)
             }
         } else if (!batteryStats.charging && getLowNotificationsEnabled(targetUid)) {
-            if (batteryStats.percent <= getLowThreshold(targetUid)) {
+            if (!getNotificationAlreadySent(targetUid) && batteryStats.percent <= getLowThreshold(targetUid)) {
                 postLowNotificationFor(targetUid, batteryStats)
+            } else {
+                cancelNotificationFor(targetUid)
             }
         } else {
             cancelNotificationFor(targetUid)
