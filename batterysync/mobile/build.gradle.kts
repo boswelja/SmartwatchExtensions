@@ -30,7 +30,6 @@ kotlin {
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
                 implementation(libs.koin.compose)
-                implementation(libs.koin.workmanager)
                 implementation(libs.bundles.lifecycle)
                 implementation(libs.bundles.compose.mobile)
             }
@@ -38,6 +37,18 @@ kotlin {
         val androidTest by getting {
             dependencies {
                 implementation(libs.sqldelight.sqlitedriver)
+            }
+        }
+        val androidAndroidTest by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.androidx.test.corektx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.androidx.work.test)
+                implementation(libs.koin.test)
+                implementation(libs.mockk.android)
+                // Workaround for MockK 1.11.0 including a broken objenesis
+                implementation("org.objenesis:objenesis:3.2")
             }
         }
     }

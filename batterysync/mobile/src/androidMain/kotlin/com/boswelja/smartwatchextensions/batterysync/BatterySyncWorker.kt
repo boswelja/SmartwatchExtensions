@@ -55,7 +55,7 @@ class BatterySyncWorker(
         /**
          * The key for the extra containing the target device UID.
          */
-        private const val EXTRA_WATCH_ID: String = "extra_watch_id"
+        internal const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         /**
          * Returns a unique worker ID for battery sync with the target UID.
