@@ -6,7 +6,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
+import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY

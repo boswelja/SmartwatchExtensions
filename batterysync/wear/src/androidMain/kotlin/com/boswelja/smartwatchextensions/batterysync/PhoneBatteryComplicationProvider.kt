@@ -13,7 +13,6 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceSe
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
-import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject

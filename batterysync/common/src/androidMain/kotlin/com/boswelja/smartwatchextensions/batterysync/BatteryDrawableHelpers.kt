@@ -1,4 +1,6 @@
-package com.boswelja.smartwatchextensions.batterysync.common
+package com.boswelja.smartwatchextensions.batterysync
+
+import com.boswelja.smartwatchextensions.batterysync.common.R
 
 private const val BATTERY_ALERT_LEVEL = 20
 private const val BATTERY_20_LEVEL = 30
