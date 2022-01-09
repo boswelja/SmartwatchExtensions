@@ -25,10 +25,14 @@ kotlin {
                 implementation(libs.androidx.appcompat)
             }
         }
-        val androidTest by getting {
+        val androidAndroidTest by getting {
             dependencies {
-                implementation(libs.mockk.core)
+                implementation(libs.androidx.test.corektx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.mockk.android)
                 implementation(libs.kotlinx.coroutines.test)
+                // Workaround for MockK 1.11.0 including a broken objenesis
+                implementation("org.objenesis:objenesis:3.2")
             }
         }
     }

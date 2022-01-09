@@ -136,7 +136,7 @@ actual abstract class BatterySyncNotificationHandler(
     private fun calculateNotificationId(targetUid: String): Int = "$targetUid-batterysync".hashCode()
 
     companion object {
-        private const val NOTIFICATION_CHANNEL_ID = "companion_device_charged"
+        internal const val NOTIFICATION_CHANNEL_ID = "companion_device_charged"
         private const val START_ACTIVITY_REQUEST_CODE = 123
     }
 
