@@ -12,16 +12,19 @@ import androidx.work.workDataOf
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
  * A [CoroutineWorker] to handle syncing battery stats for a watch.
  */
 class BatterySyncWorker(
-    private val messageClient: MessageClient,
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams), KoinComponent {
+
+    private val messageClient: MessageClient by inject()
 
     override suspend fun doWork(): Result {
         val watchId = inputData.getString(EXTRA_WATCH_ID) ?: return Result.failure()

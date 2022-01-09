@@ -7,7 +7,6 @@ import com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti.WatchBa
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -22,5 +21,4 @@ val batterySyncModule = module {
     viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get()) }
     viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get()) }
     viewModel { WatchBatteryNotiSettingsViewModel(get(), get()) }
-    worker { BatterySyncWorker(get(), androidContext(), get()) }
 }
