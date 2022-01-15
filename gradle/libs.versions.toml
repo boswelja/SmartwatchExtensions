@@ -25,6 +25,7 @@ kotlinxCoroutines = "1.6.0"
 kotlinxSerialization = "1.3.2"
 
 # Misc versions
+batterystats = "0.1.0"
 firebaseAnalytics = "20.0.2"
 googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
@@ -77,6 +78,8 @@ compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose"}
 compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose"}
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+batterystats = { module = "io.github.boswelja.batterystats:batterystats", version.ref = "batterystats" }
 
 accompanist-sysui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
