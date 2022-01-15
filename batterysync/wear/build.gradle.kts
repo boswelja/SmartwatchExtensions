@@ -16,6 +16,12 @@ kotlin {
                 implementation(libs.koin.core)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.turbine)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.datastore.proto)
@@ -25,6 +31,15 @@ kotlin {
                 implementation(libs.koin.android)
                 implementation(libs.koin.compose)
                 implementation(libs.androidx.wear.core)
+            }
+        }
+        val androidAndroidTest by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.androidx.test.corektx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.androidx.work.test)
+                implementation(libs.koin.test)
             }
         }
     }
