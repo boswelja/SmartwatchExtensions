@@ -36,14 +36,9 @@ object BoolSettingKeys {
     const val BATTERY_WATCH_LOW_NOTI_KEY = "battery_watch_low_noti"
 
     /**
-     * Whether the charge notification has been sent.
+     * Whether the user has been notified about a Battery Stats event.
      */
-    const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
-
-    /**
-     * Whether the low notification has been sent.
-     */
-    const val BATTERY_LOW_NOTI_SENT = "battery_low_notified"
+    const val BATTERY_STATS_NOTIFICATION_SENT = "battery_stats_notified"
 
     /**
      * Whether DnD Sync to Watch is enabled.

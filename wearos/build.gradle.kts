@@ -59,7 +59,7 @@ android {
 dependencies {
     implementation(projects.appmanager.wear)
     implementation(projects.batterysync.wear)
-    implementation(projects.devicemanagement.common)
+    implementation(projects.devicemanagement.wear)
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking)
     implementation(projects.settings.common)
@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.wear.complications.data.source)
     implementation(libs.androidx.work.ktx)
 
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.protobuf)
 
     implementation(libs.watchconnection.wear)

@@ -1,13 +1,16 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFails
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BatteryStatsSerializerTest {
 
     @Test
-    fun serializesCorrectly() = runSuspendingTest {
+    fun serializesCorrectly() = runTest {
         val batteryStats = BatteryStats(
             percent = 65,
             charging = true,
@@ -19,8 +22,10 @@ class BatteryStatsSerializerTest {
     }
 
     @Test
-    fun nullWhenBytesInvalid() = runSuspendingTest {
+    fun throwsWhenBytesInvalid() = runTest {
         val bytes = byteArrayOf(1)
-        assertNull(BatteryStatsSerializer.deserialize(bytes))
+        assertFails {
+            BatteryStatsSerializer.deserialize(bytes)
+        }
     }
 }

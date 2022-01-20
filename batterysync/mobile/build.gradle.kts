@@ -9,7 +9,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
-                api(libs.watchconnection.common)
+                api(libs.watchconnection.mobile.core)
+                implementation(projects.devicemanagement.mobile)
+                implementation(projects.settings.mobile)
+                implementation(projects.messages.mobile)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
@@ -19,6 +22,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.turbine)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val androidMain by getting {
@@ -26,6 +30,9 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
+                implementation(libs.koin.compose)
+                implementation(libs.bundles.lifecycle)
+                implementation(libs.bundles.compose.mobile)
             }
         }
         val androidTest by getting {
@@ -33,11 +40,51 @@ kotlin {
                 implementation(libs.sqldelight.sqlitedriver)
             }
         }
+        val androidAndroidTest by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.androidx.test.corektx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.androidx.work.test)
+                implementation(libs.koin.test)
+                implementation(libs.mockk.android)
+                // Workaround for MockK 1.11.0 including a broken objenesis
+                implementation("org.objenesis:objenesis:3.2")
+            }
+        }
+    }
+}
+
+android {
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 }
 
 sqldelight {
     database("BatteryStatsDatabase") {
         packageName = "com.boswelja.smartwatchextensions.batterysync.database"
+    }
+}
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-38694
+configurations {
+    create("composeCompiler") {
+        isCanBeConsumed = false
+    }
+}
+dependencies {
+    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.composeCompiler.get()}")
+}
+android {
+    afterEvaluate {
+        val composeCompilerJar = configurations["composeCompiler"]
+            .resolve()
+            .singleOrNull()
+            ?: error("Missing Compose compiler")
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            kotlinOptions.freeCompilerArgs += listOf("-Xuse-ir", "-Xplugin=$composeCompilerJar")
+        }
     }
 }

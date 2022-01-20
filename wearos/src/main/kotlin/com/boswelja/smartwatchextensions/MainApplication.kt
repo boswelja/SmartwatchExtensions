@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions
 
 import android.app.Application
+import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.main.ui.mainModule
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
@@ -21,6 +22,7 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
             modules(clientsModule, miscModule)
             modules(mainModule)
+            modules(batterySyncModule)
         }
     }
 }

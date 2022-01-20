@@ -8,6 +8,7 @@ include(
     ":batterysync:wear",
     ":devicemanagement:common",
     ":devicemanagement:mobile",
+    ":devicemanagement:wear",
     ":dndsync:common",
     ":dndsync:wear",
     ":messages:common",

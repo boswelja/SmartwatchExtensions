@@ -24,7 +24,6 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel

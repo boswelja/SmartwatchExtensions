@@ -3,13 +3,10 @@ package com.boswelja.smartwatchextensions.extensions.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.PhoneState
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsStore
-import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.batterysync.batteryStatsStore
+import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
+import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
@@ -26,7 +23,6 @@ class ExtensionsViewModel internal constructor(
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     phoneStateStore: DataStore<PhoneState>,
-    batteryStatsStore: BatteryStatsStore,
     extensionSettingsStore: DataStore<ExtensionSettings>
 ) : AndroidViewModel(application) {
 
@@ -36,7 +32,6 @@ class ExtensionsViewModel internal constructor(
         MessageClient(application),
         DiscoveryClient(application),
         application.phoneStateStore,
-        BatteryStatsStore(application.batteryStatsStore),
         application.extensionSettingsStore
     )
 
@@ -44,16 +39,6 @@ class ExtensionsViewModel internal constructor(
      * Flow whether phone locking is enabled.
      */
     val phoneLockingEnabled = extensionSettingsStore.data.map { it.phoneLockingEnabled }
-
-    /**
-     * Flow whether Battery Sync is enabled.
-     */
-    val batterySyncEnabled = extensionSettingsStore.data.map { it.batterySyncEnabled }
-
-    /**
-     * Flow the connected phone's battery percent.
-     */
-    val batteryPercent = batteryStatsStore.getStatsForPhone().map { it.percent }
 
     /**
      * Flow the paired phone name.
@@ -65,24 +50,6 @@ class ExtensionsViewModel internal constructor(
      */
     fun phoneConnected() = discoveryClient.connectionMode()
         .map { it != ConnectionMode.Disconnected }
-
-    /**
-     * Request updated battery stats from the connected device.
-     * @return true if the request was sent successfully, false otherwise.
-     */
-    suspend fun requestBatteryStats(): Boolean {
-        if (phoneConnected().first()) {
-            val phoneId = discoveryClient.pairedPhone()!!.uid
-            return messageClient.sendMessage(
-                phoneId,
-                Message(
-                    REQUEST_BATTERY_UPDATE_PATH,
-                    null
-                )
-            )
-        }
-        return false
-    }
 
     /**
      * Request locking the connected device.

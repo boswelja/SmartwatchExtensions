@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
@@ -25,12 +26,15 @@ import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 /**
  * An Activity for handling Actions triggered when the app is not running, e.g. from Complications,
  * Tiles etc.
  */
 class ActionsActivity : ComponentActivity() {
+
+    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
 
     private val discoveryClient by lazy { DiscoveryClient(this) }
     private val messageClient by lazy { MessageClient(this) }
@@ -100,7 +104,7 @@ class ActionsActivity : ComponentActivity() {
      * activity will finish.
      */
     private suspend fun tryUpdateBatteryStats() {
-        val batterySyncEnabled = extensionSettingsStore.data
+        val batterySyncEnabled = batterySyncStateRepository.getBatterySyncState()
             .map { it.batterySyncEnabled }.first()
         if (batterySyncEnabled) {
             sendMessage(

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery_sync_complication_label">Phone Battery</string>
+
+    <string name="noti_channel_battery_stats_title">Phone Battery Alerts</string>
+
+    <string name="battery_percent">%s%%</string>
+    <string name="battery_sync_disabled">Battery Sync disabled</string>
+
+    <string name="battery_percent_unknown">N/A</string>
+    <string name="battery_sync_refresh_failed">Failed to update phone battery stats</string>
+    <string name="battery_sync_refresh_success">Updated battery stats</string>
+    <string name="battery_sync_hint_text">%s Battery</string>
+
+    <string name="battery_sync_complication_disabled">Disabled</string>
+
+    <string name="phone_not_connected">Can\'t connect to your phone</string>
+</resources>

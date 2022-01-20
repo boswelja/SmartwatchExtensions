@@ -17,27 +17,6 @@
     <!-- Battery Sync preference strings -->
     <string name="battery_sync_widget_placeholder_percent">50%</string>
     <string name="battery_sync_title">Battery Sync</string>
-    <string name="battery_sync_toggle_title">Enable Battery Sync</string>
-    <string name="battery_sync_phone_charge_noti_title">Phone Charged Notification</string>
-    <string name="battery_sync_phone_charge_noti_summary">Get a notification on your watch when your phone is %s%% charged</string>
-    <string name="battery_sync_watch_charge_noti_title">Watch Charged Notification</string>
-    <string name="battery_sync_watch_charge_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
-    <string name="battery_sync_charge_threshold_title">Battery Charge Threshold</string>
-    <string name="battery_sync_disabled">Battery Sync disabled</string>
-    <string name="battery_sync_last_update_recent">Last updated less than a minute ago</string>
-    <string name="battery_percent">%s%%</string>
-    <string name="category_charge_notifications">Charge Notifications</string>
-    <string name="category_low_notifications">Low Battery Notifications</string>
-    <string name="category_battery_sync_settings">Battery Sync Settings</string>
-    <string name="battery_sync_phone_low_noti_title">Phone Low Notification</string>
-    <string name="battery_sync_phone_low_noti_summary">Get a notification on your watch when your phone has less than %s%% battery</string>
-    <string name="battery_sync_watch_low_noti_title">Watch Low Notification</string>
-    <string name="battery_sync_watch_low_noti_summary">Get a notification on your phone when your watch has less than %s%% battery</string>
-    <string name="battery_sync_low_threshold_title">Low Battery Threshold Threshold</string>
-    <string name="battery_charge_noti_issue_title">Error sending battery charge notification</string>
-    <string name="battery_charge_noti_issue_summary">We were unable to notify you when your watch battery was charged, due to notifications being disabled in your system settings. We have disabled watch battery charge notifications because of this.</string>
-    <string name="battery_low_noti_issue_title">Error sending battery low notification</string>
-    <string name="battery_low_noti_issue_summary">We were unable to notify you when your watch battery was low, due to notifications being disabled in your system settings. We have disabled watch battery low notifications because of this.</string>
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
@@ -171,7 +150,6 @@
     <string name="reset_analytics_desc">This will reset any data stored by Firebase about this app instance.</string>
     <string name="reset_analytics_success">Successfully reset analytics</string>
     <string name="reset_analytics_failed">Failed to reset analytics</string>
-    <string name="please_wait">Please Wait…</string>
 
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
@@ -185,7 +163,6 @@
     <string name="wiki_label">Get Help</string>
 
     <!-- Notification Channel strings -->
-    <string name="noti_channel_watch_charged_title">Watch Charged</string>
     <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
 

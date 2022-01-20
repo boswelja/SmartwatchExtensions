@@ -12,7 +12,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
@@ -30,7 +30,7 @@ import org.koin.core.component.inject
  */
 abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
 
-    private val watchManager: WatchManager by inject()
+    private val watchRepository: WatchRepository by inject()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -131,7 +131,7 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
             preferences[stringPreferencesKey(appWidgetId.toString())]
         }.firstOrNull()
         val watch = watchId?.let {
-            watchManager
+            watchRepository
                 .getWatchById(watchId)
                 .firstOrNull()
         }

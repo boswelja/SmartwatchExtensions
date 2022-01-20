@@ -23,6 +23,19 @@
         android:theme="@style/Theme.App"
         tools:ignore="UnusedAttribute">
 
+        <!-- Remove WorkManager initializer so we can replace it with out own (Koin) -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <activity
             android:name=".managespace.ui.ManageSpaceActivity"
             android:label="@string/manage_space_title" />
@@ -71,13 +84,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".batterysync.BatteryStatsReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
         <service
             android:name=".dndsync.LocalDnDCollectorService"
             android:exported="false" />

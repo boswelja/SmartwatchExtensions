@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsChip
+import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncChip
 import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
@@ -40,34 +40,15 @@ fun Extensions(
         val coroutineScope = rememberCoroutineScope()
         val viewModel: ExtensionsViewModel = viewModel()
 
-        val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
         val phoneLockingEnabled by viewModel.phoneLockingEnabled
             .collectAsState(false, Dispatchers.IO)
-        val batteryPercent by viewModel.batteryPercent.collectAsState(0, Dispatchers.IO)
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
-        BatteryStatsChip(
+        BatterySyncChip(
             modifier = extensionModifier,
-            enabled = batterySyncEnabled,
-            percent = batteryPercent,
             phoneName = phoneName
-        ) {
-            coroutineScope.launch {
-                val result = viewModel.requestBatteryStats()
-                if (result) {
-                    view.showConfirmationOverlay(
-                        type = ConfirmationOverlay.SUCCESS_ANIMATION,
-                        message = view.context.getString(R.string.battery_sync_refresh_success)
-                    )
-                } else {
-                    view.showConfirmationOverlay(
-                        type = ConfirmationOverlay.FAILURE_ANIMATION,
-                        message = view.context.getString(R.string.phone_not_connected)
-                    )
-                }
-            }
-        }
+        )
         PhoneLockingChip(
             modifier = extensionModifier,
             enabled = phoneLockingEnabled,

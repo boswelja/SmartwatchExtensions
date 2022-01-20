@@ -48,25 +48,6 @@
         <activity android:name=".ActionsActivity" />
 
         <service
-            android:name=".batterysync.PhoneBatteryComplicationProvider"
-            android:icon="@drawable/battery_full"
-            android:label="Phone Battery Status"
-            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                android:value="0" />
-
-            <meta-data
-                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="RANGED_VALUE,SHORT_TEXT" />
-        </service>
-
-        <service
             android:name=".phonelocking.LockPhoneComplicationProvider"
             android:icon="@drawable/ic_phone_lock"
             android:label="@string/lock_phone_label"
@@ -95,14 +76,6 @@
 
         <receiver
             android:name=".phoneconnectionmanager.BoolSettingChangeReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".batterysync.PhoneBatteryUpdateReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

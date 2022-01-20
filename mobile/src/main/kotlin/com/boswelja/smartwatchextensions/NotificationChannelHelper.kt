@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.bootorupdate.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.dndsync.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
@@ -14,28 +13,6 @@ import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Com
  * A helper class for managing notification channels.
  */
 object NotificationChannelHelper {
-
-    /**
-     * Create a notification channel for battery stats notifications.
-     */
-    fun createForBatteryStats(context: Context, notificationManager: NotificationManager) {
-        if (notificationManager.getNotificationChannel(
-                BATTERY_STATS_NOTI_CHANNEL_ID
-            ) == null
-        ) {
-            NotificationChannel(
-                BATTERY_STATS_NOTI_CHANNEL_ID,
-                context.getString(R.string.noti_channel_watch_charged_title),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-                .apply {
-                    enableLights(false)
-                    enableVibration(true)
-                    setShowBadge(true)
-                }
-                .also { notificationManager.createNotificationChannel(it) }
-        }
-    }
 
     /**
      * Create a notification channel for separation observer status notifications.

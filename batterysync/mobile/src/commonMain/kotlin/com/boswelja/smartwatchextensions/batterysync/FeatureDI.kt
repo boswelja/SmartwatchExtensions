@@ -8,7 +8,7 @@ import org.koin.dsl.module
 /**
  * A Koin module for providing Battery Sync repositories.
  */
-val batterySyncModule = module {
+val batterySyncCommonModule = module {
     single {
         BatteryStatsDatabase(
             get {
