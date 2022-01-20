@@ -40,6 +40,7 @@ kotlin {
                 implementation(libs.androidx.test.runner)
                 implementation(libs.androidx.work.test)
                 implementation(libs.koin.test)
+                implementation(libs.mockk.android)
             }
         }
     }
