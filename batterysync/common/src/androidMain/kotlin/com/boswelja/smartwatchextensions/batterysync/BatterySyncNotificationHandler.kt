@@ -122,15 +122,13 @@ actual abstract class BatterySyncNotificationHandler(
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(
-                NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    context.getString(R.string.battery_notification_channel_title),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+        notificationManager.createNotificationChannel(
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.battery_notification_channel_title),
+                NotificationManager.IMPORTANCE_DEFAULT
             )
-        }
+        )
     }
 
     private fun calculateNotificationId(targetUid: String): Int = "$targetUid-batterysync".hashCode()

@@ -19,7 +19,6 @@ import org.koin.androidx.compose.getViewModel
 /**
  * A [Chip] for showing Battery Sync info.
  * @param phoneName The paired phone name.
- * @param onClick Called when the chip is clicked.
  * @param modifier [Modifier].
  */
 @Composable

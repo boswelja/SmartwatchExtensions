@@ -160,16 +160,6 @@ class WatchManager(
     ) = messageClient.sendMessage(watch.uid, Message(message, data, priority))
 
     /**
-     * Send a message to a target watch.
-     * @param watch The target watch.
-     * @param message The message to send.
-     */
-    suspend fun sendMessage(
-        watch: Watch,
-        message: Message<ByteArray?>
-    ) = messageClient.sendMessage(watch.uid, message)
-
-    /**
      * Retrieve a boolean setting.
      * @param key The setting key to fetch.
      * @param watch The watch to load the setting for. If this is null, the selected watch will be
@@ -183,27 +173,6 @@ class WatchManager(
             selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
                     settingsRepository.getBoolean(selectedWatch.uid, key, default)
-                } else {
-                    flowOf(default)
-                }
-            }
-        }
-    }
-
-    /**
-     * Retrieve an int setting.
-     * @param key The setting key to fetch.
-     * @param watch The watch to load the setting for. If this is null, the selected watch will be
-     * used isntead.
-     * @param default The default value.
-     */
-    fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
-        return if (watch != null) {
-            settingsRepository.getInt(watch.uid, key, default)
-        } else {
-            selectedWatch.flatMapLatest { selectedWatch ->
-                if (selectedWatch != null) {
-                    settingsRepository.getInt(selectedWatch.uid, key, default)
                 } else {
                     flowOf(default)
                 }
