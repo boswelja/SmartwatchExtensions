@@ -61,14 +61,14 @@ class BatterySyncViewModel(
      * Flow the charge percent threshold.
      */
     val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY)
+        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
     }
 
     /**
      * Flow the low percent threshold.
      */
     val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY)
+        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
     }
 
     /**
