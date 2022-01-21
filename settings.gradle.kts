@@ -13,7 +13,7 @@ include(
     ":dndsync:wear",
     ":messages:common",
     ":messages:mobile",
-    ":phonelocking",
+    ":phonelocking:common",
     ":settings:common",
     ":settings:mobile",
     ":mobile",
