@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.devicemanagement
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.settings.BoolSetting
@@ -32,7 +31,6 @@ import kotlinx.coroutines.withContext
 @Suppress("LongParameterList", "TooManyFunctions", "UndocumentedPublicProperty")
 class WatchManager(
     private val context: Context,
-    private val analytics: Analytics,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     private val watchRepository: WatchRepository,
@@ -65,7 +63,6 @@ class WatchManager(
             messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
             watchRepository.registerWatch(watch)
             AppCacheUpdateWorker.enqueueWorkerFor(context, watch.uid)
-            analytics.logWatchRegistered()
         }
     }
 
@@ -81,7 +78,6 @@ class WatchManager(
             messageClient.sendMessage(watch.uid, Message(RESET_APP, null))
             watchRepository.deregisterWatch(watch)
             AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
-            analytics.logWatchRemoved()
         }
     }
 
@@ -93,7 +89,6 @@ class WatchManager(
     suspend fun renameWatch(watch: Watch, newName: String) {
         withContext(Dispatchers.IO) {
             watchRepository.renameWatch(watch, newName)
-            analytics.logWatchRenamed()
         }
     }
 
@@ -213,8 +208,6 @@ class WatchManager(
                     settingsRepository.putInt(watch.uid, key, value)
                 }
             }
-
-            analytics.logExtensionSettingChanged(key, value)
         }
     }
 

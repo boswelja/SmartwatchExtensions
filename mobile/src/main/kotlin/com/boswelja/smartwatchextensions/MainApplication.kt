@@ -104,7 +104,6 @@ val watchManagerModule = module {
             get(),
             get(),
             get(),
-            get(),
             get()
         )
     }
