@@ -64,7 +64,7 @@ dependencies {
     implementation(projects.devicemanagement.mobile)
     implementation(projects.dndsync.common)
     implementation(projects.messages.mobile)
-    implementation(projects.phonelocking.common)
+    implementation(projects.phonelocking.mobile)
     implementation(projects.settings.mobile)
 
     implementation(libs.androidx.appcompat)

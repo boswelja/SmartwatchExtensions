@@ -2,8 +2,10 @@ package com.boswelja.smartwatchextensions.phonelocking
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,13 +23,13 @@ import org.koin.android.ext.android.inject
 class PhoneLockingAccessibilityService : AccessibilityService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val watchManager: WatchManager by inject()
-
-    private var isStopping = false
+    private val messageClient: MessageClient by inject()
+    private val watchRepository: WatchRepository by inject()
+    private val settingsRepository: WatchSettingsRepository by inject()
 
     override fun onServiceConnected() {
         coroutineScope.launch {
-            watchManager.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
+            messageClient.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
                 tryLockDevice(message.sourceUid)
             }
         }
@@ -41,17 +43,13 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
         // This is irrelevant for phone locking
     }
 
-    override fun onDestroy() {
-        stop()
-        super.onDestroy()
-    }
-
     private fun tryLockDevice(watchId: String) {
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchManager.getWatchById(watchId).firstOrNull()
+            // Ensure the calling watch is registered
+            val watch = watchRepository.getWatchById(watchId).firstOrNull()
             if (watch != null) {
-                val phoneLockingEnabledForWatch = watchManager.getBoolSetting(
-                    PHONE_LOCKING_ENABLED_KEY, watch
+                val phoneLockingEnabledForWatch = settingsRepository.getBoolean(
+                    watch.uid, PHONE_LOCKING_ENABLED_KEY
                 ).first()
                 if (phoneLockingEnabledForWatch) {
                     withContext(Dispatchers.Main) {
@@ -60,17 +58,6 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
                 }
             } else {
                 // TODO tell the watch it isn't registered
-            }
-        }
-    }
-
-    /** Cleans up in preparation for stopping the service. */
-    private fun stop() {
-        if (!isStopping) {
-            isStopping = true
-            // runBlocking here so we can update stuff without onDestroy returning
-            coroutineScope.launch(Dispatchers.IO) {
-                watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
             }
         }
     }

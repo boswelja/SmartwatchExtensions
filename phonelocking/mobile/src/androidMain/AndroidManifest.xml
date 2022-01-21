@@ -1,0 +1,18 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.boswelja.smartwatchextensions.phonelocking">
+    <application>
+        <service
+            android:name=".PhoneLockingAccessibilityService"
+            android:label="@string/phone_locking_accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/phone_locking_accessibility_service" />
+        </service>
+    </application>
+</manifest>
