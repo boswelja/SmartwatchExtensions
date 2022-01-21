@@ -7,6 +7,7 @@ import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
 import com.boswelja.smartwatchextensions.analytics.LoggingAnalytics
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
+import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
 import com.boswelja.smartwatchextensions.dashboard.dashboardModule
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
@@ -30,6 +31,7 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
@@ -58,7 +60,10 @@ class MainApplication : Application() {
                 clientsModule,
                 analyticsModule,
                 watchManagerModule,
-                databaseModule
+                databaseModule,
+                module {
+                    viewModel { BatteryWidgetConfigViewModel(get()) }
+                }
             )
 
             modules(
