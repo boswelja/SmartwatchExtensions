@@ -16,7 +16,6 @@ import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.managespace.manageSpaceModule
 import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.messages.messagesUiModule
-import com.boswelja.smartwatchextensions.onboarding.onboardingModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
@@ -74,7 +73,6 @@ class MainApplication : Application() {
                 mainModule,
                 manageSpaceModule,
                 messagesUiModule,
-                onboardingModule,
                 phoneLockingModule,
                 appSettingsModule,
                 proximityModule
