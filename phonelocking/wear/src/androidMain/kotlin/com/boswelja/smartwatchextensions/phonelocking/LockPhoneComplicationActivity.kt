@@ -1,89 +1,59 @@
-package com.boswelja.smartwatchextensions
+package com.boswelja.smartwatchextensions.phonelocking
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
-import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-/**
- * An Activity for handling Actions triggered when the app is not running, e.g. from Complications,
- * Tiles etc.
- */
-class ActionsActivity : ComponentActivity() {
+class LockPhoneComplicationActivity : ComponentActivity() {
 
-    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
+    private val discoveryClient: DiscoveryClient by inject()
+    private val messageClient: MessageClient by inject()
 
-    private val discoveryClient by lazy { DiscoveryClient(this) }
-    private val messageClient by lazy { MessageClient(this) }
-
-    private var isLoading by mutableStateOf(true)
+    private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        require(intent.action == LOCK_PHONE)
+
         setContent {
-            AppTheme {
+            MaterialTheme {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (isLoading) {
-                        Text(
-                            text = stringResource(R.string.loading),
-                            style = MaterialTheme.typography.display3
-                        )
-                    }
+                    Text(
+                        text = "Please Wait",
+                        style = MaterialTheme.typography.display3
+                    )
                 }
             }
         }
 
         lifecycleScope.launch {
-            handleAction()
+            tryLockPhone()
         }
     }
-
-    /**
-     * Checks the action for the intent this activity was started with, and calls the appropriate
-     * function.
-     */
-    private suspend fun handleAction() {
-        when (intent.action) {
-            LOCK_PHONE -> tryLockPhone()
-            REQUEST_BATTERY_UPDATE_PATH -> tryUpdateBatteryStats()
-            else -> finish()
-        }
-    }
-
     /**
      * Checks if phone locking is enabled, and tries to send [LOCK_PHONE] to the registered phone.
      * If phone locking is disabled, a failure animation will be shown and the activity will finish.
      */
     private suspend fun tryLockPhone() {
-        val phoneLockingEnabled = extensionSettingsStore.data
-            .map { it.phoneLockingEnabled }.first()
+        val phoneLockingEnabled = phoneLockingStateRepository.getPhoneLockingState().first().phoneLockingEnabled
         if (phoneLockingEnabled) {
             sendMessage(
                 LOCK_PHONE,
@@ -94,28 +64,6 @@ class ActionsActivity : ComponentActivity() {
             showConfirmationOverlay(
                 ConfirmationOverlay.FAILURE_ANIMATION,
                 getString(R.string.lock_phone_disabled)
-            )
-        }
-    }
-
-    /**
-     * Checks if battery sync is enabled, and tries to send [REQUEST_BATTERY_UPDATE_PATH] to the
-     * registered phone. If battery sync is disabled, a failure animation will be shown and the
-     * activity will finish.
-     */
-    private suspend fun tryUpdateBatteryStats() {
-        val batterySyncEnabled = batterySyncStateRepository.getBatterySyncState()
-            .map { it.batterySyncEnabled }.first()
-        if (batterySyncEnabled) {
-            sendMessage(
-                REQUEST_BATTERY_UPDATE_PATH,
-                getString(R.string.battery_sync_refresh_success),
-                getString(R.string.battery_sync_refresh_failed)
-            )
-        } else {
-            showConfirmationOverlay(
-                ConfirmationOverlay.FAILURE_ANIMATION,
-                getString(R.string.battery_sync_disabled)
             )
         }
     }
@@ -169,7 +117,6 @@ class ActionsActivity : ComponentActivity() {
         type: Int,
         message: CharSequence
     ) {
-        isLoading = false
         ConfirmationOverlay()
             .setOnAnimationFinishedListener { finish() }
             .setType(type)

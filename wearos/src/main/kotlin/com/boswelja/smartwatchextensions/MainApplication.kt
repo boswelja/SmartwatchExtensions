@@ -3,7 +3,9 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
+import com.boswelja.smartwatchextensions.extensions.extensionsModule
 import com.boswelja.smartwatchextensions.main.ui.mainModule
+import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.android.ext.koin.androidContext
@@ -21,8 +23,14 @@ class MainApplication : Application() {
         startKoin {
             androidContext(this@MainApplication)
             modules(clientsModule, miscModule)
-            modules(mainModule)
-            modules(batterySyncModule)
+            modules(
+                mainModule,
+                extensionsModule
+            )
+            modules(
+                batterySyncModule,
+                phoneLockingModule
+            )
         }
     }
 }

@@ -15,6 +15,7 @@ include(
     ":messages:mobile",
     ":phonelocking:common",
     ":phonelocking:mobile",
+    ":phonelocking:wear",
     ":settings:common",
     ":settings:mobile",
     ":mobile",

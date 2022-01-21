@@ -61,7 +61,7 @@ dependencies {
     implementation(projects.batterysync.wear)
     implementation(projects.devicemanagement.wear)
     implementation(projects.dndsync.wear)
-    implementation(projects.phonelocking.common)
+    implementation(projects.phonelocking.wear)
     implementation(projects.settings.common)
 
     implementation(libs.androidx.appcompat)
@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.watchconnection.wear)
 
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 
     implementation(libs.bundles.compose.wear)
 

@@ -7,6 +7,7 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
@@ -22,6 +23,7 @@ import org.koin.core.component.inject
 class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer), KoinComponent {
 
     private val batterySyncStateRepository: BatterySyncStateRepository by inject()
+    private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
     override suspend fun onMessageReceived(
         context: Context,
@@ -36,14 +38,16 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
         value: Boolean
     ) {
         context.extensionSettingsStore.updateData {
-            var phoneLockingEnabled = it.phoneLockingEnabled
             var dndSyncToPhone = it.dndSyncToPhone
             var dndSyncWithTheater = it.dndSyncWithTheater
             var phoneSeparationNotis = it.phoneSeparationNotis
 
             when (key) {
-                BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY ->
-                    phoneLockingEnabled = value
+                BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY -> {
+                    phoneLockingStateRepository.updatePhoneLockingState {
+                        it.copy(phoneLockingEnabled = value)
+                    }
+                }
                 BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY -> {
                     batterySyncStateRepository.updateBatterySyncState {
                         it.copy(batterySyncEnabled = value)
@@ -79,7 +83,6 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
             }
 
             it.copy(
-                phoneLockingEnabled = phoneLockingEnabled,
                 dndSyncToPhone = dndSyncToPhone,
                 dndSyncWithTheater = dndSyncWithTheater,
                 phoneSeparationNotis = phoneSeparationNotis

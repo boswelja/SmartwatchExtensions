@@ -1,44 +1,41 @@
 package com.boswelja.smartwatchextensions.extensions.ui
 
-import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
-import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
-import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
+import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * A [AndroidViewModel] for providing data to Extension Composables.
  */
 class ExtensionsViewModel internal constructor(
-    application: Application,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
-    phoneStateStore: DataStore<PhoneState>,
-    extensionSettingsStore: DataStore<ExtensionSettings>
-) : AndroidViewModel(application) {
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        MessageClient(application),
-        DiscoveryClient(application),
-        application.phoneStateStore,
-        application.extensionSettingsStore
-    )
+    phoneLockingStateRepository: PhoneLockingStateRepository,
+    phoneStateStore: DataStore<PhoneState>
+) : ViewModel() {
 
     /**
      * Flow whether phone locking is enabled.
      */
-    val phoneLockingEnabled = extensionSettingsStore.data.map { it.phoneLockingEnabled }
+    val phoneLockingEnabled = phoneLockingStateRepository.getPhoneLockingState()
+        .map { it.phoneLockingEnabled }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            false
+        )
 
     /**
      * Flow the paired phone name.
