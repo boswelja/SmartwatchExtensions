@@ -13,7 +13,6 @@ import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
-import com.boswelja.smartwatchextensions.managespace.manageSpaceModule
 import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.messages.messagesUiModule
 import com.boswelja.smartwatchextensions.onboarding.onboardingModule
@@ -72,7 +71,6 @@ class MainApplication : Application() {
                 com.boswelja.smartwatchextensions.devicemanagement.watchManagerModule,
                 dndSyncModule,
                 mainModule,
-                manageSpaceModule,
                 messagesUiModule,
                 onboardingModule,
                 phoneLockingModule,

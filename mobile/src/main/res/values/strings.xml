@@ -127,30 +127,6 @@
     <string name="share_usage_title">Share Usage Stats</string>
     <string name="share_usage_desc">Smartwatch Extensions would like to collect anonymous usage statistics. To find out more, view our privacy policy by clicking the link below.</string>
 
-    <!-- Manage Space strings -->
-    <string name="manage_space_title">Manage Space</string>
-    <string name="clear_cache_title">Clear Cache</string>
-    <string name="clear_cache_desc">Clear all Smartwatch Extensions cache.</string>
-    <string name="clear_cache_failed">Failed to clear cache</string>
-    <string name="clear_cache_success">Successfully cleared cache</string>
-    <string name="reset_extensions_title">Reset Extensions</string>
-    <string name="reset_extensions_desc">Reset all your extension settings on your phone and registered watches.</string>
-    <string name="reset_extensions_warning">This will reset extension settings for all your registered watches. Please make sure your registered watches are powered on and nearby.</string>
-    <string name="reset_extensions_failed">Failed to reset extensions</string>
-    <string name="reset_extensions_success">Successfully reset extensions</string>
-    <string name="reset_settings_title">Reset App Settings</string>
-    <string name="reset_settings_desc">Reset all your Smartwatch Extensions app settings. This does not include extension settings.</string>
-    <string name="reset_settings_failed">Failed to reset app settings</string>
-    <string name="reset_settings_success">Successfully reset app settings</string>
-    <string name="reset_app_title">Reset Smartwatch Extensions</string>
-    <string name="reset_app_desc">This will reset Smartwatch Extensions on all your registered watches, as well as here on your phone.</string>
-    <string name="reset_app_warning">We will reset Smartwatch Extensions on all your registered watches, then here on your phone. This includes permissions, settings and widgets.</string>
-    <string name="reset_app_failed">Failed to completely reset Smartwatch Extensions</string>
-    <string name="reset_analytics_title">Reset Analytics</string>
-    <string name="reset_analytics_desc">This will reset any data stored by Firebase about this app instance.</string>
-    <string name="reset_analytics_success">Successfully reset analytics</string>
-    <string name="reset_analytics_failed">Failed to reset analytics</string>
-
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
     <string name="update_available_text">A new version of Smartwatch Extensions is available</string>

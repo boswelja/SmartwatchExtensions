@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,10 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
@@ -62,13 +59,6 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
                         .also {
                             context.startActivity(it)
                         }
-                }
-            )
-            ListItem(
-                text = { Text(stringResource(R.string.manage_space_title)) },
-                icon = { Icon(Icons.Outlined.Storage, null) },
-                modifier = Modifier.clickable {
-                    context.startActivity<ManageSpaceActivity>()
                 }
             )
             CheckboxSetting(
