@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.watchconnection.common.Watch
@@ -19,7 +18,6 @@ import kotlin.math.floor
  */
 class ManageSpaceViewModel(
     application: Application,
-    private val analytics: Analytics,
     private val watchManager: WatchManager,
     private val appSettingsDataStore: DataStore<Settings>,
     private val coroutineDispatcher: CoroutineDispatcher
@@ -32,19 +30,6 @@ class ManageSpaceViewModel(
             watchManager.registeredWatches.collect {
                 registeredWatches = it
             }
-        }
-    }
-
-    /**
-     * Reset analytics storage. See [Analytics.resetAnalytics].
-     * @param onCompleteFunction The function to call when the job completes.
-     */
-    fun resetAnalytics(
-        onCompleteFunction: (isSuccessful: Boolean) -> Unit
-    ) {
-        viewModelScope.launch(coroutineDispatcher) {
-            analytics.resetAnalytics()
-            onCompleteFunction(true)
         }
     }
 
@@ -115,7 +100,6 @@ class ManageSpaceViewModel(
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
-                analytics.resetAnalytics()
                 progress = (watchCount + 1) * progressMultiplier
             }
             onCompleteFunction(true)

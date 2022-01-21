@@ -87,30 +87,6 @@ fun ClearCacheAction(
 }
 
 /**
- * An [Action] for resetting analytics.
- * @param modifier [Modifier].
- * @param onActionFinished Called when the action has finished executing.
- */
-@Composable
-fun ResetAnalyticsAction(
-    modifier: Modifier = Modifier,
-    onActionFinished: (success: Boolean) -> Unit,
-) {
-    val viewModel: ManageSpaceViewModel = getViewModel()
-    Action(
-        modifier = modifier,
-        title = stringResource(R.string.reset_analytics_title),
-        desc = stringResource(R.string.reset_analytics_desc),
-        buttonLabel = stringResource(R.string.reset_analytics_title),
-        onButtonClick = {
-            viewModel.resetAnalytics {
-                onActionFinished(it)
-            }
-        }
-    )
-}
-
-/**
  * An [Action] for resetting app settings.
  * @param modifier [Modifier].
  * @param onActionFinished Called when the action has finished executing.

@@ -12,6 +12,6 @@ import org.koin.dsl.module
  */
 val manageSpaceModule = module {
     viewModel {
-        ManageSpaceViewModel(get(), get(), get(), get<Context>().appSettingsStore, Dispatchers.IO)
+        ManageSpaceViewModel(get(), get(), get<Context>().appSettingsStore, Dispatchers.IO)
     }
 }
