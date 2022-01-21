@@ -1,8 +1,10 @@
 package com.boswelja.smartwatchextensions.devicemanagement
 
 import android.content.Context
+import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -32,12 +34,13 @@ data class PhoneState(
  */
 val Context.phoneStateStore: DataStore<PhoneState> by dataStore(
     "phoneState.pb",
-    PhoneStateSerializer()
+    PhoneStateSerializer,
+    corruptionHandler = ReplaceFileCorruptionHandler { PhoneStateSerializer.defaultValue }
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
 @OptIn(ExperimentalSerializationApi::class)
-private class PhoneStateSerializer : Serializer<PhoneState> {
+private object PhoneStateSerializer : Serializer<PhoneState> {
     override val defaultValue = PhoneState(
         id = "",
         name = "Phone",
@@ -45,8 +48,13 @@ private class PhoneStateSerializer : Serializer<PhoneState> {
         lowNotiSent = false
     )
 
-    override suspend fun readFrom(input: InputStream): PhoneState =
-        ProtoBuf.decodeFromByteArray(input.readBytes())
+    override suspend fun readFrom(input: InputStream): PhoneState {
+        try {
+            return ProtoBuf.decodeFromByteArray(input.readBytes())
+        } catch (_: Exception) {
+            throw CorruptionException("PhoneState corrupted")
+        }
+    }
 
     override suspend fun writeTo(t: PhoneState, output: OutputStream) {
         output.write(ProtoBuf.encodeToByteArray(t))

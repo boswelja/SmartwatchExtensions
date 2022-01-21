@@ -1,8 +1,10 @@
 package com.boswelja.smartwatchextensions.extensions
 
 import android.content.Context
+import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -32,12 +34,13 @@ data class ExtensionSettings(
  */
 val Context.extensionSettingsStore: DataStore<ExtensionSettings> by dataStore(
     "extensionSettings.pb",
-    SettingsSerializer()
+    SettingsSerializer,
+    corruptionHandler = ReplaceFileCorruptionHandler { SettingsSerializer.defaultValue }
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
 @OptIn(ExperimentalSerializationApi::class)
-private class SettingsSerializer : Serializer<ExtensionSettings> {
+private object SettingsSerializer : Serializer<ExtensionSettings> {
     override val defaultValue = ExtensionSettings(
         phoneLockingEnabled = false,
         dndSyncToPhone = false,
@@ -46,7 +49,11 @@ private class SettingsSerializer : Serializer<ExtensionSettings> {
     )
 
     override suspend fun readFrom(input: InputStream): ExtensionSettings {
-        return ProtoBuf.decodeFromByteArray(input.readBytes())
+        try {
+            return ProtoBuf.decodeFromByteArray(input.readBytes())
+        } catch (_: Exception) {
+            throw CorruptionException("ExtensionsSettings corrupted")
+        }
     }
 
     override suspend fun writeTo(t: ExtensionSettings, output: OutputStream) {
