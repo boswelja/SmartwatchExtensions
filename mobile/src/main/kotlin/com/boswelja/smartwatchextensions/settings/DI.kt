@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * A Koin module for providing App Settings classes.
  */
 val appSettingsModule = module {
-    viewModel { AppSettingsViewModel(get(), get(), get(), get<Context>().appSettingsStore) }
+    viewModel { AppSettingsViewModel(get(), get(), get<Context>().appSettingsStore) }
 }
