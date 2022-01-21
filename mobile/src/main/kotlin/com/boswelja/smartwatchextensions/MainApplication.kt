@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import android.content.Context
 import com.boswelja.smartwatchextensions.aboutapp.ui.aboutAppModule
-import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
+import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.LoggingAnalytics
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
@@ -87,12 +87,8 @@ class MainApplication : Application() {
  * A Koin module for providing analytics.
  */
 val analyticsModule = module {
-    single {
-        if (BuildConfig.DEBUG) {
-            LoggingAnalytics()
-        } else {
-            FirebaseAnalytics()
-        }
+    single<Analytics> {
+        LoggingAnalytics()
     }
 }
 
