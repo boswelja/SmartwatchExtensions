@@ -98,7 +98,7 @@ fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
                     },
                     confirmButton = {
                         TextButton(
-                            content = { Text(stringResource(R.string.dialog_button_grant)) },
+                            content = { Text(stringResource(R.string.dialog_button_open_settings)) },
                             onClick = {
                                 context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
                                 phoneLockingSetupVisible = false
