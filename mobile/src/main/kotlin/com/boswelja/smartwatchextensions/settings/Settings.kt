@@ -16,7 +16,7 @@ import java.io.OutputStream
 
 /**
  * Contains global app settings.
- * @param analyticsEnabled Whether analytics are enabled.
+ * @param analyticsEnabled Whether analytics are enabled. This is currently unused, but held for future compatibility
  * @param qsTileWatchId The watch UID to use for QS Tiles.
  * @param checkForUpdates Whether the app should automatically check for updates.
  */
@@ -39,7 +39,7 @@ val Context.appSettingsStore: DataStore<Settings> by dataStore(
 @OptIn(ExperimentalSerializationApi::class)
 private class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
-        true,
+        false,
         "",
         false
     )

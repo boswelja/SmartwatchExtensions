@@ -10,7 +10,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.runtime.Composable
@@ -35,7 +34,6 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
     val viewModel: AppSettingsViewModel = getViewModel()
     val context = LocalContext.current
     val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
-    val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)
 
     Card(
         modifier = modifier,
@@ -66,14 +64,6 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
                 icon = { Icon(Icons.Outlined.Update, null) },
                 checked = checkUpdatesDaily,
                 onCheckChanged = viewModel::setCheckUpdatesDaily
-            )
-            CheckboxSetting(
-                label = { Text(stringResource(R.string.analytics_enabled_title)) },
-                icon = { Icon(Icons.Outlined.Analytics, null) },
-                checked = analyticsEnabled,
-                onCheckChanged = {
-                    viewModel.setAnalyticsEnabled(it)
-                }
             )
         }
     }

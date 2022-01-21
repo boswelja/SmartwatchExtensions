@@ -3,8 +3,6 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import android.content.Context
 import com.boswelja.smartwatchextensions.aboutapp.ui.aboutAppModule
-import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
-import com.boswelja.smartwatchextensions.analytics.LoggingAnalytics
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
 import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
@@ -15,7 +13,6 @@ import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.messages.messagesUiModule
-import com.boswelja.smartwatchextensions.onboarding.onboardingModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
@@ -57,7 +54,6 @@ class MainApplication : Application() {
                 messagesModule,
                 settingsModule,
                 clientsModule,
-                analyticsModule,
                 watchManagerModule,
                 databaseModule,
                 module {
@@ -72,24 +68,10 @@ class MainApplication : Application() {
                 dndSyncModule,
                 mainModule,
                 messagesUiModule,
-                onboardingModule,
                 phoneLockingModule,
                 appSettingsModule,
                 proximityModule
             )
-        }
-    }
-}
-
-/**
- * A Koin module for providing analytics.
- */
-val analyticsModule = module {
-    single {
-        if (BuildConfig.DEBUG) {
-            LoggingAnalytics()
-        } else {
-            FirebaseAnalytics()
         }
     }
 }
@@ -100,7 +82,6 @@ val analyticsModule = module {
 val watchManagerModule = module {
     single {
         WatchManager(
-            get(),
             get(),
             get(),
             get(),

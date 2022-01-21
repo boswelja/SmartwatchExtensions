@@ -63,7 +63,7 @@ fun WelcomeScreen(
         ExtendedFloatingActionButton(
             text = { Text(stringResource(R.string.get_started)) },
             icon = { Icon(Icons.Outlined.NavigateNext, null) },
-            onClick = { onNavigateTo(OnboardingDestination.SHARE_USAGE_STATS) }
+            onClick = { onNavigateTo(OnboardingDestination.REGISTER_WATCHES) }
         )
     }
 }

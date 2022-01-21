@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "1.6.10"
     id("com.boswelja.smartwatchextensions.detekt")
 }
@@ -67,8 +66,6 @@ dependencies {
     implementation(projects.messages.mobile)
     implementation(projects.phonelocking)
     implementation(projects.settings.mobile)
-
-    implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
