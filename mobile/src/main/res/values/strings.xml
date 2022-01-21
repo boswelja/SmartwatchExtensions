@@ -60,7 +60,6 @@
     <string name="noti_settings_title">Notification Settings</string>
     <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
-    <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
     <string name="category_qstiles">Quick Settings</string>
     <string name="qstiles_selected_watch">Linked Watch</string>
 
@@ -146,10 +145,6 @@
     <string name="reset_app_desc">This will reset Smartwatch Extensions on all your registered watches, as well as here on your phone.</string>
     <string name="reset_app_warning">We will reset Smartwatch Extensions on all your registered watches, then here on your phone. This includes permissions, settings and widgets.</string>
     <string name="reset_app_failed">Failed to completely reset Smartwatch Extensions</string>
-    <string name="reset_analytics_title">Reset Analytics</string>
-    <string name="reset_analytics_desc">This will reset any data stored by Firebase about this app instance.</string>
-    <string name="reset_analytics_success">Successfully reset analytics</string>
-    <string name="reset_analytics_failed">Failed to reset analytics</string>
 
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>

@@ -99,14 +99,6 @@ fun ManageSpaceScreen(
             },
             onProgressChange = { }
         )
-        ResetAnalyticsAction(
-            modifier = actionModifier,
-            onActionFinished = { success ->
-                val message = if (success) context.getString(R.string.reset_analytics_success)
-                else context.getString(R.string.reset_analytics_failed)
-                onShowSnackbar(message)
-            }
-        )
         ResetAppSettingsAction(
             modifier = actionModifier,
             onActionFinished = { success ->

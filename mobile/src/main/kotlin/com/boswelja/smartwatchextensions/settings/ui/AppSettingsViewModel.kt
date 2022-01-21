@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.Settings
@@ -20,15 +19,9 @@ import kotlinx.coroutines.launch
  */
 class AppSettingsViewModel(
     application: Application,
-    private val analytics: Analytics,
     private val watchManager: WatchManager,
     private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application) {
-
-    /**
-     * Flow whether analytics are enabled.
-     */
-    val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
 
     /**
      * Flow the currently registered watches.
@@ -53,18 +46,6 @@ class AppSettingsViewModel(
      * Flow whether daily update checks are enabled.
      */
     val checkUpdatesDaily = dataStore.data.map { it.checkForUpdates }
-
-    /**
-     * Set whether analytics are enabled.
-     */
-    fun setAnalyticsEnabled(analyticsEnabled: Boolean) {
-        viewModelScope.launch {
-            analytics.setAnalyticsEnabled(analyticsEnabled)
-            dataStore.updateData {
-                it.copy(analyticsEnabled = analyticsEnabled)
-            }
-        }
-    }
 
     /**
      * Set a watch for QS Tiles to display data for.
