@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -49,6 +50,15 @@ class PhoneLockingSettingsViewModel(
             false
         )
 
+    val watchName = selectedWatchManager.selectedWatch
+        .filterNotNull()
+        .map { it.name }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            "Watch"
+        )
+
     /**
      * Set whether phone locking is enabled.
      */
@@ -75,7 +85,7 @@ class PhoneLockingSettingsViewModel(
         return true
     }
 
-    private fun canEnablePhoneLocking(): Boolean {
+    fun canEnablePhoneLocking(): Boolean {
         return getApplication<Application>().isAccessibilityServiceEnabled()
     }
 }
