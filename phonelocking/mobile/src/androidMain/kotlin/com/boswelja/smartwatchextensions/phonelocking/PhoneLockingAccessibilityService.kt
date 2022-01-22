@@ -2,9 +2,14 @@ package com.boswelja.smartwatchextensions.phonelocking
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
+import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +29,8 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val messageClient: MessageClient by inject()
     private val settingsRepository: WatchSettingsRepository by inject()
+
+    private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
 
     override fun onServiceConnected() {
         coroutineScope.launch {
@@ -53,6 +60,12 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
                 withContext(Dispatchers.Main) {
                     performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
                 }
+            } else {
+                // Try to update the watches local state
+                boolMessageHandler.sendMessage(
+                    watchId,
+                    Message(UPDATE_BOOL_PREFERENCE, BoolSetting(PHONE_LOCKING_ENABLED_KEY, false))
+                )
             }
         }
     }
