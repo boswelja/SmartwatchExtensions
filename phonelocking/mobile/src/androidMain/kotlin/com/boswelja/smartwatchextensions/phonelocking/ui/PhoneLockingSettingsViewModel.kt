@@ -50,6 +50,9 @@ class PhoneLockingSettingsViewModel(
             false
         )
 
+    /**
+     * Flows the currently selected watch name. Defaults to "Watch".
+     */
     val watchName = selectedWatchManager.selectedWatch
         .filterNotNull()
         .map { it.name }

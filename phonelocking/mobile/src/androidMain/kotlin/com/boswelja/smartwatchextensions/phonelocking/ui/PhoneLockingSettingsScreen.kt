@@ -34,7 +34,10 @@ fun PhoneLockingSettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val viewModel: PhoneLockingSettingsViewModel = getViewModel()
+
+    val watchName by viewModel.watchName.collectAsState()
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
+
     Column(modifier) {
         ListItem(
             icon = { Icon(Icons.Outlined.Settings, null) },
@@ -44,6 +47,7 @@ fun PhoneLockingSettingsScreen(
             }
         )
         PhoneLockingSetting(
+            watchName = watchName,
             phoneLockingEnabled = phoneLockingEnabled,
             onPhoneLockingEnabledChanged = viewModel::setPhoneLockingEnabled,
             onCheckAccessibilityServiceEnabled = viewModel::canEnablePhoneLocking,
@@ -55,6 +59,7 @@ fun PhoneLockingSettingsScreen(
 /**
  * Displays a SwitchSetting to control the state of Phone Locking. If the Accessibility Service is disabled, the user
  * will be prompted to enable it first.
+ * @param watchName The name of the currently selected watch.
  * @param phoneLockingEnabled Whether Phone Locking is currently enabled.
  * @param onPhoneLockingEnabledChanged Called when the Phone Locking enabled state should change.
  * @param onCheckAccessibilityServiceEnabled Called when checking to see if the Accessibility Service is currently
@@ -63,6 +68,7 @@ fun PhoneLockingSettingsScreen(
  */
 @Composable
 fun PhoneLockingSetting(
+    watchName: String,
     phoneLockingEnabled: Boolean,
     onPhoneLockingEnabledChanged: (Boolean) -> Unit,
     onCheckAccessibilityServiceEnabled: () -> Boolean,
@@ -73,7 +79,7 @@ fun PhoneLockingSetting(
     SwitchSetting(
         icon = { Icon(Icons.Outlined.PhonelinkLock, null) },
         label = { Text(stringResource(R.string.phone_locking_enabled_title)) },
-        summary = { Text(stringResource(R.string.phone_locking_enabled_summary)) },
+        summary = { Text(stringResource(R.string.phone_locking_enabled_summary, watchName)) },
         checked = phoneLockingEnabled,
         onCheckChanged = {
             phoneLockingSetupVisible = it && !onCheckAccessibilityServiceEnabled()

@@ -5,7 +5,7 @@
     <string name="main_phone_locking_title">Phone Locking</string>
     <string name="phone_locking_accessibility_settings">Open Accessibility Settings</string>
     <string name="phone_locking_enabled_title">Remote phone locking</string>
-    <string name="phone_locking_enabled_summary">Allow locking your phone from your wearable</string>
+    <string name="phone_locking_enabled_summary">Allow locking your phone from your %s</string>
     <string name="phone_locking_accessibility_service_label">Phone Locking</string>
     <string name="phone_locking_setup_accessibility_title">Enable Accessibility Service</string>
     <string name="phone_locking_setup_accessibility_desc">Phone Locking makes use of an Accessibility Service to lock your phone. Phone Locking cannot function without this Accessibility Service. By enabling this Accessibility Service, Smartwatch Extensions will be able to lock your phone.</string>
