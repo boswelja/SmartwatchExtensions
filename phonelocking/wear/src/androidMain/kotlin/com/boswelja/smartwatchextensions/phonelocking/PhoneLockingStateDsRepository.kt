@@ -11,6 +11,9 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * An implementation of [PhoneLockingStateRepository] that makes use of a DataStore for saving/loading data.
+ */
 class PhoneLockingStateDsRepository(context: Context) : PhoneLockingStateRepository {
 
     private val stateStore = context.phoneLockingStateStore

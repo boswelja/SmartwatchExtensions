@@ -18,6 +18,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+/**
+ * A basic activity to handle making a lock phone request. An activity is used to provide more consistent behavior
+ * compared to a broadcast receiver. This should only be used when the pp is not already in the foreground, for example
+ * as a complication click action.
+ */
 class LockPhoneComplicationActivity : ComponentActivity() {
 
     private val discoveryClient: DiscoveryClient by inject()
