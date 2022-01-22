@@ -1,7 +1,5 @@
 package com.boswelja.smartwatchextensions.phonelocking.ui
 
-import android.content.Intent
-import android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -38,35 +35,22 @@ import org.koin.androidx.compose.getViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PhoneLockingSettingsScreen(
+    onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp
 ) {
+    val viewModel: PhoneLockingSettingsViewModel = getViewModel()
+    val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
+    var phoneLockingSetupVisible by remember { mutableStateOf(false) }
     Column(
         modifier = modifier.padding(contentPadding),
         verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
-        PhoneLockingSettingsCard()
-    }
-}
-
-/**
- * A Composable for showing Phone Locking settings.
- * @param modifier [Modifier].
- */
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val viewModel: PhoneLockingSettingsViewModel = getViewModel()
-    val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
-    var phoneLockingSetupVisible by remember { mutableStateOf(false) }
-
-    Column(modifier) {
         ListItem(
             icon = { Icon(Icons.Outlined.Settings, null) },
             text = { Text(stringResource(R.string.phone_locking_accessibility_settings)) },
             modifier = Modifier.clickable {
-                context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
+                onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route)
             }
         )
         SwitchSetting(
@@ -90,7 +74,7 @@ fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
                     TextButton(
                         content = { Text(stringResource(R.string.phone_locking_setup_open_settings)) },
                         onClick = {
-                            context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
+                            onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route)
                             phoneLockingSetupVisible = false
                         }
                     )
