@@ -1,10 +1,8 @@
 package com.boswelja.smartwatchextensions.phonelocking.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.phonelocking.isAccessibilityServiceEnabled
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -27,11 +25,10 @@ import kotlinx.coroutines.launch
  * A ViewModel for providing data to Phone Locking settings.
  */
 class PhoneLockingSettingsViewModel(
-    application: Application,
     messageClient: MessageClient,
     private val selectedWatchManager: SelectedWatchManager,
     private val settingsRepository: WatchSettingsRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
 
@@ -66,9 +63,6 @@ class PhoneLockingSettingsViewModel(
      * Set whether phone locking is enabled.
      */
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
-        // Return false if we're trying to enable phone locking but we can't
-        if (isEnabled && !canEnablePhoneLocking()) return false
-
         viewModelScope.launch(Dispatchers.IO) {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
             settingsRepository.putBoolean(
@@ -86,9 +80,5 @@ class PhoneLockingSettingsViewModel(
         }
 
         return true
-    }
-
-    fun canEnablePhoneLocking(): Boolean {
-        return getApplication<Application>().isAccessibilityServiceEnabled()
     }
 }
