@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Lock Phone strings -->
+    <string name="lock_phone_label">Lock phone</string>
+    <string name="lock_phone_failed">Failed to lock your phone</string>
+    <string name="lock_phone_disabled">Phone locking disabled</string>
+    <string name="lock_phone_success">Successfully locked your phone</string>
+    <string name="lock_phone">Tap to lock your %s</string>
+
+</resources>

@@ -51,19 +51,6 @@
             android:exported="false" />
 
         <service
-            android:name=".phonelocking.PhoneLockingAccessibilityService"
-            android:label="@string/phone_locking_accessibility_service_label"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/phone_locking_accessibility_service" />
-        </service>
-
-        <service
             android:name=".proximity.SeparationObserverService"
             android:foregroundServiceType="connectedDevice"
             android:label="@string/proximity_observer_title"

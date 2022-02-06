@@ -10,8 +10,6 @@ import androidx.wear.watchface.complications.data.PlainComplicationText
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceService
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
-import com.boswelja.smartwatchextensions.ActionsActivity
-import com.boswelja.smartwatchextensions.R
 
 /**
  * A [ComplicationDataSourceService] for phone locking.
@@ -34,7 +32,7 @@ class LockPhoneComplicationProvider : ComplicationDataSourceService() {
     }
 
     private fun createComplicationDataFor(type: ComplicationType): ComplicationData? {
-        val intent = Intent(this, ActionsActivity::class.java).apply {
+        val intent = Intent(this, LockPhoneComplicationActivity::class.java).apply {
             action = LOCK_PHONE
         }
         val pendingIntent = PendingIntent.getActivity(

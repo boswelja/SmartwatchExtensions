@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * A Koin module for providing phone locking classes.
  */
 val phoneLockingModule = module {
-    viewModel { PhoneLockingSettingsViewModel(get(), get()) }
+    viewModel { PhoneLockingSettingsViewModel(get(), get(), get()) }
 }

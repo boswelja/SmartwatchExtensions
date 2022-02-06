@@ -1,0 +1,29 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.boswelja.smartwatchextensions.phonelocking">
+    <application>
+
+        <service
+            android:name=".LockPhoneComplicationProvider"
+            android:icon="@drawable/complication_lock_phone"
+            android:label="@string/lock_phone_label"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+        </service>
+
+        <activity
+            android:name=".LockPhoneComplicationActivity"
+            android:exported="false" />
+    </application>
+</manifest>

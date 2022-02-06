@@ -28,9 +28,6 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="false" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".main.ui.MainActivity"
@@ -44,27 +41,6 @@
         </activity>
 
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />
-
-        <activity android:name=".ActionsActivity" />
-
-        <service
-            android:name=".phonelocking.LockPhoneComplicationProvider"
-            android:icon="@drawable/ic_phone_lock"
-            android:label="@string/lock_phone_label"
-            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                android:value="0" />
-
-            <meta-data
-                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="SHORT_TEXT" />
-        </service>
 
         <receiver
             android:name=".phoneconnectionmanager.IntSettingChangeReceiver"

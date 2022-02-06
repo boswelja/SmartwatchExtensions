@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncChip
@@ -19,6 +18,7 @@ import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable for displaying available Extensions.
@@ -38,10 +38,9 @@ fun Extensions(
     ) {
         val view = LocalView.current
         val coroutineScope = rememberCoroutineScope()
-        val viewModel: ExtensionsViewModel = viewModel()
+        val viewModel: ExtensionsViewModel = getViewModel()
 
-        val phoneLockingEnabled by viewModel.phoneLockingEnabled
-            .collectAsState(false, Dispatchers.IO)
+        val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
