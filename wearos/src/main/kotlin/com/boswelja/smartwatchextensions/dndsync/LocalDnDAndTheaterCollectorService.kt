@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
@@ -85,7 +84,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
                     dndSyncWithTheater && !dndSyncToPhone ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
                     else ->
-                        setContentText(getString(R.string.getting_ready))
+                        setContentText(getString(com.boswelja.smartwatchextensions.R.string.getting_ready))
                 }
                 setSmallIcon(com.boswelja.smartwatchextensions.dndsync.common.R.drawable.ic_sync)
                 setOngoing(true)
@@ -130,7 +129,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 DND_SYNC_NOTI_CHANNEL_ID,
-                getString(R.string.noti_channel_dnd_sync_title),
+                getString(com.boswelja.smartwatchextensions.dndsync.common.R.string.noti_channel_dnd_sync_title),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 enableLights(false)
