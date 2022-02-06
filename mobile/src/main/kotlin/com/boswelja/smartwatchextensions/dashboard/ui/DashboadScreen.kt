@@ -81,7 +81,7 @@ fun DashboardScreen(
                 onClick = { onNavigateTo(DashboardDestination.DND_SYNC_SETTINGS) }
             )
             DashboardItem(
-                titleText = stringResource(R.string.main_phone_locking_title),
+                titleText = stringResource(com.boswelja.smartwatchextensions.phonelocking.R.string.main_phone_locking_title),
                 onClick = { onNavigateTo(DashboardDestination.PHONE_LOCKING_SETTINGS) }
             )
             DashboardItem(
