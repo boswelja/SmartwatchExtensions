@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.dndsync
 
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -18,7 +17,7 @@ abstract class BaseLocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorSer
     override fun onCreate() {
         super.onCreate()
         lifecycleScope.launch {
-            theaterMode().collect { theaterMode ->
+            contentResolver.theaterMode().collect { theaterMode ->
                 onTheaterChanged(theaterMode)
             }
         }
