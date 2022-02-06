@@ -65,10 +65,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".dndsync.LocalDnDCollectorService"
-            android:exported="false" />
-
         <receiver
             android:name=".devicemanagement.connection.WatchMessageReceiver"
             android:exported="false">

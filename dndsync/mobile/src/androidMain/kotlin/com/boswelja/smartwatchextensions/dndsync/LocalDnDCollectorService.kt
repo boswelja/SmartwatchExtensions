@@ -1,24 +1,19 @@
 package com.boswelja.smartwatchextensions.dndsync
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.NotificationChannelHelper
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.dndsync.common.R
-import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -28,11 +23,11 @@ import org.koin.android.ext.android.inject
  */
 class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
 
-    private val watchManager: WatchManager by inject()
+    private val settingsRepository: WatchSettingsRepository by inject()
     private val messageClient: MessageClient by inject()
     private val messageHandler by lazy { MessageHandler(DnDStatusSerializer, messageClient) }
 
-    private val targetWatches = ArrayList<Watch>()
+    private val targetWatches = ArrayList<String>()
 
     override suspend fun onDnDChanged(dndState: Boolean) {
         sendNewDnDState(dndState)
@@ -43,13 +38,9 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
         super.onCreate()
 
         lifecycleScope.launch {
-            watchManager.settingsRepository
+            settingsRepository
                 .getIdsWithBooleanSet(DND_SYNC_TO_WATCH_KEY, true)
-                .map { ids ->
-                    ids.mapNotNull { id ->
-                        watchManager.getWatchById(id).firstOrNull()
-                    }
-                }.collect {
+                .collect {
                     targetWatches.clear()
                     targetWatches.addAll(it)
                     stopIfUnneeded()
@@ -67,8 +58,8 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
      * @return The created [Notification].
      */
     private fun createNotification(): Notification {
-        NotificationChannelHelper.createForDnDSync(this, getSystemService()!!)
-        val launchActivityIntent = Intent(this, MainActivity::class.java)
+        createNotificationChannel(getSystemService(NotificationManager::class.java))
+        val launchActivityIntent = packageManager.getLaunchIntentForPackage(packageName)
         val notiTapIntent = PendingIntent.getActivity(
             this,
             0,
@@ -94,9 +85,9 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
      * @param dndEnabled The new state of Do not Disturb.
      */
     private suspend fun sendNewDnDState(dndEnabled: Boolean) {
-        targetWatches.forEach { watch ->
+        targetWatches.forEach { watchUid ->
             messageHandler.sendMessage(
-                watch.uid,
+                watchUid,
                 Message(
                     DND_STATUS_PATH,
                     dndEnabled
@@ -110,6 +101,27 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
         if (targetWatches.isEmpty()) {
             stopForeground(true)
             stopSelf()
+        }
+    }
+
+    /**
+     * Create a notification channel for DnD Sync status notifications.
+     */
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) ==
+            null
+        ) {
+            NotificationChannel(
+                DND_SYNC_NOTI_CHANNEL_ID,
+                getString(R.string.noti_channel_dnd_sync_title),
+                NotificationManager.IMPORTANCE_LOW
+            )
+                .apply {
+                    enableLights(false)
+                    enableVibration(false)
+                    setShowBadge(false)
+                }
+                .also { notificationManager.createNotificationChannel(it) }
         }
     }
 

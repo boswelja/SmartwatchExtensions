@@ -119,7 +119,6 @@
     <string name="wiki_label">Get Help</string>
 
     <!-- Notification Channel strings -->
-    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
 
     <!-- Capability strings -->

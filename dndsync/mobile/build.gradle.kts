@@ -4,18 +4,23 @@
 plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
-    alias(libs.plugins.compose)
 }
 
 kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(projects.dndsync.common)
+                implementation(projects.dndsync.common)
+                implementation(projects.settings.mobile)
+                implementation(libs.watchconnection.mobile.core)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
         val androidMain by getting {
-            dependencies { }
+            dependencies {
+                implementation(libs.koin.android)
+                implementation(libs.bundles.lifecycle)
+            }
         }
     }
 }
