@@ -1,23 +1,22 @@
 [versions]
 # AndroidX versions
-androidxActivity = "1.4.0"
-androidxAppCompat = "1.4.0"
-androidxCore = "1.8.0-alpha02"
+androidxActivity = "1.5.0-alpha01"
+androidxAppCompat = "1.4.1"
+androidxCore = "1.8.0-alpha03"
 androidxDataStore = "1.0.0"
 androidxEspresso = "3.5.0-alpha03"
-androidxLifecycle = "2.4.0"
-androidxSplashscreen = "1.0.0-alpha02"
+androidxLifecycle = "2.5.0-alpha01"
+androidxSplashscreen = "1.0.0-beta01"
 androidxTest = "1.4.1-alpha03"
 androidxTestExt = "1.1.4-alpha03"
 androidxWear = "1.3.0-alpha01"
-androidxWearWatchface = "1.1.0-alpha01"
-androidxWork = "2.7.1"
+androidxWearWatchface = "1.1.0-alpha02"
+androidxWork = "2.8.0-alpha01"
 
 # Compose versions
-accompanist = "0.22.0-rc"
-compose = "1.1.0-rc01"
-composeCompiler = "1.1.0-rc02"
-navigationCompose = "2.4.0-rc01"
+accompanist = "0.24.1-alpha"
+compose = "1.2.0-alpha02"
+navigationCompose = "2.5.0-alpha01"
 wearCompose = "1.0.0-alpha13"
 
 # KotlinX versions
@@ -25,8 +24,10 @@ kotlinxCoroutines = "1.6.0"
 kotlinxSerialization = "1.3.2"
 
 # Misc versions
+androidGradlePlugin = "7.3.0-alpha01"
+kotlin = "1.6.10"
+detekt = "1.19.0"
 batterystats = "0.1.0"
-firebaseAnalytics = "20.0.2"
 googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
@@ -37,6 +38,13 @@ robolectric = "4.7.3"
 sqldelight = "1.5.3"
 turbine = "0.7.0"
 watchconnection = "7.0.6"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqldelight" }
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
@@ -83,8 +91,6 @@ batterystats = { module = "io.github.boswelja.batterystats:batterystats", versio
 
 accompanist-sysui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
-firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
-
 googleplay-core = { module = "com.google.android.play:core", version.ref = "googlePlayCore" }
 googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref = "googlePlayCoreKtx" }
 
@@ -123,7 +129,6 @@ koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", versio
 [bundles]
 compose-mobile = [
     "compose-ui-core",
-    "compose-ui-tooling",
     "compose-foundation",
     "compose-material-core",
     "compose-material-icons-core",

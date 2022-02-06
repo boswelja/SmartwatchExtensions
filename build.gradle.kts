@@ -1,7 +1,10 @@
+// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
+@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
+
 plugins {
-    id("com.android.application") version "7.3.0-alpha01" apply false
-    id("com.android.library") version "7.3.0-alpha01" apply false
-    id("org.jetbrains.kotlin.android") version "1.6.10" apply false
-    id("com.squareup.sqldelight") version libs.versions.sqldelight.get() apply false
-    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.sqldelight) apply false
+    alias(libs.plugins.detekt)
 }

@@ -36,7 +36,7 @@ configurations {
     }
 }
 dependencies {
-    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.composeCompiler.get()}")
+    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.compose.get()}")
 }
 android {
     afterEvaluate {

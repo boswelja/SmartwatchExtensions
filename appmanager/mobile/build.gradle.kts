@@ -59,7 +59,7 @@ kotlin {
 android {
     buildFeatures.compose = true
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 }
 
@@ -76,7 +76,7 @@ configurations {
     }
 }
 dependencies {
-    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.composeCompiler.get()}")
+    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.compose.get()}")
 }
 android {
     afterEvaluate {
