@@ -87,7 +87,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
                     else ->
                         setContentText(getString(R.string.getting_ready))
                 }
-                setSmallIcon(R.drawable.ic_sync)
+                setSmallIcon(com.boswelja.smartwatchextensions.dndsync.common.R.drawable.ic_sync)
                 setOngoing(true)
                 setShowWhen(false)
                 setUsesChronometer(false)

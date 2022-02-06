@@ -37,9 +37,14 @@ fun PhoneLockingChip(
         },
         label = {
             if (enabled) {
-                Text(stringResource(R.string.lock_phone, phoneName))
+                Text(stringResource(com.boswelja.smartwatchextensions.phonelocking.R.string.lock_phone, phoneName))
             } else {
-                Text(stringResource(R.string.lock_phone_disabled, phoneName))
+                Text(
+                    stringResource(
+                        com.boswelja.smartwatchextensions.phonelocking.R.string.lock_phone_disabled,
+                        phoneName
+                    )
+                )
             }
         },
         onClick = onClick,

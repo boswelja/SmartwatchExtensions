@@ -1,7 +1,11 @@
+// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
+@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
+
 plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
     id("com.squareup.sqldelight")
+    alias(libs.plugins.compose)
 }
 
 kotlin {
@@ -56,36 +60,8 @@ kotlin {
     }
 }
 
-android {
-    buildFeatures.compose = true
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
-}
-
 sqldelight {
     database("WatchAppDatabase") {
         packageName = "com.boswelja.smartwatchextensions.appmanager.database"
-    }
-}
-
-// Workaround for https://youtrack.jetbrains.com/issue/KT-38694
-configurations {
-    create("composeCompiler") {
-        isCanBeConsumed = false
-    }
-}
-dependencies {
-    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.composeCompiler.get()}")
-}
-android {
-    afterEvaluate {
-        val composeCompilerJar = configurations["composeCompiler"]
-            .resolve()
-            .singleOrNull()
-            ?: error("Missing Compose compiler")
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions.freeCompilerArgs += listOf("-Xuse-ir", "-Xplugin=$composeCompilerJar")
-        }
     }
 }

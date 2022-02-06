@@ -194,7 +194,12 @@ fun SupportApp(
                     Intent()
                         .apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.play_store_link))
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                context.getString(
+                                    com.boswelja.smartwatchextensions.devicemanagement.common.R.string.play_store_link
+                                )
+                            )
                             putExtra(Intent.EXTRA_TITLE, shareTitle)
                             data = shareDataUri
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION

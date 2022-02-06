@@ -62,20 +62,23 @@ class WatchBatteryWidget : WatchWidgetProvider(), KoinComponent {
                 remoteViews.setTextViewText(
                     R.id.battery_indicator_text,
                     context.getString(
-                        R.string.battery_percent, batteryPercent.toString()
+                        com.boswelja.smartwatchextensions.batterysync.R.string.battery_percent,
+                        batteryPercent.toString()
                     )
                 )
             } else {
                 remoteViews.setTextViewText(
-                    R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled)
+                    R.id.battery_indicator_text,
+                    context.getString(com.boswelja.smartwatchextensions.batterysync.R.string.battery_sync_disabled)
                 )
             }
         } else {
             remoteViews.setImageViewResource(
-                R.id.battery_indicator, R.drawable.battery_unknown
+                R.id.battery_indicator, com.boswelja.smartwatchextensions.batterysync.common.R.drawable.battery_unknown
             )
             remoteViews.setTextViewText(
-                R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled)
+                R.id.battery_indicator_text,
+                context.getString(com.boswelja.smartwatchextensions.batterysync.R.string.battery_sync_disabled)
             )
         }
 
