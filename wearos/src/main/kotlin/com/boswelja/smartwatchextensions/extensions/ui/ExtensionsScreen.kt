@@ -58,12 +58,16 @@ fun Extensions(
                 if (result) {
                     view.showConfirmationOverlay(
                         type = ConfirmationOverlay.SUCCESS_ANIMATION,
-                        message = view.context.getString(com.boswelja.smartwatchextensions.phonelocking.R.string.lock_phone_success)
+                        message = view.context.getString(
+                            com.boswelja.smartwatchextensions.phonelocking.R.string.lock_phone_success
+                        )
                     )
                 } else {
                     view.showConfirmationOverlay(
                         type = ConfirmationOverlay.FAILURE_ANIMATION,
-                        message = view.context.getString(com.boswelja.smartwatchextensions.batterysync.R.string.phone_not_connected)
+                        message = view.context.getString(
+                            com.boswelja.smartwatchextensions.batterysync.R.string.phone_not_connected
+                        )
                     )
                 }
             }

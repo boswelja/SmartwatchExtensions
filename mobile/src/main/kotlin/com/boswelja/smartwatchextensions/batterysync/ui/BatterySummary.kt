@@ -35,7 +35,10 @@ fun BatterySummarySmall(
         },
         text = {
             Text(
-                text = stringResource(com.boswelja.smartwatchextensions.batterysync.R.string.battery_percent, batteryStats.percent.toString()),
+                text = stringResource(
+                    com.boswelja.smartwatchextensions.batterysync.R.string.battery_percent,
+                    batteryStats.percent.toString()
+                ),
                 style = MaterialTheme.typography.h5
             )
         }

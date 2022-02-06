@@ -50,7 +50,8 @@ class WatchBatteryTileService : WatchTileService() {
                 }
                 state = Tile.STATE_UNAVAILABLE
                 icon = Icon.createWithResource(
-                    this@WatchBatteryTileService, com.boswelja.smartwatchextensions.batterysync.common.R.drawable.battery_unknown
+                    this@WatchBatteryTileService,
+                    com.boswelja.smartwatchextensions.batterysync.common.R.drawable.battery_unknown
                 )
             }
             return
@@ -67,7 +68,10 @@ class WatchBatteryTileService : WatchTileService() {
 
             updateTile {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    label = getString(com.boswelja.smartwatchextensions.batterysync.R.string.battery_percent, batteryStats.percent.toString())
+                    label = getString(
+                        com.boswelja.smartwatchextensions.batterysync.R.string.battery_percent,
+                        batteryStats.percent.toString()
+                    )
                     subtitle = watch.name
                 } else {
                     label = getString(
@@ -91,7 +95,8 @@ class WatchBatteryTileService : WatchTileService() {
                 }
                 state = Tile.STATE_INACTIVE
                 icon = Icon.createWithResource(
-                    this@WatchBatteryTileService, com.boswelja.smartwatchextensions.batterysync.common.R.drawable.battery_unknown
+                    this@WatchBatteryTileService,
+                    com.boswelja.smartwatchextensions.batterysync.common.R.drawable.battery_unknown
                 )
             }
         }

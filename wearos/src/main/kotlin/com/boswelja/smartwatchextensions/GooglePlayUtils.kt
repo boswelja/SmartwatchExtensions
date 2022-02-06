@@ -17,7 +17,9 @@ object GooglePlayUtils {
      */
     fun getPlayStoreIntent(context: Context): Intent =
         Intent(Intent.ACTION_VIEW).apply {
-            data = context.getString(com.boswelja.smartwatchextensions.devicemanagement.common.R.string.play_store_link).toUri()
+            data = context.getString(
+                com.boswelja.smartwatchextensions.devicemanagement.common.R.string.play_store_link
+            ).toUri()
             setPackage("com.android.vending")
         }
 }
