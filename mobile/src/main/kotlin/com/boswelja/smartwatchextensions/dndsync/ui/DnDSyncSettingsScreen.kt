@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.dndsync.R
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY
@@ -128,7 +128,7 @@ fun SyncToWatchSetting(
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_watch_summary)
             else
-                stringResource(R.string.capability_not_supported)
+                stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,
@@ -158,7 +158,7 @@ fun SyncToPhoneSetting(
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_phone_summary)
             else
-                stringResource(R.string.capability_not_supported)
+                stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,
@@ -187,7 +187,7 @@ fun SyncWithTheaterSetting(
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_with_theater_summary)
-            else stringResource(R.string.capability_not_supported)
+            else stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,

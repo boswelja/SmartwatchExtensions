@@ -77,7 +77,7 @@ fun DashboardScreen(
                 onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) }
             )
             DashboardItem(
-                titleText = stringResource(R.string.main_dnd_sync_title),
+                titleText = stringResource(com.boswelja.smartwatchextensions.dndsync.R.string.main_dnd_sync_title),
                 onClick = { onNavigateTo(DashboardDestination.DND_SYNC_SETTINGS) }
             )
             DashboardItem(
