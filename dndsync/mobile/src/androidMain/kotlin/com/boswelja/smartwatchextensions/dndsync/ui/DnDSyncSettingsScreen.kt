@@ -4,9 +4,7 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,8 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.dndsync.R
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
@@ -26,27 +22,11 @@ import org.koin.androidx.compose.getViewModel
 /**
  * A Composable screen for displaying DnD Sync settings.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
  */
 @Composable
 fun DnDSyncSettingsScreen(
-    modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.padding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
-    ) {
-        DndSyncSettingsCard()
-    }
-}
-
-/**
- * A Composable for displaying DnD Sync settings.
- * @param modifier [Modifier].
- */
-@Composable
-fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
     val viewModel: DnDSyncSettingsViewModel = getViewModel()
     var changingKey = rememberSaveable { "" }
 
