@@ -8,4 +8,5 @@
     <string name="pref_dnd_sync_with_theater_title">Sync with watch Theater mode</string>
     <string name="pref_dnd_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="dnd_sync_request_policy_access_message">Please grant Smartwatch Extensions permission to change Do Not Disturb state</string>
+    <string name="capability_not_supported">Your watch has indicated it does not support this feature</string>
 </resources>

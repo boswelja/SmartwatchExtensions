@@ -13,6 +13,8 @@ val dndSyncModule = module {
     viewModel {
         DnDSyncSettingsViewModel(
             get<Context>().getSystemService(NotificationManager::class.java),
+            get(),
+            get(),
             get()
         )
     }

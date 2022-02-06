@@ -4,6 +4,7 @@
 plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
+    alias(libs.plugins.compose)
 }
 
 kotlin {
@@ -11,6 +12,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.dndsync.common)
+                implementation(projects.devicemanagement.mobile)
                 implementation(projects.settings.mobile)
                 implementation(libs.watchconnection.mobile.core)
                 implementation(libs.kotlinx.coroutines.core)
@@ -19,7 +21,9 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.android)
+                implementation(libs.koin.compose)
                 implementation(libs.bundles.lifecycle)
+                implementation(libs.bundles.compose.mobile)
             }
         }
     }

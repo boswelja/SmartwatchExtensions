@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.common.ui.Card
-import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.dndsync.R
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
@@ -75,35 +73,30 @@ fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
             .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
     }
 
-    Card(
-        modifier = modifier,
-        header = { CardHeader(title = { Text(stringResource(R.string.main_dnd_sync_title)) }) }
-    ) {
-        Column {
-            SyncToWatchSetting(
-                enabled = canReceiveDnD,
-                checked = syncToWatch,
-                onCheckChanged = { viewModel.setSyncToWatch(it) }
-            )
-            SyncToPhoneSetting(
-                enabled = canSendDnD,
-                checked = syncToPhone,
-                onCheckChanged = {
-                    if (it && !viewModel.hasNotificationPolicyAccess) {
-                        onRequestNotiPolicyAccess(DND_SYNC_TO_PHONE_KEY)
-                    } else viewModel.setSyncToPhone(it)
-                }
-            )
-            SyncWithTheaterSetting(
-                enabled = canSendDnD,
-                checked = syncWithTheater,
-                onCheckChanged = {
-                    if (it && !viewModel.hasNotificationPolicyAccess) {
-                        onRequestNotiPolicyAccess(DND_SYNC_WITH_THEATER_KEY)
-                    } else viewModel.setSyncWithTheater(it)
-                }
-            )
-        }
+    Column(modifier) {
+        SyncToWatchSetting(
+            enabled = canReceiveDnD,
+            checked = syncToWatch,
+            onCheckChanged = { viewModel.setSyncToWatch(it) }
+        )
+        SyncToPhoneSetting(
+            enabled = canSendDnD,
+            checked = syncToPhone,
+            onCheckChanged = {
+                if (it && !viewModel.hasNotificationPolicyAccess) {
+                    onRequestNotiPolicyAccess(DND_SYNC_TO_PHONE_KEY)
+                } else viewModel.setSyncToPhone(it)
+            }
+        )
+        SyncWithTheaterSetting(
+            enabled = canSendDnD,
+            checked = syncWithTheater,
+            onCheckChanged = {
+                if (it && !viewModel.hasNotificationPolicyAccess) {
+                    onRequestNotiPolicyAccess(DND_SYNC_WITH_THEATER_KEY)
+                } else viewModel.setSyncWithTheater(it)
+            }
+        )
     }
 }
 
@@ -128,7 +121,7 @@ fun SyncToWatchSetting(
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_watch_summary)
             else
-                stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
+                stringResource(R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,
@@ -158,7 +151,7 @@ fun SyncToPhoneSetting(
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_phone_summary)
             else
-                stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
+                stringResource(R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,
@@ -187,7 +180,7 @@ fun SyncWithTheaterSetting(
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_with_theater_summary)
-            else stringResource(com.boswelja.smartwatchextensions.R.string.capability_not_supported)
+            else stringResource(R.string.capability_not_supported)
             Text(text)
         },
         checked = checked,
