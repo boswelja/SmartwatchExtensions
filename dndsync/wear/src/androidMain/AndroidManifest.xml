@@ -10,5 +10,9 @@
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".LocalDnDAndTheaterCollectorService"
+            android:exported="false" />
     </application>
 </manifest>

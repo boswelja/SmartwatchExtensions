@@ -67,10 +67,6 @@
         </receiver>
 
         <service
-            android:name=".dndsync.LocalDnDAndTheaterCollectorService"
-            android:exported="false" />
-
-        <service
             android:name=".proximity.SeparationObserverService"
             android:exported="false" />
 
