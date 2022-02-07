@@ -6,6 +6,7 @@ include(
     ":batterysync:common",
     ":batterysync:mobile",
     ":batterysync:wear",
+    ":core:common",
     ":devicemanagement:common",
     ":devicemanagement:mobile",
     ":devicemanagement:wear",
