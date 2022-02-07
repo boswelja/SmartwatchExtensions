@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.core.settings
 
 import app.cash.turbine.test
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabase
+import com.boswelja.smartwatchextensions.core.settings.database.WatchSettingsDatabase
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

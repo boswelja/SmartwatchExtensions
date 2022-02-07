@@ -42,6 +42,6 @@ kotlin {
 
 sqldelight {
     database("WatchSettingsDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.settings.database"
+        packageName = "com.boswelja.smartwatchextensions.core.settings.database"
     }
 }

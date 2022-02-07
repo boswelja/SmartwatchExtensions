@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.core
 
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabase
+import com.boswelja.smartwatchextensions.core.settings.database.WatchSettingsDatabase
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
