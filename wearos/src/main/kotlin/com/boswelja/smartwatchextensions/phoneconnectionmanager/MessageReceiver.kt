@@ -51,7 +51,6 @@ class MessageReceiver :
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
                     ExtensionSettings(
-                        phoneLockingEnabled = false,
                         dndSyncToPhone = false,
                         dndSyncWithTheater = false,
                         phoneSeparationNotis = false
