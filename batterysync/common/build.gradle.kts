@@ -8,6 +8,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(projects.core.common)
                 api(libs.watchconnection.common)
                 api(libs.watchconnection.serialization)
                 implementation(libs.kotlinx.serialization.protobuf)

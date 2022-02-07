@@ -13,9 +13,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
-                api(libs.watchconnection.mobile.core)
-                implementation(projects.devicemanagement.mobile)
-                implementation(projects.settings.mobile)
+                implementation(libs.watchconnection.mobile.core)
+                implementation(projects.core.mobile)
                 implementation(projects.messages.mobile)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)

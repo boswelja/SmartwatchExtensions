@@ -2,14 +2,16 @@ package com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
-import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.settings.BoolSetting
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys
-import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.settings.BoolSetting
+import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
@@ -38,28 +40,28 @@ class PhoneBatteryNotiSettingsViewModel(
      * Flow whether phone charge notifications are enabled for the selected watch.
      */
     val phoneChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_CHARGE_NOTI_KEY)
     }
 
     /**
      * Flow whether phone low notifications are enabled for the selected watch.
      */
     val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_LOW_NOTI_KEY)
     }
 
     /**
      * Flow the charge percent threshold.
      */
     val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
-        settingsRepository.getInt(it.uid, IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
+        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
     }
 
     /**
      * Flow the low percent threshold.
      */
     val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
-        settingsRepository.getInt(it.uid, IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
+        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
     }
 
     /**
@@ -68,7 +70,7 @@ class PhoneBatteryNotiSettingsViewModel(
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled)
+            updateBoolSetting(selectedWatch!!.uid, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled)
         }
     }
 
@@ -78,7 +80,7 @@ class PhoneBatteryNotiSettingsViewModel(
     fun setPhoneLowNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY, isEnabled)
+            updateBoolSetting(selectedWatch!!.uid, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled)
         }
     }
 

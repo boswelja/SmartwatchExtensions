@@ -2,13 +2,13 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_STATS_NOTIFICATION_SENT
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_STATS_NOTIFICATION_SENT
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
 
 /**
