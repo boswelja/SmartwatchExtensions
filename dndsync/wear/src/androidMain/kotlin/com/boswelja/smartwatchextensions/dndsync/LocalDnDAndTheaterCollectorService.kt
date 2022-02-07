@@ -7,7 +7,7 @@ import android.app.PendingIntent
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
+import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.message.MessageClient

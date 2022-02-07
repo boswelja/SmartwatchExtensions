@@ -11,7 +11,6 @@ include(
     ":core:wear",
     ":devicemanagement:common",
     ":devicemanagement:mobile",
-    ":devicemanagement:wear",
     ":dndsync:common",
     ":dndsync:mobile",
     ":dndsync:wear",
