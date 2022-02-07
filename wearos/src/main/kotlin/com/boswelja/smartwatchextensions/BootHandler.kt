@@ -16,8 +16,8 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -55,15 +55,15 @@ class BootWorker(
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
     private val discoveryClient: DiscoveryClient by inject()
+    private val dndSyncStateRepository: DnDSyncStateRepository by inject()
 
     override suspend fun doWork(): Result {
         CapabilityUpdater(applicationContext, discoveryClient).updateCapabilities()
         withContext(Dispatchers.IO) {
-            val dndSyncToPhone = applicationContext.extensionSettingsStore.data
-                .map { it.dndSyncToPhone }.first()
-            val dndSyncWithTheater = applicationContext.extensionSettingsStore.data
-                .map { it.dndSyncWithTheater }.first()
-            if (dndSyncToPhone || dndSyncWithTheater) {
+            val shouldStartDnDSyncService = dndSyncStateRepository.getDnDSyncState()
+                .map { it.dndSyncToPhone || it.dndSyncWithTheater }
+                .first()
+            if (shouldStartDnDSyncService) {
                 Intent(applicationContext, LocalDnDAndTheaterCollectorService::class.java).also {
                     ContextCompat.startForegroundService(applicationContext, it)
                 }
