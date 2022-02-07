@@ -18,16 +18,6 @@
     <string name="battery_sync_widget_placeholder_percent">50%</string>
     <string name="battery_sync_title">Battery Sync</string>
 
-    <!-- Do not Disturb Sync preference strings -->
-    <string name="main_dnd_sync_title">Do not Disturb Sync</string>
-    <string name="pref_dnd_sync_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_dnd_sync_to_watch_summary">BETA Sync DnD state to your watch from your phone</string>
-    <string name="pref_dnd_sync_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_dnd_sync_to_phone_summary">Sync DnD state to your phone from your watch</string>
-    <string name="pref_dnd_sync_with_theater_title">Sync with watch Theater mode</string>
-    <string name="pref_dnd_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
-    <string name="dnd_sync_request_policy_access_message">Please grant Smartwatch Extensions permission to change Do Not Disturb state</string>
-
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
 
@@ -129,7 +119,6 @@
     <string name="wiki_label">Get Help</string>
 
     <!-- Notification Channel strings -->
-    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
 
     <!-- Capability strings -->

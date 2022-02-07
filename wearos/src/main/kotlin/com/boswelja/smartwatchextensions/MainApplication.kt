@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
+import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.extensions.extensionsModule
 import com.boswelja.smartwatchextensions.main.ui.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
@@ -29,6 +30,7 @@ class MainApplication : Application() {
             )
             modules(
                 batterySyncModule,
+                dndSyncModule,
                 phoneLockingModule
             )
         }

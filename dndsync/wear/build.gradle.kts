@@ -1,20 +1,24 @@
 plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(libs.watchconnection.common)
-                api(projects.dndsync.common)
+                implementation(projects.dndsync.common)
+                implementation(projects.devicemanagement.wear)
+                implementation(libs.watchconnection.wear)
+                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.androidx.lifecycle.service)
-                implementation(libs.androidx.lifecycle.runtime)
+                implementation(libs.bundles.lifecycle)
+                implementation(libs.androidx.datastore.proto)
+                implementation(libs.koin.android)
             }
         }
     }

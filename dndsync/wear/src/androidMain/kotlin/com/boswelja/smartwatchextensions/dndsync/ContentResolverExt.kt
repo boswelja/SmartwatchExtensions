@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.dndsync
 
-import android.content.Context
+import android.content.ContentResolver
 import android.database.ContentObserver
 import android.provider.Settings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +14,7 @@ private const val THEATER_MODE = "theater_mode_on"
  * Gets a [Flow] of this watches Theater Mode state.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
+fun ContentResolver.theaterMode(): Flow<Boolean> = callbackFlow {
     val uri = Settings.Global.getUriFor(THEATER_MODE)
     val contentObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
@@ -24,16 +24,16 @@ fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
             }
         }
     }
-    contentResolver.registerContentObserver(uri, false, contentObserver)
+    registerContentObserver(uri, false, contentObserver)
 
     send(isTheaterModeOn)
 
     awaitClose {
-        contentResolver.unregisterContentObserver(contentObserver)
+        unregisterContentObserver(contentObserver)
     }
 }
 /**
  * Checks whether theater mode is currently enabled for this watch.
  */
-val Context.isTheaterModeOn: Boolean
-    get() = Settings.Global.getInt(contentResolver, THEATER_MODE, 0) == 1
+val ContentResolver.isTheaterModeOn: Boolean
+    get() = Settings.Global.getInt(this, THEATER_MODE, 0) == 1

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_dnd_sync_title">Do not Disturb Sync</string>
+    <string name="pref_dnd_sync_to_watch_title">Phone to Watch Sync</string>
+    <string name="pref_dnd_sync_to_watch_summary">BETA Sync DnD state to your watch from your phone</string>
+    <string name="pref_dnd_sync_to_phone_title">Watch to Phone Sync</string>
+    <string name="pref_dnd_sync_to_phone_summary">Sync DnD state to your phone from your watch</string>
+    <string name="pref_dnd_sync_with_theater_title">Sync with watch Theater mode</string>
+    <string name="pref_dnd_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
+    <string name="dnd_sync_request_policy_access_message">Please grant Smartwatch Extensions permission to change Do Not Disturb state</string>
+    <string name="capability_not_supported">Your watch has indicated it does not support this feature</string>
+</resources>

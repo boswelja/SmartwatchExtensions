@@ -4,15 +4,10 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.message.MessageClient
@@ -25,22 +20,17 @@ import org.koin.android.ext.android.inject
  * A [LifecycleService] that listens for changes in the appropriate settings, and sends DnD change
  * requests to the connected phone.
  */
-class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService() {
+class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
 
     private val phoneState by lazy { phoneStateStore }
     private val messageClient: MessageClient by inject()
+    private val dnDSyncStateRepository: DnDSyncStateRepository by inject()
     private val messageHandler: MessageHandler<Boolean> by lazy {
         MessageHandler(DnDStatusSerializer, messageClient)
     }
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
-
-    override suspend fun onTheaterChanged(theaterState: Boolean) {
-        if (dndSyncWithTheater) {
-            updateDnDState(theaterState)
-        }
-    }
 
     override suspend fun onDnDChanged(dndState: Boolean) {
         if (dndSyncToPhone) {
@@ -57,15 +47,26 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
 
         // Collect DnD Sync to Phone
         lifecycleScope.launch {
-            extensionSettingsStore.data.map {
-                Pair(it.dndSyncToPhone, it.dndSyncWithTheater)
-            }.collect { (dndSync, theaterSync) ->
-                dndSyncToPhone = dndSync
-                dndSyncWithTheater = theaterSync
+            dnDSyncStateRepository.getDnDSyncState().collect {
+                dndSyncToPhone = it.dndSyncToPhone
+                dndSyncWithTheater = it.dndSyncWithTheater
                 if (!tryStop()) {
                     startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
                 }
             }
+        }
+
+        // Collect theater mode changes
+        lifecycleScope.launch {
+            contentResolver.theaterMode().collect { theaterMode ->
+                onTheaterChanged(theaterMode)
+            }
+        }
+    }
+
+    private suspend fun onTheaterChanged(theaterState: Boolean) {
+        if (dndSyncWithTheater) {
+            updateDnDState(theaterState)
         }
     }
 
@@ -85,7 +86,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
                     dndSyncWithTheater && !dndSyncToPhone ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
                     else ->
-                        setContentText(getString(R.string.getting_ready))
+                        setContentText(getString(R.string.dnd_sync_starting))
                 }
                 setSmallIcon(com.boswelja.smartwatchextensions.dndsync.common.R.drawable.ic_sync)
                 setOngoing(true)
@@ -93,10 +94,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
                 setUsesChronometer(false)
                 priority = NotificationCompat.PRIORITY_LOW
 
-                val launchIntent =
-                    Intent(this@LocalDnDAndTheaterCollectorService, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
+                val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
 
                 PendingIntent.getActivity(
                     this@LocalDnDAndTheaterCollectorService,
@@ -125,12 +123,12 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
     /**
      * Creates a [NotificationChannel] for [DND_SYNC_NOTI_CHANNEL_ID].
      */
-    fun createNotificationChannel() {
-        val notificationManager = getSystemService<NotificationManager>()!!
+    private fun createNotificationChannel() {
+        val notificationManager = getSystemService(NotificationManager::class.java)
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 DND_SYNC_NOTI_CHANNEL_ID,
-                getString(R.string.noti_channel_dnd_sync_title),
+                getString(com.boswelja.smartwatchextensions.dndsync.common.R.string.noti_channel_dnd_sync_title),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 enableLights(false)

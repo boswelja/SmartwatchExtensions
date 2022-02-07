@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import com.boswelja.smartwatchextensions.bootorupdate.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
-import com.boswelja.smartwatchextensions.dndsync.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.OBSERVER_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.SEPARATION_NOTI_CHANNEL_ID
@@ -45,27 +44,6 @@ object NotificationChannelHelper {
             ).also {
                 notificationManager.createNotificationChannel(it)
             }
-        }
-    }
-
-    /**
-     * Create a notification channel for DnD Sync status notifications.
-     */
-    fun createForDnDSync(context: Context, notificationManager: NotificationManager) {
-        if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) ==
-            null
-        ) {
-            NotificationChannel(
-                DND_SYNC_NOTI_CHANNEL_ID,
-                context.getString(R.string.noti_channel_dnd_sync_title),
-                NotificationManager.IMPORTANCE_LOW
-            )
-                .apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }
-                .also { notificationManager.createNotificationChannel(it) }
         }
     }
 

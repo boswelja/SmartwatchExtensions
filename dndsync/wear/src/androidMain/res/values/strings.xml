@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dnd_sync_active_noti_title">DnD Sync</string>
+    <string name="dnd_sync_with_theater_noti_desc">Syncing phone DnD with Theater Mode</string>
+    <string name="dnd_sync_all_noti_desc">Syncing phone DnD with Theater Mode and DnD</string>
+    <string name="dnd_sync_to_phone_noti_desc">Syncing phone DnD with DnD</string>
+    <string name="dnd_sync_starting">Getting Ready</string>
+</resources>

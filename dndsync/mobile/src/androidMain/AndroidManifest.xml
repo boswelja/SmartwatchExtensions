@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+
         <receiver
             android:name=".DnDStatusReceiver"
             android:exported="false">
@@ -12,7 +13,8 @@
         </receiver>
 
         <service
-            android:name=".LocalDnDAndTheaterCollectorService"
+            android:name=".LocalDnDCollectorService"
             android:exported="false" />
+
     </application>
 </manifest>

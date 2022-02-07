@@ -16,14 +16,10 @@ import java.io.OutputStream
 
 /**
  * Contains settings needed to operate extensions on the watch.
- * @param dndSyncToPhone Whether DnD Sync to Phone is enabled.
- * @param dndSyncWithTheater Whether DnD Sync with Theater is enabled.
  * @param phoneSeparationNotis Whether phone separation alerts are enabled.
  */
 @Serializable
 data class ExtensionSettings(
-    val dndSyncToPhone: Boolean,
-    val dndSyncWithTheater: Boolean,
     val phoneSeparationNotis: Boolean
 )
 
@@ -40,8 +36,6 @@ val Context.extensionSettingsStore: DataStore<ExtensionSettings> by dataStore(
 @OptIn(ExperimentalSerializationApi::class)
 private object SettingsSerializer : Serializer<ExtensionSettings> {
     override val defaultValue = ExtensionSettings(
-        dndSyncToPhone = false,
-        dndSyncWithTheater = false,
         phoneSeparationNotis = false
     )
 

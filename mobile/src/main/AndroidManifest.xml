@@ -65,20 +65,8 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".dndsync.LocalDnDCollectorService"
-            android:exported="false" />
-
         <receiver
             android:name=".devicemanagement.connection.WatchMessageReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".dndsync.DnDStatusReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

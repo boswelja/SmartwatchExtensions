@@ -151,5 +151,6 @@ compose-wear = [
 lifecycle = [
     "androidx-lifecycle-viewmodel-ktx",
     "androidx-lifecycle-common",
+    "androidx-lifecycle-runtime",
     "androidx-lifecycle-service"
 ]
