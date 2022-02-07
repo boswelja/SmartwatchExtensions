@@ -12,7 +12,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.phonelocking.common)
+                api(projects.phonelocking.common)
                 implementation(libs.watchconnection.wear)
                 implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.kotlinx.coroutines.core)

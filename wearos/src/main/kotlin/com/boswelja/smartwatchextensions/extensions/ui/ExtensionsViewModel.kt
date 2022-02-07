@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
+import com.boswelja.smartwatchextensions.core.devicemanagement.PhoneState
 import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.watchconnection.common.discovery.ConnectionMode

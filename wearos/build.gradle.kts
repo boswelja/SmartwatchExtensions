@@ -59,10 +59,9 @@ android {
 dependencies {
     implementation(projects.appmanager.wear)
     implementation(projects.batterysync.wear)
-    implementation(projects.devicemanagement.wear)
+    implementation(projects.core.wear)
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking.wear)
-    implementation(projects.settings.common)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

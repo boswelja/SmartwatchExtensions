@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
-import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
+import com.boswelja.smartwatchextensions.core.devicemanagement.PhoneState
+import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.flow

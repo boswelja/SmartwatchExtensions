@@ -8,7 +8,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.core.common)
+                api(projects.core.common)
                 implementation(libs.kotlinx.serialization.protobuf)
             }
         }

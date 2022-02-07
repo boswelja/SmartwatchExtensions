@@ -1,10 +1,11 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
 import android.content.Context
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
-import com.boswelja.smartwatchextensions.settings.IntSetting
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys
-import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.IntSetting
+import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageReceiver
 import org.koin.core.component.KoinComponent
@@ -23,11 +24,11 @@ class IntSettingChangeReceiver : MessageReceiver<IntSetting>(IntSettingSerialize
 
     private suspend fun handleIntPreferenceChange(key: String, value: Int) {
         when (key) {
-            IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY ->
+            BATTERY_CHARGE_THRESHOLD_KEY ->
                 batterySyncStateRepository.updateBatterySyncState {
                     it.copy(phoneChargeThreshold = value)
                 }
-            IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY ->
+            BATTERY_LOW_THRESHOLD_KEY ->
                 batterySyncStateRepository.updateBatterySyncState {
                     it.copy(phoneLowThreshold = value)
                 }

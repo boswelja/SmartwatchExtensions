@@ -44,3 +44,8 @@ const val APP_ICON = "/appmanager_app_icon"
  * Requests app cache validation.
  */
 const val VALIDATE_CACHE = "/appmanager_cache_check"
+
+/**
+ * A path for devices to declare they can manage installed apps
+ */
+const val MANAGE_APPS_CAPABILITY = "MANAGE_APPS"

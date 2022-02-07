@@ -8,7 +8,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.dndsync.common)
+                api(projects.dndsync.common)
                 implementation(libs.watchconnection.wear)
                 implementation(libs.kotlinx.serialization.protobuf)
             }

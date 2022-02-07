@@ -6,7 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.appmanager.MANAGE_APPS_CAPABILITY
+import com.boswelja.smartwatchextensions.batterysync.SYNC_BATTERY_CAPABILITY
+import com.boswelja.smartwatchextensions.dndsync.RECEIVE_DND_CAPABILITY
+import com.boswelja.smartwatchextensions.dndsync.SEND_DND_CAPABILITY
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 
 /**
@@ -29,44 +32,44 @@ class CapabilityUpdater(
     }
 
     /**
-     * Update [Capability.SEND_DND].
+     * Update [SEND_DND_CAPABILITY].
      */
     internal suspend fun updateSendDnD() {
         // We can always read DnD state
-        capabilityClient.addLocalCapability(Capability.SEND_DND.name)
+        capabilityClient.addLocalCapability(SEND_DND_CAPABILITY)
     }
 
     /**
-     * Update [Capability.RECEIVE_DND].
+     * Update [RECEIVE_DND_CAPABILITY].
      */
     internal suspend fun updateReceiveDnD() {
         // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
         // it's already granted.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
-            capabilityClient.addLocalCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.addLocalCapability(RECEIVE_DND_CAPABILITY)
         } else {
-            capabilityClient.removeLocalCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.removeLocalCapability(RECEIVE_DND_CAPABILITY)
         }
     }
 
     /**
-     * Update [Capability.SYNC_BATTERY].
+     * Update [SYNC_BATTERY_CAPABILITY].
      */
     internal suspend fun updateSendBattery() {
         // We can always get battery stats
-        capabilityClient.addLocalCapability(Capability.SYNC_BATTERY.name)
+        capabilityClient.addLocalCapability(SYNC_BATTERY_CAPABILITY)
     }
 
     /**
-     * Update [Capability.MANAGE_APPS].
+     * Update [MANAGE_APPS_CAPABILITY].
      */
     internal suspend fun updateManageApps() {
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
         if (canQueryAllPackages()) {
-            capabilityClient.addLocalCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.addLocalCapability(MANAGE_APPS_CAPABILITY)
         } else {
-            capabilityClient.removeLocalCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.removeLocalCapability(MANAGE_APPS_CAPABILITY)
         }
     }
 
