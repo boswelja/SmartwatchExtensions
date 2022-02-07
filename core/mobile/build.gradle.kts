@@ -32,6 +32,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.bundles.compose.mobile)
+                implementation(libs.androidx.datastore.proto)
             }
         }
         val androidTest by getting {
