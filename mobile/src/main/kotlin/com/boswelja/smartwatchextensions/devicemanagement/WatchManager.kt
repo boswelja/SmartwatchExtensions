@@ -19,7 +19,6 @@ import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
@@ -130,17 +129,6 @@ class WatchManager(
         }
 
     /**
-     * Flow whether the selected watch has the given capability.
-     * @param capability The capability to check for.
-     */
-    fun selectedWatchHasCapability(capability: Capability): Flow<Boolean> =
-        selectedWatch.flatMapLatest { watch ->
-            watch?.let {
-                watchRepository.watchHasCapability(watch, capability)
-            } ?: flowOf(false)
-        }
-
-    /**
      * Send a message to a target watch.
      * @param watch The target watch.
      * @param message The message path.
@@ -212,24 +200,8 @@ class WatchManager(
     }
 
     /**
-     * Update a preference for all registered watches.
-     * @param key The preference key to update.
-     * @param value The new preference value.
-     */
-    suspend fun updatePreference(key: String, value: Boolean) {
-        registeredWatches.first().forEach {
-            updatePreference(it, key, value)
-        }
-    }
-
-    /**
      * Flow a watch with the given ID.
      * @param id The ID for the watch to flow.
      */
     fun getWatchById(id: String): Flow<Watch?> = watchRepository.getWatchById(id)
-
-    /**
-     * Flow incoming messages.
-     */
-    fun incomingMessages() = messageClient.incomingMessages()
 }

@@ -9,7 +9,6 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
-import com.boswelja.smartwatchextensions.R
 
 /**
  * A [Chip] for displaying Phone Locking info.
