@@ -33,6 +33,7 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.bundles.compose.mobile)
                 implementation(libs.androidx.datastore.proto)
+                implementation(libs.koin.android)
             }
         }
         val androidTest by getting {
