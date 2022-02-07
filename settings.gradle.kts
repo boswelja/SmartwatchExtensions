@@ -9,7 +9,6 @@ include(
     ":core:common",
     ":core:mobile",
     ":core:wear",
-    ":devicemanagement:common",
     ":dndsync:common",
     ":dndsync:mobile",
     ":dndsync:wear",
