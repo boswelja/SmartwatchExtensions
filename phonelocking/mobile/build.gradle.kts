@@ -12,10 +12,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.phonelocking.common)
-                implementation(projects.settings.mobile)
-                implementation(projects.devicemanagement.mobile)
-
-                api(libs.watchconnection.mobile.core)
+                implementation(projects.core.mobile)
+                implementation(libs.watchconnection.mobile.core)
                 implementation(libs.kotlinx.coroutines.core)
             }
         }

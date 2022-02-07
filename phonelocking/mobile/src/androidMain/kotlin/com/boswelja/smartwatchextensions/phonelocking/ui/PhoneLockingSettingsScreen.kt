@@ -20,9 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
-import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 
 /**
