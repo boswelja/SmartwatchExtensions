@@ -17,7 +17,6 @@ include(
     ":phonelocking:common",
     ":phonelocking:mobile",
     ":phonelocking:wear",
-    ":settings:common",
     ":mobile",
     ":wearos"
 )
