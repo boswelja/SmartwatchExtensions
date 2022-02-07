@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <plurals name="app_info_requested_permissions_count">
-        <item quantity="one">%s permission requested</item>
-        <item quantity="other">%s permissions requested</item>
-    </plurals>
-
     <plurals name="app_manager_app_count">
         <item quantity="one">%s\napp</item>
         <item quantity="other">%s\napps</item>

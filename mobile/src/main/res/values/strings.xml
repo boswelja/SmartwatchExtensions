@@ -59,10 +59,8 @@
     <string name="about_watch_version_loading">Watch Version Loading</string>
 
     <!-- Dialog button strings -->
-    <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_reset">Reset</string>
-    <string name="dialog_button_open_settings">Open Settings</string>
 
     <!-- Bottom Navigation Bar strings -->
     <string name="bottom_nav_dashboard_label">Dashboard</string>
@@ -88,7 +86,6 @@
     <!-- Watch Manager strings -->
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
-    <string name="watch_manager_action_continue_on_watch">Continue on your watch</string>
 
     <!-- Register Watch strings -->
     <string name="register_watch_title">Searching for Watches</string>
@@ -104,8 +101,6 @@
     <!-- Onboarding strings -->
     <string name="get_started">Get Started</string>
     <string name="welcome_to_text">Welcome to</string>
-    <string name="share_usage_title">Share Usage Stats</string>
-    <string name="share_usage_desc">Smartwatch Extensions would like to collect anonymous usage statistics. To find out more, view our privacy policy by clicking the link below.</string>
 
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
@@ -121,14 +116,9 @@
     <!-- Notification Channel strings -->
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
 
-    <!-- Capability strings -->
-    <string name="capability_not_supported">Your watch has indicated it does not support this feature</string>
-
     <!-- QS Tile strings -->
     <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
-    <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
-    <string name="button_next">Continue</string>
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
 
