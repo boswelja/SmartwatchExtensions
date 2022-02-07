@@ -17,6 +17,7 @@ include(
     ":phonelocking:common",
     ":phonelocking:mobile",
     ":phonelocking:wear",
+    ":proximity:common",
     ":mobile",
     ":wearos"
 )
