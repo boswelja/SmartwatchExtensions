@@ -131,3 +131,4 @@ jobs:
           whatsNewDirectory: changelogs/
           inAppUpdatePriority: ${{ steps.update_priority.outputs.update-priority }}
           track: beta
+          status: completed
