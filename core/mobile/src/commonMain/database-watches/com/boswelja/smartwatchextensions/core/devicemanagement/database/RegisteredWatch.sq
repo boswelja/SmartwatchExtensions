@@ -1,0 +1,25 @@
+CREATE TABLE registeredWatch (
+    uid TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    platform TEXT NOT NULL
+);
+
+insert:
+INSERT INTO registeredWatch
+VALUES ?;
+
+rename:
+UPDATE registeredWatch
+SET name = ?
+WHERE uid = ?;
+
+delete:
+DELETE FROM registeredWatch
+WHERE uid = ?;
+
+get:
+SELECT * FROM registeredWatch
+WHERE uid = ?;
+
+getAll:
+SELECT * FROM registeredWatch;

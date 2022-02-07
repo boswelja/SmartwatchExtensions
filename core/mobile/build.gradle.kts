@@ -5,6 +5,7 @@ plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
     id("com.squareup.sqldelight")
+    kotlin("plugin.serialization") version "1.6.10"
     alias(libs.plugins.compose)
 }
 
@@ -13,10 +14,11 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.core.common)
-                api(libs.watchconnection.common)
+                implementation(libs.watchconnection.mobile.core)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
+                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
         val commonTest by getting {
@@ -43,5 +45,10 @@ kotlin {
 sqldelight {
     database("WatchSettingsDatabase") {
         packageName = "com.boswelja.smartwatchextensions.core.settings.database"
+        sourceFolders = listOf("database-settings")
+    }
+    database("RegisteredWatchDatabase") {
+        packageName = "com.boswelja.smartwatchextensions.core.devicemanagement.database"
+        sourceFolders = listOf("database-watches")
     }
 }
