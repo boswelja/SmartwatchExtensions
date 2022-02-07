@@ -16,12 +16,10 @@ import java.io.OutputStream
 
 /**
  * Contains settings needed to operate extensions on the watch.
- * @param phoneLockingEnabled Whether phone locking is enabled.
  * @param phoneSeparationNotis Whether phone separation alerts are enabled.
  */
 @Serializable
 data class ExtensionSettings(
-    val phoneLockingEnabled: Boolean,
     val phoneSeparationNotis: Boolean
 )
 
@@ -38,7 +36,6 @@ val Context.extensionSettingsStore: DataStore<ExtensionSettings> by dataStore(
 @OptIn(ExperimentalSerializationApi::class)
 private object SettingsSerializer : Serializer<ExtensionSettings> {
     override val defaultValue = ExtensionSettings(
-        phoneLockingEnabled = false,
         phoneSeparationNotis = false
     )
 
