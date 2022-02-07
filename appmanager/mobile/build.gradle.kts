@@ -30,7 +30,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(projects.devicemanagement.mobile)
+                implementation(projects.core.mobile)
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)

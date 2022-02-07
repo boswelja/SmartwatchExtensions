@@ -9,7 +9,7 @@ import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
