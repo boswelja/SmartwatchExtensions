@@ -3,10 +3,10 @@ package com.boswelja.smartwatchextensions.devicemanagement.connection
 import android.content.Context
 import android.content.Intent
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.devicemanagement.CHECK_WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.devicemanagement.LAUNCH_APP
-import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.CHECK_WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.core.devicemanagement.LAUNCH_APP
+import com.boswelja.smartwatchextensions.core.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageReceiver

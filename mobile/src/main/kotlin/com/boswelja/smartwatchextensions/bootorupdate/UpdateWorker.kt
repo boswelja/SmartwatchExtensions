@@ -11,10 +11,10 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
 import com.boswelja.smartwatchextensions.messages.sendMessage
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

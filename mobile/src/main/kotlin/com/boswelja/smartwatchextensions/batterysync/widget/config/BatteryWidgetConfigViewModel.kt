@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import androidx.lifecycle.ViewModel
-import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 
 /**
  * A ViewModel to provide data for [BatteryWidgetConfigActivity].

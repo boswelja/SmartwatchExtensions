@@ -197,7 +197,7 @@ fun SupportApp(
                             putExtra(
                                 Intent.EXTRA_TEXT,
                                 context.getString(
-                                    com.boswelja.smartwatchextensions.devicemanagement.common.R.string.play_store_link
+                                    com.boswelja.smartwatchextensions.core.common.R.string.play_store_link
                                 )
                             )
                             putExtra(Intent.EXTRA_TITLE, shareTitle)

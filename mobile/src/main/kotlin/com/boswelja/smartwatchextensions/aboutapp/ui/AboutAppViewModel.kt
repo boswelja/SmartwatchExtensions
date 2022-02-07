@@ -2,9 +2,9 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.devicemanagement.Version
-import com.boswelja.smartwatchextensions.devicemanagement.VersionSerializer
+import com.boswelja.smartwatchextensions.core.devicemanagement.REQUEST_APP_VERSION
+import com.boswelja.smartwatchextensions.core.devicemanagement.Version
+import com.boswelja.smartwatchextensions.core.devicemanagement.VersionSerializer
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
