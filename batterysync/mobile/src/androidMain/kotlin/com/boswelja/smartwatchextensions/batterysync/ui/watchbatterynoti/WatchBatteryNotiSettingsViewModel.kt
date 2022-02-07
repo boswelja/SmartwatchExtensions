@@ -2,11 +2,13 @@ package com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
-import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -30,28 +32,28 @@ class WatchBatteryNotiSettingsViewModel(
      * Flow whether watch charge notifications are enabled for the selected watch.
      */
     val watchChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_CHARGE_NOTI_KEY)
     }
 
     /**
      * Flow whether watch low notifications are enabled for the selected watch.
      */
     val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_LOW_NOTI_KEY)
     }
 
     /**
      * Flow the charge percent threshold.
      */
     val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
-        settingsRepository.getInt(it.uid, IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
+        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
     }
 
     /**
      * Flow the low percent threshold.
      */
     val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
-        settingsRepository.getInt(it.uid, IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
+        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
     }
 
     /**
@@ -60,7 +62,7 @@ class WatchBatteryNotiSettingsViewModel(
     fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled)
+            updateBoolSetting(selectedWatch!!.uid, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled)
         }
     }
 
@@ -70,7 +72,7 @@ class WatchBatteryNotiSettingsViewModel(
     fun setWatchLowNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY, isEnabled)
+            updateBoolSetting(selectedWatch!!.uid, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled)
         }
     }
 

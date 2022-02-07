@@ -11,9 +11,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.dndsync.common)
-                implementation(projects.devicemanagement.mobile)
-                implementation(projects.settings.mobile)
+                api(projects.dndsync.common)
+                implementation(projects.core.mobile)
                 implementation(libs.watchconnection.mobile.core)
                 implementation(libs.kotlinx.coroutines.core)
             }

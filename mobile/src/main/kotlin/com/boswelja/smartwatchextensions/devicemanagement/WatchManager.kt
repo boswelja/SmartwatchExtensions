@@ -3,14 +3,18 @@ package com.boswelja.smartwatchextensions.devicemanagement
 import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.settings.BoolSetting
-import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.settings.IntSetting
-import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
-import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
-import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RESET_APP
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.settings.BoolSetting
+import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.IntSetting
+import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.RESET_SETTINGS
+import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UPDATE_INT_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
@@ -120,13 +124,7 @@ class WatchManager(
      * @param watch The watch to get capabilities for.
      */
     suspend fun getCapabilitiesFor(watch: Watch) =
-        discoveryClient.getCapabilitiesFor(watch.uid).mapNotNull { capability ->
-            try {
-                Capability.valueOf(capability)
-            } catch (_: IllegalArgumentException) {
-                null
-            }
-        }
+        discoveryClient.getCapabilitiesFor(watch.uid)
 
     /**
      * Send a message to a target watch.

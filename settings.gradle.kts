@@ -6,9 +6,9 @@ include(
     ":batterysync:common",
     ":batterysync:mobile",
     ":batterysync:wear",
-    ":devicemanagement:common",
-    ":devicemanagement:mobile",
-    ":devicemanagement:wear",
+    ":core:common",
+    ":core:mobile",
+    ":core:wear",
     ":dndsync:common",
     ":dndsync:mobile",
     ":dndsync:wear",
@@ -17,8 +17,6 @@ include(
     ":phonelocking:common",
     ":phonelocking:mobile",
     ":phonelocking:wear",
-    ":settings:common",
-    ":settings:mobile",
     ":mobile",
     ":wearos"
 )

@@ -3,16 +3,22 @@ package com.boswelja.smartwatchextensions.phoneconnectionmanager
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
+import com.boswelja.smartwatchextensions.core.settings.BoolSetting
+import com.boswelja.smartwatchextensions.core.settings.BoolSettingKeys.PHONE_SEPARATION_NOTI_KEY
+import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
-import com.boswelja.smartwatchextensions.settings.BoolSetting
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageReceiver
 import org.koin.core.component.KoinComponent
@@ -40,26 +46,26 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
         value: Boolean
     ) {
         when (key) {
-            BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY -> {
+            PHONE_LOCKING_ENABLED_KEY -> {
                 phoneLockingStateRepository.updatePhoneLockingState {
                     it.copy(phoneLockingEnabled = value)
                 }
             }
-            BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY -> {
+            BATTERY_SYNC_ENABLED_KEY -> {
                 batterySyncStateRepository.updateBatterySyncState {
                     it.copy(batterySyncEnabled = value)
                 }
                 PhoneBatteryComplicationProvider.updateAll(context)
             }
-            BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY ->
+            BATTERY_PHONE_CHARGE_NOTI_KEY ->
                 batterySyncStateRepository.updateBatterySyncState {
                     it.copy(phoneChargeNotificationEnabled = value)
                 }
-            BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY ->
+            BATTERY_PHONE_LOW_NOTI_KEY ->
                 batterySyncStateRepository.updateBatterySyncState {
                     it.copy(phoneLowNotificationEnabled = value)
                 }
-            BoolSettingKeys.DND_SYNC_TO_PHONE_KEY -> {
+            DND_SYNC_TO_PHONE_KEY -> {
                 dndSyncStateRepository.updateDnDSyncState {
                     it.copy(dndSyncToPhone = value)
                 }
@@ -67,7 +73,7 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
                     startDnDListenerService(context)
                 }
             }
-            BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY -> {
+            DND_SYNC_WITH_THEATER_KEY -> {
                 dndSyncStateRepository.updateDnDSyncState {
                     it.copy(dndSyncWithTheater = value)
                 }
@@ -75,7 +81,7 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
                     startDnDListenerService(context)
                 }
             }
-            BoolSettingKeys.PHONE_SEPARATION_NOTI_KEY -> {
+            PHONE_SEPARATION_NOTI_KEY -> {
                 context.extensionSettingsStore.updateData {
                     it.copy(
                         phoneSeparationNotis = value

@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
-import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 

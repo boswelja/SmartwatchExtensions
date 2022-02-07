@@ -3,13 +3,14 @@ package com.boswelja.smartwatchextensions.dndsync.ui
 import android.app.NotificationManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.smartwatchextensions.dndsync.RECEIVE_DND_CAPABILITY
+import com.boswelja.smartwatchextensions.dndsync.SEND_DND_CAPABILITY
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -36,14 +37,14 @@ class DnDSyncSettingsViewModel(
      * Flow whether the selected watch can send DnD status.
      */
     val canSendDnD = mapStateForSelectedWatch(false) {
-        watchRepository.watchHasCapability(it, Capability.SEND_DND)
+        watchRepository.watchHasCapability(it, SEND_DND_CAPABILITY)
     }
 
     /**
      * Flow whether the selected watch can receive DnD status.
      */
     val canReceiveDnD = mapStateForSelectedWatch(false) {
-        watchRepository.watchHasCapability(it, Capability.RECEIVE_DND)
+        watchRepository.watchHasCapability(it, RECEIVE_DND_CAPABILITY)
     }
 
     /**

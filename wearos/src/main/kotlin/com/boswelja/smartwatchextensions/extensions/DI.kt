@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.extensions
 
-import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
+import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.extensions.ui.ExtensionsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel

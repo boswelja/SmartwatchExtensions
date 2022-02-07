@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.main.ui
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
+import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

@@ -13,8 +13,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.phonelocking.common)
-                implementation(projects.devicemanagement.wear)
-
                 implementation(libs.watchconnection.wear)
                 implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.kotlinx.coroutines.core)

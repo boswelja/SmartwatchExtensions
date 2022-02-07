@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.BigButton
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.devicemanagement.labelRes
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -115,7 +113,7 @@ fun WatchDetailsCard(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
     watch: Watch,
-    capabilities: List<Capability>,
+    capabilities: List<String>,
     onNicknameChanged: (String) -> Unit
 ) {
     Card(
@@ -187,7 +185,7 @@ fun WatchNameField(
 @Composable
 fun WatchCapabilities(
     modifier: Modifier = Modifier,
-    capabilities: List<Capability>
+    capabilities: List<String>
 ) {
     Column(
         modifier,
@@ -196,7 +194,7 @@ fun WatchCapabilities(
     ) {
         Text(stringResource(R.string.capabilities_title))
         capabilities.forEach { capability ->
-            Text(stringResource(capability.labelRes()))
+            Text(capability)
         }
     }
 }

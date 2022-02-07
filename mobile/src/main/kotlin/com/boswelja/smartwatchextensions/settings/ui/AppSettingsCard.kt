@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 

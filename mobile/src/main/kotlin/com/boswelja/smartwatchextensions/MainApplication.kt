@@ -6,9 +6,9 @@ import com.boswelja.smartwatchextensions.aboutapp.ui.aboutAppModule
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
 import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
+import com.boswelja.smartwatchextensions.core.coreModule
 import com.boswelja.smartwatchextensions.dashboard.dashboardModule
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
-import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.messages.messagesModule
@@ -16,7 +16,6 @@ import com.boswelja.smartwatchextensions.messages.messagesUiModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
-import com.boswelja.smartwatchextensions.settings.settingsModule
 import com.boswelja.smartwatchextensions.updatechecker.GooglePlayUpdateChecker
 import com.boswelja.smartwatchextensions.updatechecker.UpdateChecker
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
@@ -48,12 +47,11 @@ class MainApplication : Application() {
             workManagerFactory()
 
             modules(
+                coreModule,
                 appManagerModule,
                 batterySyncModule,
-                deviceManagementModule,
                 dndSyncModule,
                 messagesModule,
-                settingsModule,
                 clientsModule,
                 watchManagerModule,
                 databaseModule,

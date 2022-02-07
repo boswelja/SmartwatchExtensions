@@ -4,21 +4,24 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.settings.BoolSetting
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.settings.IntSetting
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
-import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.batterysync.SYNC_BATTERY_CAPABILITY
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.settings.BoolSetting
+import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UPDATE_INT_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
@@ -75,35 +78,35 @@ class BatterySyncViewModel(
      * Flow whether watch charge notifications are enabled for the selected watch.
      */
     val watchChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_CHARGE_NOTI_KEY)
     }
 
     /**
      * Flow whether watch low notifications are enabled for the selected watch.
      */
     val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_LOW_NOTI_KEY)
     }
 
     /**
      * Flow whether phone charge notifications are enabled for the selected watch.
      */
     val phoneChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_CHARGE_NOTI_KEY)
     }
 
     /**
      * Flow whether phone low notifications are enabled for the selected watch.
      */
     val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY)
+        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_LOW_NOTI_KEY)
     }
 
     /**
      * Flow whether the selected watch supports Battery Sync.
      */
     val canSyncBattery = mapStateForSelectedWatch(false) {
-        discoveryClient.hasCapability(it.uid, Capability.SYNC_BATTERY.name)
+        discoveryClient.hasCapability(it.uid, SYNC_BATTERY_CAPABILITY)
     }
 
     /**

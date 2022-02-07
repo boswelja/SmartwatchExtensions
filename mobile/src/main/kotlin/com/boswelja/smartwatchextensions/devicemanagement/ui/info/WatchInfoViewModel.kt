@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.devicemanagement.ui.info
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ class WatchInfoViewModel(
      * A list of capabilities the watch has. Note you should call [getCapabilities] to refresh this
      * list.
      */
-    val watchCapabilities = mutableStateListOf<Capability>()
+    val watchCapabilities = mutableStateListOf<String>()
 
     /**
      * Updates [Watch.name] in the database for the current watch.

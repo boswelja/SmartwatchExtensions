@@ -8,7 +8,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
