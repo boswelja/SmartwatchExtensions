@@ -55,9 +55,7 @@ class MainApplication : Application() {
                 clientsModule,
                 watchManagerModule,
                 databaseModule,
-                module {
-                    viewModel { BatteryWidgetConfigViewModel(get()) }
-                }
+                proximityModule
             )
 
             modules(
@@ -68,7 +66,9 @@ class MainApplication : Application() {
                 messagesUiModule,
                 phoneLockingModule,
                 appSettingsModule,
-                proximityModule
+                module {
+                    viewModel { BatteryWidgetConfigViewModel(get()) }
+                }
             )
         }
     }
