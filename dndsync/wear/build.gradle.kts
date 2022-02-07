@@ -9,7 +9,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.dndsync.common)
-                implementation(projects.devicemanagement.wear)
                 implementation(libs.watchconnection.wear)
                 implementation(libs.kotlinx.serialization.protobuf)
             }
