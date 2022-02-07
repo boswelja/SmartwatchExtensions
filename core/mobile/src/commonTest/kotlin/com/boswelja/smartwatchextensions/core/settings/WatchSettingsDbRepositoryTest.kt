@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.core.settings
 
-import app.cash.turbine.test
 import com.boswelja.smartwatchextensions.core.settings.database.WatchSettingsDatabase
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +81,7 @@ class WatchSettingsDbRepositoryTest {
         // Put initial value
         repository.putBoolean(testId, testKey, false)
 
-        repository.getBoolean(testId, testKey).test(2.seconds) {
+        repository.getBoolean(testId, testKey).test2(2.seconds) {
             // Check initial value
             assertEquals(false, awaitItem())
 
@@ -113,7 +112,7 @@ class WatchSettingsDbRepositoryTest {
         // Put initial value
         repository.putInt(testId, testKey, 0)
 
-        repository.getInt(testId, testKey).test(2.seconds) {
+        repository.getInt(testId, testKey).test2(2.seconds) {
             // Check initial value
             assertEquals(0, awaitItem())
 
@@ -132,7 +131,7 @@ class WatchSettingsDbRepositoryTest {
         // Clear all data first
         watchIds.forEach { repository.deleteForWatch(it) }
 
-        repository.getIdsWithBooleanSet(testKey, testValue).test(2.seconds) {
+        repository.getIdsWithBooleanSet(testKey, testValue).test2(2.seconds) {
             // Check initial value is empty
             assertTrue { awaitItem().isEmpty() }
 
@@ -155,7 +154,7 @@ class WatchSettingsDbRepositoryTest {
         // Clear all data first
         watchIds.forEach { repository.deleteForWatch(it) }
 
-        repository.getIdsWithIntSet(testKey, testValue).test(2.seconds) {
+        repository.getIdsWithIntSet(testKey, testValue).test2(2.seconds) {
             // Check initial value is empty
             assertTrue { awaitItem().isEmpty() }
 
