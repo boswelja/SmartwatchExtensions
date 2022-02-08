@@ -9,12 +9,10 @@ import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.smartwatchextensions.proximity.domain.ProximityStateRepository
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +26,9 @@ import org.koin.android.ext.android.inject
  */
 class SeparationObserverService : LifecycleService() {
 
+    private val proximityStateRepository: ProximityStateRepository by inject()
     private val discoveryClient: DiscoveryClient by inject()
-    private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
+    private val notificationManager by lazy { getSystemService(NotificationManager::class.java) }
     private var hasNotifiedThisDisconnect = false
 
     override fun onBind(intent: Intent): IBinder {
@@ -48,7 +47,7 @@ class SeparationObserverService : LifecycleService() {
 
     private fun collectSettingChanges() {
         lifecycleScope.launch(Dispatchers.IO) {
-            extensionSettingsStore.data.map { it.phoneSeparationNotis }.collect {
+            proximityStateRepository.getPhoneSeparationAlertEnabled().collect {
                 if (!it) {
                     tryStop()
                 }
@@ -57,7 +56,6 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun collectPhoneState() {
-        val phoneStateStore = phoneStateStore
         lifecycleScope.launch(Dispatchers.Default) {
             discoveryClient.connectionMode().collect { status ->
                 val phoneName = phoneStateStore.data.map { it.name }

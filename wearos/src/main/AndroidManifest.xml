@@ -66,10 +66,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".proximity.SeparationObserverService"
-            android:exported="false" />
-
         <receiver
             android:name=".BootHandler"
             android:exported="false">

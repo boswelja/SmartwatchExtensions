@@ -62,7 +62,7 @@ dependencies {
     implementation(projects.core.wear)
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking.wear)
-    implementation(projects.proximity.common)
+    implementation(projects.proximity.wear)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
