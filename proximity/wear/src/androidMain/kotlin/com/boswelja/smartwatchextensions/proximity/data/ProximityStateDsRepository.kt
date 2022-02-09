@@ -54,6 +54,7 @@ private object ProximityStateSerializer : Serializer<ProximityState> {
         output.write(ProtoBuf.encodeToByteArray(t))
     }
 }
+
 private val Context.proximityStateStore by dataStore(
     "proximitystate.pb",
     ProximityStateSerializer

@@ -87,7 +87,9 @@ fun DashboardScreen(
                 onClick = { onNavigateTo(DashboardDestination.PHONE_LOCKING_SETTINGS) }
             )
             DashboardItem(
-                titleText = stringResource(com.boswelja.smartwatchextensions.proximity.R.string.proximity_settings_title),
+                titleText = stringResource(
+                    com.boswelja.smartwatchextensions.proximity.R.string.proximity_settings_title
+                ),
                 onClick = { onNavigateTo(DashboardDestination.PROXIMITY_SETTINGS) }
             )
         }
