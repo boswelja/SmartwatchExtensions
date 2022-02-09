@@ -1,0 +1,11 @@
+<manifest
+    package="com.boswelja.smartwatchextensions.proximity"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+
+        <service
+            android:name=".SeparationObserverService"
+            android:exported="false" />
+
+    </application>
+</manifest>

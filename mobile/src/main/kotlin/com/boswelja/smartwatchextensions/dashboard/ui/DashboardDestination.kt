@@ -70,8 +70,7 @@ fun NavGraphBuilder.dashboardGraph(
     )
     composable(DashboardDestination.PROXIMITY_SETTINGS.route) {
         ProximitySettingsScreen(
-            modifier = modifier,
-            contentPadding = contentPadding
+            modifier = modifier
         )
     }
 }

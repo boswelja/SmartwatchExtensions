@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Proximity settings strings -->
+    <string name="proximity_settings_title">BETA Separation Alerts</string>
+    <string name="proximity_phone_noti_title">Phone separation notification</string>
+    <string name="proximity_phone_noti_summary">Get notified when you leave your phone behind</string>
+    <string name="proximity_watch_noti_title">Watch separation notification</string>
+    <string name="proximity_watch_noti_summary">Get notified when you leave your watch behind</string>
+    <string name="proximity_observer_noti_channel_title">Watch Connection Observer</string>
+    <string name="proximity_observer_title">Monitoring watch connection</string>
+    <string name="proximity_observer_summary">We\'re monitoring the connection to some watches, so we can notify you if they become disconnected</string>
+    <string name="separation_notification_title">%s out of range</string>
+    <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
+    <string name="separation_noti_channel_title">Watch Separation Alerts</string>
+    <string name="separation_alerts_title">Separation Alerts</string>
+
+</resources>

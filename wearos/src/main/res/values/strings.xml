@@ -1,14 +1,6 @@
 <resources>
     <string name="app_name">Smartwatch Extensions</string>
 
-    <!-- Proximity strings -->
-    <string name="separation_notification_title">%s out of range</string>
-    <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
-    <string name="proximity_observer_title">Monitoring phone connection</string>
-    <string name="proximity_observer_summary">We\'re monitoring the connection to your phone, so we can notify you if it becomes disconnected</string>
-    <string name="proximity_observer_noti_channel_title">Phone Connection Observer</string>
-    <string name="separation_noti_channel_title">Phone Separation Alerts</string>
-
     <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>
     <string name="content_description_scroll_down">Scroll down to read more</string>

@@ -3,11 +3,11 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.boswelja.smartwatchextensions.core.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDCollectorService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
+import com.boswelja.smartwatchextensions.proximity.common.ProximitySettingKeys.WATCH_SEPARATION_NOTI_KEY
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

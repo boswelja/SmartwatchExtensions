@@ -1,9 +1,9 @@
-package com.boswelja.smartwatchextensions.core.settings
+package com.boswelja.smartwatchextensions.proximity.common
 
 /**
- * Contains all shared Boolean settings keys.
+ * Contains settings keys for proximity extensions.
  */
-object BoolSettingKeys {
+object ProximitySettingKeys {
 
     /**
      * Whether watch separation notifications are enabled.

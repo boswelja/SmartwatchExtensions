@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BAT
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
-import com.boswelja.smartwatchextensions.core.settings.BoolSettingKeys.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
@@ -19,6 +18,7 @@ import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
+import com.boswelja.smartwatchextensions.proximity.common.ProximitySettingKeys.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageReceiver
 import org.koin.core.component.KoinComponent
