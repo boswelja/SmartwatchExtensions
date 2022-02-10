@@ -2,17 +2,22 @@ package com.boswelja.smartwatchextensions.common
 
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import kotlin.Exception
 
 /**
  * An abstract implementation of [TileService] that provides the watch tied to QS Tiles, as well as
@@ -20,58 +25,60 @@ import org.koin.android.ext.android.inject
  */
 abstract class WatchTileService : TileService() {
 
-    private val watchManager: WatchManager by inject()
+    private val watchRepository: WatchRepository by inject()
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    internal val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var coroutineJob: Job? = null
-    internal lateinit var watchId: String
-        private set
+
+    /**
+     * Flows the current watch to display QS tiles for.
+     */
+    internal val watch: StateFlow<Watch?> = appSettingsStore.data
+        .map {
+            if (it.qsTileWatchId.isNotBlank()) {
+                watchRepository.getWatchById(it.qsTileWatchId).firstOrNull()
+            } else {
+                val watch = watchRepository
+                    .registeredWatches
+                    .first()
+                    .firstOrNull()
+
+                if (watch != null) {
+                    appSettingsStore.updateData { it.copy(qsTileWatchId = watch.uid) }
+                }
+                watch
+            }
+        }
+        .stateIn(
+            coroutineScope,
+            SharingStarted.Eagerly,
+            null
+        )
 
     /**
      * Called when a tile update is requested.
-     * @param watch The [Watch] tied to QS Tiles, or null if none was found.
      */
-    abstract suspend fun onTileUpdateRequest(watch: Watch?)
+    abstract suspend fun onTileUpdateRequest()
 
     override fun onTileAdded() {
+        coroutineJob?.cancel()
         coroutineJob = coroutineScope.launch {
-            val watch = getWatch()
-            onTileUpdateRequest(watch)
+            onTileUpdateRequest()
         }
     }
 
     override fun onStartListening() {
+        coroutineJob?.cancel()
         coroutineJob = coroutineScope.launch {
-            val watch = getWatch()
-            onTileUpdateRequest(watch)
+            onTileUpdateRequest()
         }
     }
 
     override fun onTileRemoved() {
         // Cancel any running jobs
-        coroutineJob?.cancel()
-    }
-
-    /**
-     * Try to get the watch attached to QS Tiles.
-     * @return The watch attached to QS tiles, or null if not found.
-     */
-    private suspend fun getWatch(): Watch? {
-        val watchId = appSettingsStore.data.map { it.qsTileWatchId }.first()
-        this.watchId = watchId
-        return if (watchId.isNotBlank()) {
-            watchManager.getWatchById(watchId).firstOrNull()
-        } else {
-            val watch = watchManager
-                .registeredWatches
-                .first()
-                .firstOrNull()
-
-            if (watch != null) {
-                appSettingsStore.updateData { it.copy(qsTileWatchId = watch.uid) }
-            }
-            watch
-        }
+        try {
+            coroutineScope.cancel()
+        } catch(ignored: Exception) { }
     }
 
     /**
