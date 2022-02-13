@@ -1,5 +1,7 @@
 package com.boswelja.smartwatchextensions.messages
 
+import kotlinx.serialization.Serializable
+
 /**
  * Defines a message to display to the user.
  * @param icon The message icon.
@@ -8,6 +10,7 @@ package com.boswelja.smartwatchextensions.messages
  * @param action The message action.
  * @param timestamp The message timestamp, measured in milliseconds since UNIX epoch.
  */
+@Serializable
 data class Message(
     val icon: Icon,
     val title: String,
