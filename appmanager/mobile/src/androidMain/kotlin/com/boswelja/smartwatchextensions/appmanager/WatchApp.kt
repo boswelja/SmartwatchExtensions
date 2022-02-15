@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import android.graphics.Bitmap
 
-
 /**
  * A data class containing detailed info for an app on a device.
  * @param watchId The UID of the device the app is installed on.

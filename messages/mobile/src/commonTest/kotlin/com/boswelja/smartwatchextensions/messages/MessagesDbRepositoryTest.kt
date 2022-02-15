@@ -5,13 +5,15 @@ import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import com.boswelja.smartwatchextensions.messages.database.messagesDbAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MessagesDbRepositoryTest {
 
     private lateinit var repository: MessagesRepository
@@ -26,7 +28,7 @@ class MessagesDbRepositoryTest {
     }
 
     @Test
-    fun insertInsertsMessage() = runSuspendingTest {
+    fun insertInsertsMessage() = runTest {
         val testMessage = Message(
             icon = Message.Icon.ERROR,
             title = "SomeUniqueTitle",
@@ -45,7 +47,7 @@ class MessagesDbRepositoryTest {
     }
 
     @Test
-    fun archiveArchivesMessage() = runSuspendingTest {
+    fun archiveArchivesMessage() = runTest {
         val testMessage = Message(
             icon = Message.Icon.ERROR,
             title = "SomeUniqueTitle",
@@ -71,9 +73,27 @@ class MessagesDbRepositoryTest {
     }
 
     @Test
-    fun deleteArchivedDeletesArchived() = runSuspendingTest {
+    fun deleteArchivedDeletesArchived() = runTest {
         // Archive a message
-        archiveArchivesMessage()
+        val testMessage = Message(
+            icon = Message.Icon.ERROR,
+            title = "SomeUniqueTitle",
+            text = "Some text",
+            action = Message.Action.NONE,
+            timestamp = 0
+        )
+
+        // Insert message
+        repository.insert(testMessage, null)
+
+        // Get message ID
+        val id = repository.getAllWhere(false)
+            .first()
+            .first { it.title == testMessage.title }
+            .id
+
+        // Set archived and check result
+        repository.archive(id)
 
         // Delete archived and check value
         repository.deleteArchived()
@@ -81,7 +101,7 @@ class MessagesDbRepositoryTest {
     }
 
     @Test
-    fun deleteForSourceDeletesForSource() = runSuspendingTest {
+    fun deleteForSourceDeletesForSource() = runTest {
         val sourceUid = "uid"
         val testMessage = Message(
             icon = Message.Icon.ERROR,
@@ -101,9 +121,8 @@ class MessagesDbRepositoryTest {
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun getAllWhereFlowsUpdates() = runSuspendingTest {
+    fun getAllWhereFlowsUpdates() = runTest {
         // Insert a message
         repository.insert(
             Message(
