@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -18,21 +19,25 @@ import java.io.OutputStream
  * Contains global app settings.
  * @param analyticsEnabled Whether analytics are enabled. This is currently unused, but held for future compatibility
  * @param qsTileWatchId The watch UID to use for QS Tiles.
- * @param checkForUpdates Whether the app should automatically check for updates.
  */
 @Serializable
 data class Settings(
     val analyticsEnabled: Boolean,
     val qsTileWatchId: String,
-    val checkForUpdates: Boolean
 )
 
 /**
  * A [DataStore] for tracking [Settings].
  */
 val Context.appSettingsStore: DataStore<Settings> by dataStore(
-    "appSettings.pb",
-    AppSettingsSerializer()
+    fileName = "appSettings.pb",
+    serializer = AppSettingsSerializer(),
+    corruptionHandler = ReplaceFileCorruptionHandler {
+        Settings(
+            false,
+            ""
+        )
+    }
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -40,8 +45,7 @@ val Context.appSettingsStore: DataStore<Settings> by dataStore(
 private class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         false,
-        "",
-        false
+        ""
     )
 
     override suspend fun readFrom(input: InputStream): Settings {
