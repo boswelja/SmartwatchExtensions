@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import com.boswelja.watchconnection.serialization.MessageSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
@@ -16,8 +17,8 @@ object BatteryStatsSerializer : MessageSerializer<BatteryStats> {
     override suspend fun deserialize(bytes: ByteArray?): BatteryStats {
         try {
             return ProtoBuf.decodeFromByteArray(bytes!!)
-        } catch (e: Exception) {
-            throw Exception("Failed to deserialize battery stats!", e)
+        } catch (e: SerializationException) {
+            throw SerializationException("Failed to deserialize battery stats!", e)
         }
     }
 
