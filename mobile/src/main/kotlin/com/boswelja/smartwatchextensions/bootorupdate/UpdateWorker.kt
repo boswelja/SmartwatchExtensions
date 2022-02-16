@@ -8,13 +8,9 @@ import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker.Result.failure
 import androidx.work.ListenableWorker.Result.success
 import androidx.work.WorkerParameters
-import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.messages.Message
-import com.boswelja.smartwatchextensions.messages.MessagesRepository
-import com.boswelja.smartwatchextensions.messages.sendMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -27,7 +23,6 @@ class UpdateWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    private val messagesRepository: MessagesRepository by inject()
     private val settingsRepository: WatchSettingsRepository by inject()
 
     override suspend fun doWork(): Result {
@@ -41,16 +36,6 @@ class UpdateWorker(
         return when (result) {
             com.boswelja.migration.Result.SUCCESS,
             com.boswelja.migration.Result.NOT_NEEDED -> {
-                val message = Message(
-                    Message.Icon.UPDATE,
-                    applicationContext.getString(R.string.update_completed_title),
-                    applicationContext.getString(
-                        R.string.update_complete_text, BuildConfig.VERSION_NAME
-                    ),
-                    action = Message.Action.NONE,
-                    timestamp = System.currentTimeMillis()
-                )
-                applicationContext.sendMessage(message, repository = messagesRepository)
                 success()
             }
             com.boswelja.migration.Result.FAILED -> failure()

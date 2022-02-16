@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,11 +33,6 @@ enum class BottomNavDestination(
         "dashboard",
         R.string.bottom_nav_dashboard_label,
         Icons.Outlined.Dashboard
-    ),
-    MESSAGES(
-        "messages",
-        R.string.nav_messages_label,
-        Icons.Outlined.Message
     ),
     SETTINGS(
         "settings",

@@ -10,12 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable for displaying QS Tile settings.
@@ -25,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 fun QSTileSettingsCard(
     modifier: Modifier = Modifier
 ) {
-    val viewModel: AppSettingsViewModel = viewModel()
+    val viewModel: AppSettingsViewModel = getViewModel()
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
     val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
     Card(

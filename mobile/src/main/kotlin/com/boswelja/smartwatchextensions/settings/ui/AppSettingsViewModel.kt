@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.Settings
-import com.boswelja.smartwatchextensions.updatechecker.UpdateCheckWorker
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -43,11 +42,6 @@ class AppSettingsViewModel(
     }
 
     /**
-     * Flow whether daily update checks are enabled.
-     */
-    val checkUpdatesDaily = dataStore.data.map { it.checkForUpdates }
-
-    /**
      * Set a watch for QS Tiles to display data for.
      */
     fun setQSTilesWatch(watch: Watch) {
@@ -57,22 +51,6 @@ class AppSettingsViewModel(
             }
 
             WatchBatteryTileService.requestTileUpdate(getApplication())
-        }
-    }
-
-    /**
-     * Set whether daily update checking is enabled.
-     */
-    fun setCheckUpdatesDaily(newValue: Boolean) {
-        viewModelScope.launch {
-            dataStore.updateData {
-                it.copy(checkForUpdates = newValue)
-            }
-            if (newValue) {
-                UpdateCheckWorker.schedule(getApplication())
-            } else {
-                UpdateCheckWorker.cancel(getApplication())
-            }
         }
     }
 }

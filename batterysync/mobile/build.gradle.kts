@@ -15,7 +15,6 @@ kotlin {
                 api(projects.batterysync.common)
                 implementation(libs.watchconnection.mobile.core)
                 implementation(projects.core.mobile)
-                implementation(projects.messages.mobile)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)

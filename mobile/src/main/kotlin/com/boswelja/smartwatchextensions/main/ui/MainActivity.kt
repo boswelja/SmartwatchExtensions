@@ -27,7 +27,6 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
-import com.boswelja.smartwatchextensions.messages.ui.messagesGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 import com.boswelja.watchconnection.common.Watch
@@ -181,17 +180,6 @@ fun MainScreen(
             route = BottomNavDestination.DASHBOARD.route,
             onShowSnackbar = {
                 scaffoldState.snackbarHostState.showSnackbar(it)
-            }
-        )
-
-        // Message destinations
-        messagesGraph(
-            modifier = modifier,
-            contentPadding = contentPadding,
-            navController = navController,
-            route = BottomNavDestination.MESSAGES.route,
-            onShowSnackbar = { text, action, duration ->
-                scaffoldState.snackbarHostState.showSnackbar(text, action, duration)
             }
         )
 
