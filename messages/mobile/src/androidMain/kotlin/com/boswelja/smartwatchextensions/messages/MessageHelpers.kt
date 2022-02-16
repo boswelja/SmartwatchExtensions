@@ -1,11 +1,10 @@
 package com.boswelja.smartwatchextensions.messages
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.NotificationChannelHelper
-import com.boswelja.smartwatchextensions.R
 
 /**
  * Notification channel ID for our messages
@@ -25,7 +24,7 @@ suspend fun Context.sendMessage(
 ) {
     repository.insert(message, null)
     if (priority == Priority.HIGH) {
-        NotificationChannelHelper.createForSystemMessages(this, notificationManager)
+        createForSystemMessages(this, notificationManager)
         val notification =
             NotificationCompat.Builder(this, MESSAGE_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.noti_ic_watch)
@@ -33,5 +32,18 @@ suspend fun Context.sendMessage(
                 .setContentText(message.text)
                 .build()
         notificationManager.notify(message.hashCode(), notification)
+    }
+}
+
+/**
+ * Create a notification channel for messages from the system.
+ */
+private fun createForSystemMessages(context: Context, notificationManager: NotificationManager) {
+    NotificationChannel(
+        MESSAGE_NOTIFICATION_CHANNEL_ID,
+        context.getString(R.string.messages_noti_channel_label),
+        NotificationManager.IMPORTANCE_DEFAULT
+    ).also {
+        notificationManager.createNotificationChannel(it)
     }
 }

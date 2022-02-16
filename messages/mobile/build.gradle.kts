@@ -1,7 +1,11 @@
+// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
+@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
+
 plugins {
     id("com.boswelja.smartwatchextensions.library")
     id("com.boswelja.smartwatchextensions.detekt")
     id("com.squareup.sqldelight")
+    alias(libs.plugins.compose)
 }
 
 kotlin {
@@ -11,6 +15,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.messages.common)
+                implementation(projects.core.mobile)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
@@ -26,6 +31,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqldelight.android)
+                implementation(libs.bundles.compose.mobile)
+                implementation(libs.koin.compose)
             }
         }
         val androidTest by getting {

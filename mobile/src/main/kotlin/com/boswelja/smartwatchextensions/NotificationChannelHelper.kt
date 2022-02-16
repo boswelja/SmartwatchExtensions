@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import com.boswelja.smartwatchextensions.bootorupdate.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
-import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
 
 /**
  * A helper class for managing notification channels.
@@ -30,19 +29,6 @@ object NotificationChannelHelper {
                     setShowBadge(false)
                 }
                 .also { notificationManager.createNotificationChannel(it) }
-        }
-    }
-
-    /**
-     * Create a notification channel for messages from the system.
-     */
-    fun createForSystemMessages(context: Context, notificationManager: NotificationManager) {
-        NotificationChannel(
-            MESSAGE_NOTIFICATION_CHANNEL_ID,
-            context.getString(R.string.messages_noti_channel_label),
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).also {
-            notificationManager.createNotificationChannel(it)
         }
     }
 }

@@ -9,7 +9,7 @@ import org.koin.dsl.module
 /**
  * A Koin module that provides repositories for messages.
  */
-val messagesModule = module {
+val messagesCommonModule = module {
     single<MessagesRepository> { MessagesDbRepository(get(), get(named("database"))) }
     single {
         MessageDatabase(

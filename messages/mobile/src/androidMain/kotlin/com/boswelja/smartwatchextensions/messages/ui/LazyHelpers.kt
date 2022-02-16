@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.messages.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition

@@ -26,8 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.messages.DisplayMessage
+import com.boswelja.smartwatchextensions.messages.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 

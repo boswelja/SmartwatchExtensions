@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.updatechecker
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.boswelja.smartwatchextensions.core.UpdateChecker
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.requestAppUpdateInfo

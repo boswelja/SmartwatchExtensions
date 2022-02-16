@@ -35,13 +35,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
-import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
 import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -93,11 +89,11 @@ fun MessagesScreen(
                             context.startActivity(intent)
                         }
                         Message.Action.CHANGELOG -> {
-                            context.startActivity { intent ->
-                                intent.action = Intent.ACTION_VIEW
-                                intent.data = context.getString(R.string.changelog_url).toUri()
-                                intent
-                            }
+//                            context.startActivity { intent ->
+//                                intent.action = Intent.ACTION_VIEW
+//                                intent.data = context.getString(R.string.changelog_url).toUri()
+//                                intent
+//                            }
                         }
                         Message.Action.INSTALL_UPDATE ->
                             viewModel.startUpdateFlow(context as Activity)

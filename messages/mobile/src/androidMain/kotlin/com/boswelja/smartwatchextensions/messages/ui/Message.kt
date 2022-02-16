@@ -21,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.R
 import java.util.Date
 import java.util.concurrent.TimeUnit
 

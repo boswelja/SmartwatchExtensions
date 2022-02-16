@@ -2,18 +2,6 @@
 
     <string name="app_name">Smartwatch Extensions</string>
 
-    <!-- Messages strings -->
-    <string name="message_history_label">Message History</string>
-    <string name="messages_empty">No new messages</string>
-    <string name="messages_noti_channel_label">System Messages</string>
-    <string name="message_history_empty">Messages you\'ve dismissed will appear here.</string>
-    <string name="message_action_changelog">See Changes</string>
-    <string name="message_action_noti_settings">Notification Settings</string>
-    <string name="message_action_install_update">Install Update</string>
-    <string name="message_dismissed">Message Dismissed</string>
-    <string name="message_history_cleared">Message history cleared</string>
-    <string name="message_history_clear_all">Clear All</string>
-
     <!-- Battery Sync preference strings -->
     <string name="battery_sync_widget_placeholder_percent">50%</string>
     <string name="battery_sync_title">Battery Sync</string>

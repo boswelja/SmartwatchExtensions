@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.updatechecker
+package com.boswelja.smartwatchextensions.core
 
 import android.content.Context
 
