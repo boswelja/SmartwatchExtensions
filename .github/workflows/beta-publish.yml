@@ -12,20 +12,24 @@ jobs:
         with:
           ref: ${{ github.head_ref }}   # checkout the correct branch name
           fetch-depth: 0                # fetch the whole repo history
+
       - uses: actions/setup-java@v2.5.0
         with:
           distribution: 'adopt'
           java-version: 11
           cache: 'gradle'
+
       - name: Git Version
         uses: codacy/git-version@2.5.4
         id: version
         with:
           release-branch: main
+
       - name: Build Mobile Release Artifacts
         run: ./gradlew :mobile:bundleRelease
         env:
           VERSION_NAME: ${{ steps.version.outputs.version }}
+
       - name: Sign Mobile Release
         id: sign-mobile-release
         uses: r0adkll/sign-android-release@v1.0.4
@@ -35,15 +39,18 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
+
       - name: Save Signed Mobile Bundle
         uses: actions/upload-artifact@v2.3.1
         with:
           name: mobile-release.aab
           path: ${{ steps.sign-mobile-release.outputs.signedReleaseFile }}
+
       - name: Build Wear OS Release Artifacts
         run: ./gradlew :wearos:bundleRelease
         env:
           VERSION_NAME: ${{ steps.version.outputs.version }}
+
       - name: Sign Wear OS Release
         id: sign-wearos-release
         uses: r0adkll/sign-android-release@v1.0.4
@@ -53,6 +60,7 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
+
       - name: Save Signed Wear OS Bundle
         uses: actions/upload-artifact@v2.3.1
         with:
@@ -68,67 +76,53 @@ jobs:
         with:
           ref: ${{ github.head_ref }}   # checkout the correct branch name
           fetch-depth: 0                # fetch the whole repo history
-      - uses: actions/setup-java@v2.5.0
-        with:
-          distribution: 'adopt'
-          java-version: 11
+
       - name: Git Version
         uses: codacy/git-version@2.5.4
         id: version
         with:
           release-branch: main
+
+      - name: Generate Changelog
+        id: changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          stripHeaders: true
+          releaseBranch: "main"
+          pullRequests: true
+          prWoLabels: true
+          author: true
+          compareLink: true
+          onlyLastTag: true
+
       - name: Download mobile-release.aab
         uses: actions/download-artifact@v2.1.0
         with:
           name: mobile-release.aab
           path: release/
+
       - name: Download wearos-release.aab
         uses: actions/download-artifact@v2.1.0
         with:
           name: wearos-release.aab
           path: release/
+
       - name: Create Release Tag
-        uses: actions/create-release@v1.1.4
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: ${{ steps.version.outputs.version }}
-          body_path: changelogs/whatsnew-en-GB
-          draft: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
           prerelease: true
-      - name: Upload Mobile Release Asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/mobile-release.aab
-          asset_name: mobile-release.aab
-          asset_content_type: application/zip
-      - name: Upload Wear OS Release Asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/wearos-release.aab
-          asset_name: wearos-release.aab
-          asset_content_type: application/zip
-      - name: Calculate update priority
-        uses: boswelja/update-priority-action@main
-        id: update_priority
-        with:
-          old-version: ${{ steps.version.outputs.previous-version }}
-          new-version: ${{ steps.version.outputs.version }}
+          artifacts: "release/mobile-release.aab,release/wearos-release.aab"
+
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1.0.16
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.smartwatchextensions"
           releaseFiles: "release/mobile-release.aab,release/wearos-release.aab"
-          whatsNewDirectory: changelogs/
-          inAppUpdatePriority: ${{ steps.update_priority.outputs.update-priority }}
+          whatsNewDirectory: config/whatsnew/
           track: beta
           status: completed
