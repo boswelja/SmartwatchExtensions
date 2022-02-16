@@ -14,7 +14,11 @@ object BatteryStatsSerializer : MessageSerializer<BatteryStats> {
     override val messagePaths: Set<String> = setOf(BATTERY_STATUS_PATH)
 
     override suspend fun deserialize(bytes: ByteArray?): BatteryStats {
-        return ProtoBuf.decodeFromByteArray(bytes!!)
+        try {
+            return ProtoBuf.decodeFromByteArray(bytes!!)
+        } catch (e: Exception) {
+            throw Exception("Failed to deserialize battery stats!", e)
+        }
     }
 
     override suspend fun serialize(data: BatteryStats): ByteArray = ProtoBuf.encodeToByteArray(data)
