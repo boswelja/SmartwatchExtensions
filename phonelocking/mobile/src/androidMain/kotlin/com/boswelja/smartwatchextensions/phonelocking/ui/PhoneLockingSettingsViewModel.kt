@@ -65,8 +65,9 @@ class PhoneLockingSettingsViewModel(
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
         viewModelScope.launch(Dispatchers.IO) {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
+            checkNotNull(selectedWatch) { "Selected watch should never be null here" }
             settingsRepository.putBoolean(
-                selectedWatch!!.uid,
+                selectedWatch.uid,
                 PHONE_LOCKING_ENABLED_KEY,
                 isEnabled
             )
