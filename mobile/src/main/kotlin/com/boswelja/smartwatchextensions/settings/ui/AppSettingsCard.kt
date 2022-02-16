@@ -11,19 +11,13 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Update
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
-import kotlinx.coroutines.Dispatchers
-import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable for displaying app settings.
@@ -32,9 +26,7 @@ import org.koin.androidx.compose.getViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppSettingsCard(modifier: Modifier = Modifier) {
-    val viewModel: AppSettingsViewModel = getViewModel()
     val context = LocalContext.current
-    val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
 
     Card(
         modifier = modifier,
@@ -59,12 +51,6 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
                             context.startActivity(it)
                         }
                 }
-            )
-            CheckboxSetting(
-                label = { Text(stringResource(R.string.check_updates_daily_title)) },
-                icon = { Icon(Icons.Outlined.Update, null) },
-                checked = checkUpdatesDaily,
-                onCheckChanged = viewModel::setCheckUpdatesDaily
             )
         }
     }

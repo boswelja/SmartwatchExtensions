@@ -11,7 +11,6 @@ import com.boswelja.smartwatchextensions.dashboard.dashboardModule
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
-import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
@@ -50,7 +49,6 @@ class MainApplication : Application() {
                 appManagerModule,
                 batterySyncModule,
                 dndSyncModule,
-                messagesModule,
                 clientsModule,
                 watchManagerModule,
                 databaseModule,
