@@ -6,12 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,6 +44,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModel()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -57,12 +60,12 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
-            val scaffoldState = rememberScaffoldState()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             AppTheme {
                 HarmonizedTheme {
                     Scaffold(
-                        scaffoldState = scaffoldState,
+                        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
                         topBar = {
                             val showUpButton = BottomNavDestination.values()
                                 .none { it.route == backStackEntry?.destination?.route }
@@ -90,7 +93,9 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(it),
-                            scaffoldState = scaffoldState,
+                            onShowSnackbar = { message ->
+                                snackbarHostState.showSnackbar(message)
+                            },
                             navController = navController
                         )
                     }
@@ -153,14 +158,14 @@ fun MainAppBar(
  * A Composable screen for displaying the main content.
  * @param modifier [Modifier].
  * @param contentPadding The padding around the screen.
- * @param scaffoldState [ScaffoldState].
+ * @param onShowSnackbar Called when a snackbar should be displayed.
  * @param navController [NavHostController].
  */
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    scaffoldState: ScaffoldState,
+    onShowSnackbar: suspend (String) -> Unit,
     navController: NavHostController
 ) {
     NavHost(
@@ -181,9 +186,7 @@ fun MainScreen(
             contentPadding = contentPadding,
             navController = navController,
             route = BottomNavDestination.DASHBOARD.route,
-            onShowSnackbar = {
-                scaffoldState.snackbarHostState.showSnackbar(it)
-            }
+            onShowSnackbar = onShowSnackbar
         )
 
         // Load settings
@@ -192,9 +195,7 @@ fun MainScreen(
             contentPadding = contentPadding,
             navController = navController,
             route = BottomNavDestination.SETTINGS.route,
-            onShowSnackbar = {
-                scaffoldState.snackbarHostState.showSnackbar(it)
-            }
+            onShowSnackbar = onShowSnackbar
         )
     }
 }
