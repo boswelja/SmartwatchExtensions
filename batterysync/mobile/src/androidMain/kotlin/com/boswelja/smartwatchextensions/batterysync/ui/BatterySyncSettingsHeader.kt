@@ -3,11 +3,11 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -83,14 +83,14 @@ fun BatteryStatsSummaryLarge(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
     Column(modifier) {
-        ProvideTextStyle(MaterialTheme.typography.h4) {
+        ProvideTextStyle(MaterialTheme.typography.headlineMedium) {
             text()
         }
         LinearProgressIndicator(
             progress = animatedBattery,
             modifier = Modifier.fillMaxWidth()
         )
-        ProvideTextStyle(MaterialTheme.typography.body1) {
+        ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
             secondaryText()
         }
     }
