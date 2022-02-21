@@ -26,6 +26,7 @@ import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
+import com.boswelja.smartwatchextensions.core.ui.HarmonizedTheme
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
@@ -59,38 +60,40 @@ class MainActivity : ComponentActivity() {
             val scaffoldState = rememberScaffoldState()
 
             AppTheme {
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    topBar = {
-                        val showUpButton = BottomNavDestination.values()
-                            .none { it.route == backStackEntry?.destination?.route }
-                        MainAppBar(
-                            showUpButton = showUpButton,
-                            selectedWatch = selectedWatch,
-                            registeredWatches = registeredWatches,
-                            onWatchSelected = viewModel::selectWatchById,
-                            onNavigateUp = navController::navigateUp
-                        )
-                    },
-                    bottomBar = {
-                        BottonNav(
-                            currentDestination = backStackEntry?.destination,
-                            onNavigateTo = {
-                                navController.navigate(it.route) {
-                                    popUpTo(BottomNavDestination.DASHBOARD.route)
-                                    launchSingleTop = true
+                HarmonizedTheme {
+                    Scaffold(
+                        scaffoldState = scaffoldState,
+                        topBar = {
+                            val showUpButton = BottomNavDestination.values()
+                                .none { it.route == backStackEntry?.destination?.route }
+                            MainAppBar(
+                                showUpButton = showUpButton,
+                                selectedWatch = selectedWatch,
+                                registeredWatches = registeredWatches,
+                                onWatchSelected = viewModel::selectWatchById,
+                                onNavigateUp = navController::navigateUp
+                            )
+                        },
+                        bottomBar = {
+                            BottonNav(
+                                currentDestination = backStackEntry?.destination,
+                                onNavigateTo = {
+                                    navController.navigate(it.route) {
+                                        popUpTo(BottomNavDestination.DASHBOARD.route)
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
+                            )
+                        }
+                    ) {
+                        MainScreen(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it),
+                            scaffoldState = scaffoldState,
+                            navController = navController
                         )
                     }
-                ) {
-                    MainScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it),
-                        scaffoldState = scaffoldState,
-                        navController = navController
-                    )
                 }
             }
         }
