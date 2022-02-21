@@ -15,18 +15,18 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.contentColorFor
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -56,10 +54,9 @@ fun DialogHeader(
             .padding(start = 24.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.h6,
-            content = title
-        )
+        ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
+            title()
+        }
     }
 }
 
@@ -91,8 +88,6 @@ fun DialogButtons(
 /**
  * A base material dialog with support for shape, colour, elevation.
  * @param modifier [Modifier].
- * @param elevation The dialog elevation.
- * @param shape The dialog shape.
  * @param backgroundColor The dialog background color.
  * @param contentColor The dialog content color.
  * @param dialogProperties [DialogProperties].
@@ -102,10 +97,8 @@ fun DialogButtons(
 @Composable
 fun MaterialDialog(
     modifier: Modifier = Modifier,
-    elevation: Dp = 24.dp,
-    shape: Shape = MaterialTheme.shapes.medium,
-    backgroundColor: Color = MaterialTheme.colors.surface,
-    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = contentColorFor(backgroundColor),
     dialogProperties: DialogProperties = DialogProperties(),
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit
@@ -116,10 +109,8 @@ fun MaterialDialog(
     ) {
         Surface(
             modifier = modifier.heightIn(max = 560.dp),
-            shape = shape,
             color = backgroundColor,
             contentColor = contentColor,
-            elevation = elevation,
             content = content
         )
     }
@@ -135,12 +126,11 @@ fun MaterialDialog(
  * @param items The list of available items.
  * @param selectedItem The current selected item.
  * @param onItemSelectionChanged Called when a new item is selected.
- * @param elevation The dialog elevation.
- * @param shape The dialog shape.
  * @param backgroundColor The dialog background color.
  * @param contentColor The dialog content color.
  * @param dialogProperties [DialogProperties].
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> ConfirmationDialog(
     modifier: Modifier = Modifier,
@@ -150,10 +140,8 @@ fun <T> ConfirmationDialog(
     items: List<T>,
     selectedItem: T,
     onItemSelectionChanged: (T) -> Unit,
-    elevation: Dp = 24.dp,
-    shape: Shape = MaterialTheme.shapes.medium,
-    backgroundColor: Color = MaterialTheme.colors.surface,
-    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = contentColorFor(backgroundColor),
     dialogProperties: DialogProperties = DialogProperties()
 ) {
     var dialogSelectedItem by remember(selectedItem) {
@@ -162,8 +150,6 @@ fun <T> ConfirmationDialog(
 
     MaterialDialog(
         modifier = modifier,
-        elevation = elevation,
-        shape = shape,
         contentColor = contentColor,
         backgroundColor = backgroundColor,
         dialogProperties = dialogProperties,
