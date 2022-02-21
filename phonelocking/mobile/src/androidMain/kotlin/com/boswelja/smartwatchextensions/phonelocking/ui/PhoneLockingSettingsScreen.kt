@@ -2,15 +2,15 @@ package com.boswelja.smartwatchextensions.phonelocking.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.PhonelinkLock
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,7 +43,7 @@ fun PhoneLockingSettingsScreen(
 
     Column(modifier) {
         ListItem(
-            icon = { Icon(Icons.Outlined.Settings, null) },
+            icon = { Icon(Icons.Default.Settings, null) },
             text = { Text(stringResource(R.string.phone_locking_accessibility_settings)) },
             modifier = Modifier.clickable {
                 onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route)
