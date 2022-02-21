@@ -1,17 +1,16 @@
-package com.boswelja.smartwatchextensions.devicemanagement.ui
+package com.boswelja.smartwatchextensions.dashboard.ui
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircleOutline
 import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 
 /**

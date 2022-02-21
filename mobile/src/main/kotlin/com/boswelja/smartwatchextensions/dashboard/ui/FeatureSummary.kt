@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.dashboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
