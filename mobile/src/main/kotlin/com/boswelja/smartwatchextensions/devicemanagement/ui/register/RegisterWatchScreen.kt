@@ -7,15 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import org.koin.androidx.compose.getViewModel
  * @param contentPadding The screen padding.
  * @param onWatchRegistered Called when a watch was registered.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterWatchScreen(
     modifier: Modifier = Modifier,
@@ -84,12 +86,12 @@ fun RegisterWatchesHeader(
         Text(
             stringResource(R.string.register_watch_title),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             stringResource(R.string.register_watch_desc),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -111,7 +113,7 @@ fun DiscoveredWatchesList(
         Text(
             stringResource(R.string.register_watch_no_watches),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(contentPadding)
         )
     } else {

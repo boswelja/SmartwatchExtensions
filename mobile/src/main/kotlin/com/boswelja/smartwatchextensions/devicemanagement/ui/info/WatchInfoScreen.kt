@@ -9,18 +9,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ClearAll
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Watch
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -74,7 +72,7 @@ fun WatchInfoScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
-        Icon(Icons.Outlined.Watch, null, Modifier.size(180.dp))
+        Icon(Icons.Default.Watch, null, Modifier.size(180.dp))
         WatchActions(
             watchName = watch.name,
             onResetSettings = {
@@ -108,6 +106,7 @@ fun WatchInfoScreen(
  * @param capabilities The watches capabilities.
  * @param onNicknameChanged Called when the watch nickname changes.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchDetailsCard(
     modifier: Modifier = Modifier,
@@ -218,25 +217,19 @@ fun WatchActions(
     var clearSettingsDialogVisible by rememberSaveable { mutableStateOf(false) }
     var forgetWatchDialogVisible by rememberSaveable { mutableStateOf(false) }
 
-    Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        color = Color.Transparent
-    ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(contentSpacing)) {
-            BigButton(
-                modifier = Modifier.weight(1f),
-                icon = { Icon(Icons.Outlined.ClearAll, null) },
-                text = { Text(stringResource(R.string.clear_preferences_button_text)) },
-                onClick = { clearSettingsDialogVisible = true }
-            )
-            BigButton(
-                modifier = Modifier.weight(1f),
-                icon = { Icon(Icons.Outlined.Delete, null) },
-                text = { Text(stringResource(R.string.button_forget_watch)) },
-                onClick = { forgetWatchDialogVisible = true }
-            )
-        }
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(contentSpacing)) {
+        BigButton(
+            modifier = Modifier.weight(1f),
+            icon = { Icon(Icons.Default.ClearAll, null) },
+            text = { Text(stringResource(R.string.clear_preferences_button_text)) },
+            onClick = { clearSettingsDialogVisible = true }
+        )
+        BigButton(
+            modifier = Modifier.weight(1f),
+            icon = { Icon(Icons.Default.Delete, null) },
+            text = { Text(stringResource(R.string.button_forget_watch)) },
+            onClick = { forgetWatchDialogVisible = true }
+        )
     }
     if (clearSettingsDialogVisible) {
         ResetSettingsDialog(
