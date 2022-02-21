@@ -1,31 +1,23 @@
 package com.boswelja.smartwatchextensions.common.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,88 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.boswelja.smartwatchextensions.R
-
-/**
- * A box styled for a dialog header. Padding, alignment and text style are applied automatically.
- * @param title The title text Composable.
- */
-@Composable
-fun DialogHeader(
-    title: @Composable () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .height(64.dp)
-            .padding(start = 24.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
-            title()
-        }
-    }
-}
-
-/**
- * A row of buttons for a material dialog. Spacing is applied automatically.
- * @param positiveButton The positive button Composable.
- * @param negativeButton The negative button Composable. This is optional.
- * @param neutralButton The neutral button Composable. This is optional.
- */
-@Composable
-fun DialogButtons(
-    positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable (() -> Unit)? = null,
-    neutralButton: @Composable (() -> Unit)? = null
-) {
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
-    ) {
-        neutralButton?.invoke()
-        Spacer(Modifier.weight(1f))
-        negativeButton?.invoke()
-        positiveButton()
-    }
-}
-
-/**
- * A base material dialog with support for shape, colour, elevation.
- * @param modifier [Modifier].
- * @param backgroundColor The dialog background color.
- * @param contentColor The dialog content color.
- * @param dialogProperties [DialogProperties].
- * @param onDismissRequest Called when the dialog should be dismissed.
- * @param content The dialog content.
- */
-@Composable
-fun MaterialDialog(
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = contentColorFor(backgroundColor),
-    dialogProperties: DialogProperties = DialogProperties(),
-    onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = dialogProperties
-    ) {
-        Surface(
-            modifier = modifier.heightIn(max = 560.dp),
-            color = backgroundColor,
-            contentColor = contentColor,
-            content = content
-        )
-    }
-}
 
 /**
  * A material dialog for selecting an option from a list of available options.
@@ -126,9 +39,6 @@ fun MaterialDialog(
  * @param items The list of available items.
  * @param selectedItem The current selected item.
  * @param onItemSelectionChanged Called when a new item is selected.
- * @param backgroundColor The dialog background color.
- * @param contentColor The dialog content color.
- * @param dialogProperties [DialogProperties].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,60 +50,55 @@ fun <T> ConfirmationDialog(
     items: List<T>,
     selectedItem: T,
     onItemSelectionChanged: (T) -> Unit,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = contentColorFor(backgroundColor),
-    dialogProperties: DialogProperties = DialogProperties()
+    icon: @Composable (() -> Unit)? = null
 ) {
     var dialogSelectedItem by remember(selectedItem) {
         mutableStateOf(selectedItem)
     }
 
-    MaterialDialog(
+    AlertDialog(
         modifier = modifier,
-        contentColor = contentColor,
-        backgroundColor = backgroundColor,
-        dialogProperties = dialogProperties,
-        onDismissRequest = onDismissRequest
-    ) {
-        Column {
-            DialogHeader(title = title)
-            Divider()
-            LazyColumn {
-                items(items) { item ->
-                    Row(
-                        modifier = Modifier
-                            .requiredHeight(48.dp)
-                            .fillMaxWidth()
-                            .clickable { dialogSelectedItem = item },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Spacer(Modifier.width(24.dp))
-                        RadioButton(selected = item == dialogSelectedItem, onClick = null)
-                        Spacer(Modifier.width(32.dp))
-                        itemContent(item)
-                    }
+        title = title,
+        icon = icon,
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onItemSelectionChanged(dialogSelectedItem)
+                    onDismissRequest()
                 }
+            ) {
+                Text(stringResource(R.string.button_done))
             }
-            Divider()
-            DialogButtons(
-                positiveButton = {
-                    TextButton(
-                        onClick = {
-                            onItemSelectionChanged(dialogSelectedItem)
-                            onDismissRequest()
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(stringResource(R.string.dialog_button_cancel))
+            }
+        },
+        text = {
+            Column {
+                Divider()
+                LazyColumn {
+                    items(items) { item ->
+                        Row(
+                            modifier = Modifier
+                                .requiredHeight(48.dp)
+                                .fillMaxWidth()
+                                .clickable { dialogSelectedItem = item },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(Modifier.width(24.dp))
+                            RadioButton(selected = item == dialogSelectedItem, onClick = null)
+                            Spacer(Modifier.width(32.dp))
+                            itemContent(item)
                         }
-                    ) {
-                        Text(stringResource(R.string.button_done))
-                    }
-                },
-                negativeButton = {
-                    TextButton(onClick = onDismissRequest) {
-                        Text(stringResource(R.string.dialog_button_cancel))
                     }
                 }
-            )
+                Divider()
+            }
         }
-    }
+    )
 }
 
 /**
@@ -234,6 +139,7 @@ fun <T> DialogSetting(
         ConfirmationDialog(
             modifier = dialogModifier,
             title = label,
+            icon = icon,
             onDismissRequest = { dialogVisible = false },
             itemContent = { item -> valueLabel(item) },
             items = values,
