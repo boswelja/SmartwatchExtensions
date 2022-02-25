@@ -7,32 +7,26 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChangeHistory
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Policy
-import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.icons.outlined.Source
+import androidx.compose.material.icons.filled.ChangeHistory
+import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Source
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable screen for displaying app-related information.
@@ -53,9 +47,6 @@ fun AboutAppScreen(
             AboutApp()
         }
         item {
-            Versions()
-        }
-        item {
             SupportApp()
         }
     }
@@ -65,7 +56,6 @@ fun AboutAppScreen(
  * A Composable for displaying info about the app.
  * @param modifier [Modifier].
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AboutApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -78,9 +68,7 @@ fun AboutApp(modifier: Modifier = Modifier) {
         }
     ) {
         Column {
-            ListItem(
-                text = { Text(stringResource(R.string.about_priv_policy_title)) },
-                icon = { Icon(Icons.Outlined.Policy, null) },
+            Row(
                 modifier = Modifier.clickable {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
@@ -88,10 +76,11 @@ fun AboutApp(modifier: Modifier = Modifier) {
                         intent
                     }
                 }
-            )
-            ListItem(
-                text = { Text(stringResource(R.string.about_github)) },
-                icon = { Icon(Icons.Outlined.Source, null) },
+            ) {
+                Icon(Icons.Default.Policy, null)
+                Text(stringResource(R.string.about_priv_policy_title))
+            }
+            Row(
                 modifier = Modifier.clickable {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
@@ -99,10 +88,11 @@ fun AboutApp(modifier: Modifier = Modifier) {
                         intent
                     }
                 }
-            )
-            ListItem(
-                text = { Text(stringResource(R.string.about_changelog)) },
-                icon = { Icon(Icons.Outlined.ChangeHistory, null) },
+            ) {
+                Icon(Icons.Default.Source, null)
+                Text(stringResource(R.string.about_github))
+            }
+            Row(
                 modifier = Modifier.clickable {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
@@ -110,50 +100,10 @@ fun AboutApp(modifier: Modifier = Modifier) {
                         intent
                     }
                 }
-            )
-        }
-    }
-}
-
-/**
- * A Composable for displaying app version information.
- * @param modifier [Modifier].
- */
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun Versions(modifier: Modifier = Modifier) {
-    val viewModelAbout: AboutAppViewModel = getViewModel()
-    val watchVersion by viewModelAbout.watchAppVersion.collectAsState(null)
-    Card(
-        modifier = modifier,
-        header = {
-            CardHeader(
-                title = { Text(stringResource(R.string.about_category_versions)) }
-            )
-        }
-    ) {
-        Column {
-            ListItem(
-                text = {
-                    Text(
-                        stringResource(
-                            R.string.about_phone_version_title, BuildConfig.VERSION_NAME
-                        )
-                    )
-                },
-                secondaryText = { Text(BuildConfig.VERSION_CODE.toString()) },
-                icon = { Icon(Icons.Outlined.Info, null) }
-            )
-            ListItem(
-                text = {
-                    val text = watchVersion?.let {
-                        stringResource(R.string.about_watch_version_title, it.versionName)
-                    } ?: stringResource(R.string.about_watch_version_loading)
-                    Text(text)
-                },
-                secondaryText = watchVersion?.let { { Text(it.versionCode.toString()) } },
-                icon = { Icon(Icons.Outlined.Info, null) }
-            )
+            ) {
+                Icon(Icons.Default.ChangeHistory, null)
+                Text(stringResource(R.string.about_changelog))
+            }
         }
     }
 }
@@ -162,7 +112,6 @@ fun Versions(modifier: Modifier = Modifier) {
  * A Composable for displaying options for supporting the app.
  * @param modifier [Modifier].
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SupportApp(
     modifier: Modifier = Modifier
@@ -187,9 +136,7 @@ fun SupportApp(
         }
     ) {
         Column {
-            ListItem(
-                text = { Text(stringResource(R.string.about_share_title)) },
-                icon = { Icon(Icons.Outlined.Share, null) },
+            Row(
                 modifier = Modifier.clickable {
                     Intent()
                         .apply {
@@ -209,7 +156,10 @@ fun SupportApp(
                             context.startActivity(Intent.createChooser(it, null))
                         }
                 }
-            )
+            ) {
+                Icon(Icons.Default.Share, null)
+                Text(stringResource(R.string.about_share_title))
+            }
         }
     }
 }
