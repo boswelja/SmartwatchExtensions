@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
 import org.koin.androidx.compose.getViewModel
@@ -79,7 +79,7 @@ fun PhoneLockingSetting(
 ) {
     var phoneLockingSetupVisible by rememberSaveable { mutableStateOf(false) }
 
-    SwitchSetting(
+    CheckboxSetting(
         icon = { Icon(Icons.Outlined.PhonelinkLock, null) },
         label = { Text(stringResource(R.string.phone_locking_enabled_title)) },
         summary = { Text(stringResource(R.string.phone_locking_enabled_summary, watchName)) },

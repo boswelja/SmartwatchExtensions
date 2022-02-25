@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
-import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -28,7 +28,7 @@ fun WatchBatteryNotiSettingsScreen(
     val lowThreshold by viewModel.batteryLowThreshold.collectAsState()
 
     Column(modifier) {
-        SwitchSetting(
+        CheckboxSetting(
             label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
             summary = {
                 val text = stringResource(
@@ -40,7 +40,7 @@ fun WatchBatteryNotiSettingsScreen(
             checked = watchChargeNotiEnabled,
             onCheckChanged = viewModel::setWatchChargeNotiEnabled
         )
-        SwitchSetting(
+        CheckboxSetting(
             label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
             summary = {
                 val text = stringResource(R.string.battery_sync_watch_low_noti_summary, lowThreshold)

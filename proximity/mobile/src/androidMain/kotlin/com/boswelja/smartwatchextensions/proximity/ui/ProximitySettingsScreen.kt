@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.proximity.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -27,7 +27,7 @@ fun ProximitySettingsScreen(
     val watchProximityNotiEnabled by viewModel.watchProximityNotiSetting.collectAsState()
 
     Column(modifier) {
-        SwitchSetting(
+        CheckboxSetting(
             label = { Text(stringResource(R.string.proximity_phone_noti_title)) },
             summary = { Text(stringResource(R.string.proximity_phone_noti_summary)) },
             checked = phoneProximityNotiEnabled,
@@ -37,7 +37,7 @@ fun ProximitySettingsScreen(
                 }
             }
         )
-        SwitchSetting(
+        CheckboxSetting(
             label = { Text(stringResource(R.string.proximity_watch_noti_title)) },
             summary = { Text(stringResource(R.string.proximity_watch_noti_summary)) },
             checked = watchProximityNotiEnabled,

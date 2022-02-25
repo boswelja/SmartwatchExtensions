@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.R
@@ -94,7 +94,7 @@ fun SyncToWatchSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
         summary = {
@@ -124,7 +124,7 @@ fun SyncToPhoneSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
         summary = {
@@ -154,7 +154,7 @@ fun SyncWithTheaterSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
         summary = {

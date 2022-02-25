@@ -1,9 +1,10 @@
 package com.boswelja.smartwatchextensions.core.settings.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Switch
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -17,9 +18,9 @@ import androidx.compose.ui.Modifier
  * @param checked Whether the setting is checked.
  * @param onCheckChanged Called when the checked value changes.
  */
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SwitchSetting(
+fun CheckboxSetting(
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
     summary: @Composable (() -> Unit)? = null,
@@ -28,19 +29,22 @@ fun SwitchSetting(
     checked: Boolean,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    ListItem(
-        text = label,
-        secondaryText = summary,
-        icon = icon,
-        trailing = {
-            Switch(
-                checked = checked,
-                onCheckedChange = null,
-                enabled = enabled
-            )
-        },
-        modifier = modifier.clickable(enabled = enabled) {
-            onCheckChanged(!checked)
+    Row(
+        modifier = Modifier
+            .clickable(enabled = enabled) {
+                onCheckChanged(!checked)
+            }
+            .then(modifier)
+    ) {
+        icon?.invoke()
+        Column {
+            label()
+            summary?.invoke()
         }
-    )
+        Checkbox(
+            checked = checked,
+            onCheckedChange = null,
+            enabled = enabled
+        )
+    }
 }
