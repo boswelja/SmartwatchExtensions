@@ -25,7 +25,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.core.ui.HarmonizedTheme
@@ -62,43 +61,41 @@ class MainActivity : ComponentActivity() {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val snackbarHostState = remember { SnackbarHostState() }
 
-            AppTheme {
-                HarmonizedTheme {
-                    Scaffold(
-                        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                        topBar = {
-                            val showUpButton = BottomNavDestination.values()
-                                .none { it.route == backStackEntry?.destination?.route }
-                            MainAppBar(
-                                showUpButton = showUpButton,
-                                selectedWatch = selectedWatch,
-                                registeredWatches = registeredWatches,
-                                onWatchSelected = viewModel::selectWatchById,
-                                onNavigateUp = navController::navigateUp
-                            )
-                        },
-                        bottomBar = {
-                            BottomNavBar(
-                                currentDestination = backStackEntry?.destination,
-                                onNavigateTo = {
-                                    navController.navigate(it.route) {
-                                        popUpTo(BottomNavDestination.DASHBOARD.route)
-                                        launchSingleTop = true
-                                    }
+            HarmonizedTheme {
+                Scaffold(
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+                    topBar = {
+                        val showUpButton = BottomNavDestination.values()
+                            .none { it.route == backStackEntry?.destination?.route }
+                        MainAppBar(
+                            showUpButton = showUpButton,
+                            selectedWatch = selectedWatch,
+                            registeredWatches = registeredWatches,
+                            onWatchSelected = viewModel::selectWatchById,
+                            onNavigateUp = navController::navigateUp
+                        )
+                    },
+                    bottomBar = {
+                        BottomNavBar(
+                            currentDestination = backStackEntry?.destination,
+                            onNavigateTo = {
+                                navController.navigate(it.route) {
+                                    popUpTo(BottomNavDestination.DASHBOARD.route)
+                                    launchSingleTop = true
                                 }
-                            )
-                        }
-                    ) {
-                        MainScreen(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(it),
-                            onShowSnackbar = { message ->
-                                snackbarHostState.showSnackbar(message)
-                            },
-                            navController = navController
+                            }
                         )
                     }
+                ) {
+                    MainScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                        onShowSnackbar = { message ->
+                            snackbarHostState.showSnackbar(message)
+                        },
+                        navController = navController
+                    )
                 }
             }
         }
