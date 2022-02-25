@@ -3,16 +3,18 @@ package com.boswelja.smartwatchextensions.common.ui
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -73,7 +76,8 @@ fun WatchPickerAppBar(
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
                 watches = watches,
-                onWatchSelected = onWatchSelected
+                onWatchSelected = onWatchSelected,
+                modifier = Modifier.fillMaxWidth()
             )
         },
         actions = { WikiAction() }
@@ -100,7 +104,8 @@ fun UpNavigationWatchPickerAppBar(
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
                 watches = watches,
-                onWatchSelected = onWatchSelected
+                onWatchSelected = onWatchSelected,
+                modifier = Modifier.fillMaxWidth()
             )
         },
         actions = { WikiAction() }
@@ -132,27 +137,25 @@ fun WikiAction() {
  * @param watches The list of available watches.
  * @param onWatchSelected Called when a watch was selected.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchPickerDropdown(
     selectedWatch: Watch?,
     watches: List<Watch>?,
-    onWatchSelected: (Watch) -> Unit
+    onWatchSelected: (Watch) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         Modifier.wrapContentSize(Alignment.TopStart)
     ) {
-        ListItem(
-            modifier = Modifier
-                .clickable { expanded = !expanded },
-            text = {
-                Text(selectedWatch?.name ?: stringResource(R.string.watch_status_connecting))
-            },
-            trailing = {
-                Icon(Icons.Outlined.ArrowDropDown, null)
-            }
-        )
+        Row(
+            modifier = modifier.clickable { expanded = !expanded },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(selectedWatch?.name ?: stringResource(R.string.watch_status_connecting))
+            Spacer(Modifier.width(8.dp))
+            Icon(Icons.Outlined.ArrowDropDown, null)
+        }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -162,10 +165,11 @@ fun WatchPickerDropdown(
                     onClick = {
                         expanded = false
                         onWatchSelected(it)
+                    },
+                    text = {
+                        Text(it.name)
                     }
-                ) {
-                    Text(it.name)
-                }
+                )
             }
         }
     }
