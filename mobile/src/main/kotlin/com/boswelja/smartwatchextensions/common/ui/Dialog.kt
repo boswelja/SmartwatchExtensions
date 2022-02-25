@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -114,7 +112,6 @@ fun <T> ConfirmationDialog(
  * @param onValueChanged Called when the current value changes.
  * @param valueLabel The value label Composable. This will be used in the dialog.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T> DialogSetting(
     modifier: Modifier = Modifier,
@@ -129,12 +126,15 @@ fun <T> DialogSetting(
     valueLabel: @Composable (T) -> Unit
 ) {
     var dialogVisible by remember { mutableStateOf(false) }
-    ListItem(
-        text = label,
-        secondaryText = summary,
-        icon = icon,
-        modifier = modifier.clickable(enabled = enabled) { dialogVisible = true }
-    )
+    Row(
+        modifier = Modifier.clickable(enabled = enabled) { dialogVisible = true }.then(modifier)
+    ) {
+        icon?.invoke()
+        Column {
+            label()
+            summary?.invoke()
+        }
+    }
     if (dialogVisible) {
         ConfirmationDialog(
             modifier = dialogModifier,
