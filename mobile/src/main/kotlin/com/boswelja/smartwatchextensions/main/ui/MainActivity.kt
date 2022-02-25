@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                             )
                         },
                         bottomBar = {
-                            BottonNav(
+                            BottomNavBar(
                                 currentDestination = backStackEntry?.destination,
                                 onNavigateTo = {
                                     navController.navigate(it.route) {
