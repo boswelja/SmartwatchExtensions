@@ -1,9 +1,7 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material3.Icon
@@ -20,7 +18,6 @@ import com.boswelja.smartwatchextensions.common.ui.CardHeader
  * @param modifier [Modifier].
  * @param onNavigateTo Called when navigation is requested.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchSettings(
     modifier: Modifier = Modifier,
@@ -32,12 +29,11 @@ fun WatchSettings(
             CardHeader(title = { Text(stringResource(R.string.category_watch_settings)) })
         }
     ) {
-        Column {
-            ListItem(
-                text = { Text(stringResource(R.string.manage_watches_title)) },
-                icon = { Icon(Icons.Outlined.Watch, null) },
-                modifier = Modifier.clickable { onNavigateTo(SettingsDestination.WATCH_MANAGER) }
-            )
+        Row(
+            modifier = Modifier.clickable { onNavigateTo(SettingsDestination.WATCH_MANAGER) }
+        ) {
+            Icon(Icons.Outlined.Watch, null)
+            Text(stringResource(R.string.manage_watches_title))
         }
     }
 }
