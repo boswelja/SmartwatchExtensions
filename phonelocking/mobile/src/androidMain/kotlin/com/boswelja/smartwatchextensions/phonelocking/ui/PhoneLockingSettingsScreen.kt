@@ -1,12 +1,8 @@
 package com.boswelja.smartwatchextensions.phonelocking.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
 import org.koin.androidx.compose.getViewModel
@@ -39,12 +36,11 @@ fun PhoneLockingSettingsScreen(
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
 
     Column(modifier) {
-        Row(
-            modifier = Modifier.clickable { onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route) }
-        ) {
-            Icon(Icons.Default.Settings, null)
-            Text(stringResource(R.string.phone_locking_accessibility_settings))
-        }
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.phone_locking_accessibility_settings)) },
+            onClick = { onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route) },
+            modifier = Modifier.fillMaxWidth()
+        )
         PhoneLockingSetting(
             watchName = watchName,
             phoneLockingEnabled = phoneLockingEnabled,

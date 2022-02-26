@@ -1,10 +1,6 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Watch
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 
 /**
  * A Composable for displaying watch settings.
@@ -29,11 +26,10 @@ fun WatchSettings(
             CardHeader(title = { Text(stringResource(R.string.category_watch_settings)) })
         }
     ) {
-        Row(
-            modifier = Modifier.clickable { onNavigateTo(SettingsDestination.WATCH_MANAGER) }
-        ) {
-            Icon(Icons.Outlined.Watch, null)
-            Text(stringResource(R.string.manage_watches_title))
-        }
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.manage_watches_title)) },
+            onClick = { onNavigateTo(SettingsDestination.WATCH_MANAGER) },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

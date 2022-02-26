@@ -3,18 +3,11 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChangeHistory
-import androidx.compose.material.icons.filled.Policy
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Source
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,6 +20,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 
 /**
  * A Composable screen for displaying app-related information.
@@ -68,42 +62,39 @@ fun AboutApp(modifier: Modifier = Modifier) {
         }
     ) {
         Column {
-            Row(
-                modifier = Modifier.clickable {
+            ShortcutSetting(
+                text = { Text(stringResource(R.string.about_priv_policy_title)) },
+                onClick = {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
                         intent.data = context.getString(R.string.privacy_policy_url).toUri()
                         intent
                     }
-                }
-            ) {
-                Icon(Icons.Default.Policy, null)
-                Text(stringResource(R.string.about_priv_policy_title))
-            }
-            Row(
-                modifier = Modifier.clickable {
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            ShortcutSetting(
+                text = { Text(stringResource(R.string.about_github)) },
+                onClick = {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
                         intent.data = context.getString(R.string.github_url).toUri()
                         intent
                     }
-                }
-            ) {
-                Icon(Icons.Default.Source, null)
-                Text(stringResource(R.string.about_github))
-            }
-            Row(
-                modifier = Modifier.clickable {
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            ShortcutSetting(
+                text = { Text(stringResource(R.string.about_changelog)) },
+                onClick = {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW
                         intent.data = context.getString(R.string.changelog_url).toUri()
                         intent
                     }
-                }
-            ) {
-                Icon(Icons.Default.ChangeHistory, null)
-                Text(stringResource(R.string.about_changelog))
-            }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -136,8 +127,9 @@ fun SupportApp(
         }
     ) {
         Column {
-            Row(
-                modifier = Modifier.clickable {
+            ShortcutSetting(
+                text = { Text(stringResource(R.string.about_share_title)) },
+                onClick = {
                     Intent()
                         .apply {
                             action = Intent.ACTION_SEND
@@ -155,11 +147,9 @@ fun SupportApp(
                         .also {
                             context.startActivity(Intent.createChooser(it, null))
                         }
-                }
-            ) {
-                Icon(Icons.Default.Share, null)
-                Text(stringResource(R.string.about_share_title))
-            }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
