@@ -3,6 +3,11 @@ package com.boswelja.smartwatchextensions.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ * The alpha used for disabled components. Text, buttons etc.
+ */
+const val DisabledAlpha = 0.38f
+
 internal val md_theme_light_primary = Color(0xFF9a25ae)
 internal val md_theme_light_onPrimary = Color(0xFFffffff)
 internal val md_theme_light_primaryContainer = Color(0xFFffd5ff)

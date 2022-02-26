@@ -1,18 +1,14 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.STEP_SIZE
+import com.boswelja.smartwatchextensions.core.ui.settings.SliderSetting
 import kotlin.math.roundToInt
 
 /**
@@ -34,24 +30,21 @@ fun BatterySliderSetting(
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var currentValue by remember(value) { mutableStateOf(value) }
     val steps = remember(valueRange) {
         ((valueRange.endInclusive - valueRange.start) / STEP_SIZE).roundToInt() - 1
     }
-    Column(modifier) {
-        text()
-        Text(stringResource(R.string.battery_percent, (currentValue * PROGRESS_FACTOR).roundToInt()))
-        Slider(
-            value = currentValue,
-            valueRange = valueRange,
-            steps = steps,
-            onValueChange = { currentValue = it },
-            onValueChangeFinished = {
-                onValueChanged(currentValue)
-            },
-            enabled = enabled
-        )
-    }
+    SliderSetting(
+        valueRange = valueRange,
+        value = value,
+        onValueChanged = onValueChanged,
+        text = text,
+        modifier = modifier,
+        enabled = enabled,
+        steps = steps,
+        summaryText = {
+            Text(stringResource(R.string.battery_percent, (it * PROGRESS_FACTOR).roundToInt()))
+        }
+    )
 }
 
 /**
