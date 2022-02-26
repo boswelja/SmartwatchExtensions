@@ -96,7 +96,7 @@ fun SyncToWatchSetting(
 ) {
     CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_watch_summary)
@@ -106,7 +106,7 @@ fun SyncToWatchSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }
 
@@ -126,7 +126,7 @@ fun SyncToPhoneSetting(
 ) {
     CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_phone_summary)
@@ -136,7 +136,7 @@ fun SyncToPhoneSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }
 
@@ -156,7 +156,7 @@ fun SyncWithTheaterSetting(
 ) {
     CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_with_theater_summary)
@@ -165,6 +165,6 @@ fun SyncWithTheaterSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }

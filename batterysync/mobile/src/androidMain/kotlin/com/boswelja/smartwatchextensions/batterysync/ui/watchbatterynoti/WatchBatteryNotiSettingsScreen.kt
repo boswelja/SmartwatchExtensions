@@ -1,12 +1,15 @@
 package com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import org.koin.androidx.compose.getViewModel
@@ -27,9 +30,12 @@ fun WatchBatteryNotiSettingsScreen(
     val chargeThreshold by viewModel.chargeThreshold.collectAsState()
     val lowThreshold by viewModel.batteryLowThreshold.collectAsState()
 
+    val settingsModifier = Modifier
+        .padding(horizontal = 16.dp, vertical = 12.dp)
+        .fillMaxWidth()
     Column(modifier) {
         CheckboxSetting(
-            label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
+            text = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
             summary = {
                 val text = stringResource(
                     R.string.battery_sync_watch_charge_noti_summary,
@@ -38,16 +44,18 @@ fun WatchBatteryNotiSettingsScreen(
                 Text(text)
             },
             checked = watchChargeNotiEnabled,
-            onCheckChanged = viewModel::setWatchChargeNotiEnabled
+            onCheckedChange = viewModel::setWatchChargeNotiEnabled,
+            modifier = settingsModifier
         )
         CheckboxSetting(
-            label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
+            text = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
             summary = {
                 val text = stringResource(R.string.battery_sync_watch_low_noti_summary, lowThreshold)
                 Text(text)
             },
             checked = watchLowNotiEnabled,
-            onCheckChanged = viewModel::setWatchLowNotiEnabled
+            onCheckedChange = viewModel::setWatchLowNotiEnabled,
+            modifier = settingsModifier
         )
     }
 }

@@ -28,20 +28,20 @@ fun ProximitySettingsScreen(
 
     Column(modifier) {
         CheckboxSetting(
-            label = { Text(stringResource(R.string.proximity_phone_noti_title)) },
+            text = { Text(stringResource(R.string.proximity_phone_noti_title)) },
             summary = { Text(stringResource(R.string.proximity_phone_noti_summary)) },
             checked = phoneProximityNotiEnabled,
-            onCheckChanged = { isChecked ->
+            onCheckedChange = { isChecked ->
                 scope.launch {
                     viewModel.setPhoneProximityNotiEnabled(isChecked)
                 }
             }
         )
         CheckboxSetting(
-            label = { Text(stringResource(R.string.proximity_watch_noti_title)) },
+            text = { Text(stringResource(R.string.proximity_watch_noti_title)) },
             summary = { Text(stringResource(R.string.proximity_watch_noti_summary)) },
             checked = watchProximityNotiEnabled,
-            onCheckChanged = { isChecked ->
+            onCheckedChange = { isChecked ->
                 scope.launch {
                     viewModel.setWatchProximityNotiEnabled(isChecked)
                 }

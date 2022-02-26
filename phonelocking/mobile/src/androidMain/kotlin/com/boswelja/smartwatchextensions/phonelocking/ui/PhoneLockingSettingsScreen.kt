@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.PhonelinkLock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -77,11 +76,10 @@ fun PhoneLockingSetting(
     var phoneLockingSetupVisible by rememberSaveable { mutableStateOf(false) }
 
     CheckboxSetting(
-        icon = { Icon(Icons.Outlined.PhonelinkLock, null) },
-        label = { Text(stringResource(R.string.phone_locking_enabled_title)) },
+        text = { Text(stringResource(R.string.phone_locking_enabled_title)) },
         summary = { Text(stringResource(R.string.phone_locking_enabled_summary, watchName)) },
         checked = phoneLockingEnabled,
-        onCheckChanged = {
+        onCheckedChange = {
             phoneLockingSetupVisible = it && !onCheckAccessibilityServiceEnabled()
             if (!phoneLockingSetupVisible) onPhoneLockingEnabledChanged(it)
         }

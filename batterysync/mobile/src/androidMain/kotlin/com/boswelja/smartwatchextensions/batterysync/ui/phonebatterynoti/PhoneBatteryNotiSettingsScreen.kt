@@ -29,7 +29,7 @@ fun PhoneBatteryNotiSettingsScreen(
 
     Column(modifier) {
         CheckboxSetting(
-            label = { Text(stringResource(R.string.battery_sync_phone_charge_noti_title)) },
+            text = { Text(stringResource(R.string.battery_sync_phone_charge_noti_title)) },
             summary = {
                 val text = stringResource(
                     R.string.battery_sync_phone_charge_noti_summary,
@@ -38,16 +38,16 @@ fun PhoneBatteryNotiSettingsScreen(
                 Text(text)
             },
             checked = phoneChargeNotiEnabled,
-            onCheckChanged = viewModel::setPhoneChargeNotiEnabled
+            onCheckedChange = viewModel::setPhoneChargeNotiEnabled
         )
         CheckboxSetting(
-            label = { Text(stringResource(R.string.battery_sync_phone_low_noti_title)) },
+            text = { Text(stringResource(R.string.battery_sync_phone_low_noti_title)) },
             summary = {
                 val text = stringResource(R.string.battery_sync_phone_low_noti_summary, lowThreshold)
                 Text(text)
             },
             checked = phoneLowNotiEnabled,
-            onCheckChanged = viewModel::setPhoneLowNotiEnabled
+            onCheckedChange = viewModel::setPhoneLowNotiEnabled
         )
     }
 }
