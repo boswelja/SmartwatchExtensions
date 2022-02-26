@@ -1,5 +1,5 @@
 @file:Suppress("MagicNumber")
-package com.boswelja.smartwatchextensions.core.ui
+package com.boswelja.smartwatchextensions.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

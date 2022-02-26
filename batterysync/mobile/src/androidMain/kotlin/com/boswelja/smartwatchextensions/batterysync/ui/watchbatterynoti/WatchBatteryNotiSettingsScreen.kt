@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
-import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import org.koin.androidx.compose.getViewModel
 
 /**

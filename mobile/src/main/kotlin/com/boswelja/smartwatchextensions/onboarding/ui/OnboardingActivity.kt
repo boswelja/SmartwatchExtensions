@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import com.boswelja.smartwatchextensions.core.ui.HarmonizedTheme
+import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 
 /**

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import com.boswelja.smartwatchextensions.core.ui.HarmonizedTheme
+import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

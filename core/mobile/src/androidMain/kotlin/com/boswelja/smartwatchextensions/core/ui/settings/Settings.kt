@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.core.settings.ui
+package com.boswelja.smartwatchextensions.core.ui.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

@@ -19,7 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
 import org.koin.androidx.compose.getViewModel

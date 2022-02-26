@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.CheckboxSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.R

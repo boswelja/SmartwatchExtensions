@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
-import com.boswelja.smartwatchextensions.core.ui.HarmonizedTheme
+import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
