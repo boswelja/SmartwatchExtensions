@@ -2,8 +2,7 @@ package com.boswelja.smartwatchextensions.phonelocking.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.PhonelinkLock
@@ -29,7 +28,6 @@ import org.koin.androidx.compose.getViewModel
  * A Composable screen for displaying Phone Locking settings.
  * @param modifier [Modifier].
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PhoneLockingSettingsScreen(
     onNavigate: (String) -> Unit,
@@ -42,13 +40,12 @@ fun PhoneLockingSettingsScreen(
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
 
     Column(modifier) {
-        ListItem(
-            icon = { Icon(Icons.Default.Settings, null) },
-            text = { Text(stringResource(R.string.phone_locking_accessibility_settings)) },
-            modifier = Modifier.clickable {
-                onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route)
-            }
-        )
+        Row(
+            modifier = Modifier.clickable { onNavigate(PhoneLockingDestination.ACCESSIBILITY_SETTINGS.route) }
+        ) {
+            Icon(Icons.Default.Settings, null)
+            Text(stringResource(R.string.phone_locking_accessibility_settings))
+        }
         PhoneLockingSetting(
             watchName = watchName,
             phoneLockingEnabled = phoneLockingEnabled,
