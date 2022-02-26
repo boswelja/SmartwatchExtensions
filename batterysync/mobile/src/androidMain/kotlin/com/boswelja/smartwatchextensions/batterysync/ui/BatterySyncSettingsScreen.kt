@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,7 +67,6 @@ fun BatterySyncSettingsScreen(
 /**
  * A Composable to display available Battery Sync settings.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BatterySyncSettings(
     viewModel: BatterySyncViewModel,
@@ -108,24 +105,26 @@ fun BatterySyncSettings(
             enabled = batterySyncEnabled,
             modifier = settingsModifier
         )
-        ListItem(
-            text = { Text(stringResource(R.string.phone_battery_noti_title)) },
-            secondaryText = { Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled)) },
+        Column(
             modifier = Modifier
                 .clickable(enabled = batterySyncEnabled) {
                     onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
                 .then(settingsModifier)
-        )
-        ListItem(
-            text = { Text(stringResource(R.string.watch_battery_noti_title)) },
-            secondaryText = { Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled)) },
+        ) {
+            Text(stringResource(R.string.phone_battery_noti_title))
+            Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled))
+        }
+        Column(
             modifier = Modifier
                 .clickable(enabled = batterySyncEnabled) {
                     onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
                 .then(settingsModifier)
-        )
+        ) {
+            Text(stringResource(R.string.watch_battery_noti_title))
+            Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled))
+        }
     }
 }
 
