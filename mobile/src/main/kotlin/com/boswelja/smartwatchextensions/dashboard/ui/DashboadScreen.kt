@@ -27,8 +27,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -46,9 +44,9 @@ fun DashboardScreen(
 ) {
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = getViewModel()
-    val watchStatus by viewModel.status.collectAsState(ConnectionMode.Disconnected, Dispatchers.IO)
-    val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
-    val appCount by viewModel.appCount.collectAsState(0, Dispatchers.IO)
+    val watchStatus by viewModel.status.collectAsState()
+    val batteryStats by viewModel.batteryStats.collectAsState()
+    val appCount by viewModel.appCount.collectAsState()
 
     Column(modifier.verticalScroll(scrollState)) {
         StaggeredVerticalGrid(
