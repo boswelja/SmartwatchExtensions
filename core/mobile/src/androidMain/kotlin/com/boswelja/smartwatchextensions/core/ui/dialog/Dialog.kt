@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.core.ui.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.core.R
 
 /**
  * A material dialog for selecting an option from a list of available options.
@@ -66,7 +66,7 @@ fun <T> ConfirmationDialog(
                     onDismissRequest()
                 }
             ) {
-                Text(stringResource(R.string.button_done))
+                Text(stringResource(R.string.dialog_button_done))
             }
         },
         dismissButton = {

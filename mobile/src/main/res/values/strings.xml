@@ -92,7 +92,6 @@
 
     <!-- QS Tile strings -->
     <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
-    <string name="button_done">Done</string>
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
 
