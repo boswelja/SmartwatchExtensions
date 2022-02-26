@@ -4,13 +4,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Watch
@@ -41,7 +40,6 @@ import org.koin.androidx.compose.getViewModel
  * @param onShowSnackbar Called when a snackbar should be shown.
  * @param onNavigateTo Called when navigation is requested.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchManagerScreen(
     modifier: Modifier = Modifier,
@@ -87,7 +85,6 @@ fun WatchManagerScreen(
  * @param onWatchSelected Called when a watch is selected.
  * @param onAddClicked Called when Add a Watch is clicked.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchManagerCard(
     modifier: Modifier = Modifier,
@@ -107,26 +104,26 @@ fun WatchManagerCard(
         ) {
             LazyColumn {
                 items(registeredWatches) { watch ->
-                    ListItem(
-                        icon = {
-                            Icon(
-                                Icons.Outlined.Watch,
-                                null,
-                                Modifier.size(40.dp)
-                            )
-                        },
-                        text = { Text(watch.name) },
+                    Row (
                         modifier = Modifier.clickable {
                             onWatchSelected(watch)
                         }
-                    )
+                    ) {
+                        Icon(
+                            Icons.Outlined.Watch,
+                            null,
+                            Modifier.size(40.dp)
+                        )
+                        Text(watch.name)
+                    }
                 }
                 item {
-                    ListItem(
-                        text = { Text(stringResource(R.string.watch_manager_add_watch_title)) },
-                        icon = { Icon(Icons.Outlined.Add, null) },
+                    Row(
                         modifier = Modifier.clickable(onClick = onAddClicked)
-                    )
+                    ) {
+                        Icon(Icons.Outlined.Add, null)
+                        Text(stringResource(R.string.watch_manager_add_watch_title))
+                    }
                 }
             }
         }
