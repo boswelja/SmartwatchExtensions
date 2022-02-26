@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 
@@ -79,7 +79,7 @@ fun BatterySyncSettings(
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
 
-    val settingsModifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+    val settingsModifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth()
     Column(modifier) {
         HeroSetting(
             checked = batterySyncEnabled,
@@ -103,26 +103,22 @@ fun BatterySyncSettings(
             enabled = batterySyncEnabled,
             modifier = settingsModifier
         )
-        Column(
-            modifier = Modifier
-                .clickable(enabled = batterySyncEnabled) {
-                    onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
-                }
-                .then(settingsModifier)
-        ) {
-            Text(stringResource(R.string.phone_battery_noti_title))
-            Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled))
-        }
-        Column(
-            modifier = Modifier
-                .clickable(enabled = batterySyncEnabled) {
-                    onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
-                }
-                .then(settingsModifier)
-        ) {
-            Text(stringResource(R.string.watch_battery_noti_title))
-            Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled))
-        }
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.phone_battery_noti_title)) },
+            summary = { Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled)) },
+            modifier = settingsModifier,
+            enabled = batterySyncEnabled,
+            onClick = {
+                onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
+            }
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.watch_battery_noti_title)) },
+            summary = { Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled)) },
+            modifier = settingsModifier,
+            enabled = batterySyncEnabled,
+            onClick = { onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route) }
+        )
     }
 }
 
