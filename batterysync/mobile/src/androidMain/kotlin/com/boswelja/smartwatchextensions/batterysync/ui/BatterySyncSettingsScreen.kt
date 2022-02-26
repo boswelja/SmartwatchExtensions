@@ -71,8 +71,7 @@ fun BatterySyncSettingsScreen(
 fun BatterySyncSettings(
     viewModel: BatterySyncViewModel,
     onNavigate: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    settingsModifier: Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     val chargeThreshold by viewModel.chargeThreshold.collectAsState()
@@ -82,6 +81,7 @@ fun BatterySyncSettings(
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
 
+    val settingsModifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
     Column(modifier) {
         HeroSetting(
             checked = batterySyncEnabled,
