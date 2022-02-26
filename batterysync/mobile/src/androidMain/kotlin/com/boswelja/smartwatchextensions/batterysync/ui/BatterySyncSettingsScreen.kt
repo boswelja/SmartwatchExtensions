@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
-import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 
@@ -83,10 +83,10 @@ fun BatterySyncSettings(
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
 
     Column(modifier) {
-        CheckboxSetting(
-            label = { Text(stringResource(R.string.battery_sync_toggle_title)) },
+        HeroSetting(
             checked = batterySyncEnabled,
-            onCheckChanged = viewModel::setBatterySyncEnabled,
+            onCheckedChange = viewModel::setBatterySyncEnabled,
+            text = { Text(stringResource(R.string.battery_sync_toggle_title)) },
             modifier = settingsModifier
         )
         BatterySliderSetting(
