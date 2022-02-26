@@ -4,12 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -44,6 +44,7 @@ fun CheckboxSetting(
     Row(
         modifier = Modifier
             .clickable(enabled = enabled) { onCheckedChange(!checked) }
+            .padding(SettingDefaults.Padding)
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -51,14 +52,14 @@ fun CheckboxSetting(
             Modifier.weight(1f)
         ) {
             CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.titleMedium,
+                LocalTextStyle provides SettingDefaults.TitleTextStyle,
                 LocalContentColor provides textColor
             ) {
                 text()
             }
             if (summary != null) {
                 CompositionLocalProvider(
-                    LocalTextStyle provides MaterialTheme.typography.labelLarge,
+                    LocalTextStyle provides SettingDefaults.SummaryTextStyle,
                     LocalContentColor provides textColor
                 ) {
                     summary()

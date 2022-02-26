@@ -32,7 +32,10 @@ fun HeroSetting(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.clickable { onCheckedChange(!checked) },
+        modifier = Modifier
+            .padding(SettingDefaults.Padding)
+            .clickable { onCheckedChange(!checked) }
+            .then(modifier),
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         Row(
@@ -43,7 +46,7 @@ fun HeroSetting(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+            ProvideTextStyle(SettingDefaults.TitleTextStyle) {
                 text()
             }
             Checkbox(

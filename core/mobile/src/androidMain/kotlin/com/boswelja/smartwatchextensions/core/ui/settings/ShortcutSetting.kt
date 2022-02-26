@@ -2,9 +2,9 @@ package com.boswelja.smartwatchextensions.core.ui.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -34,17 +34,18 @@ fun ShortcutSetting(
     Column(
         modifier = Modifier
             .clickable(enabled = enabled, onClick = onClick)
+            .padding(SettingDefaults.Padding)
             .then(modifier)
     ) {
         CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.titleMedium,
+            LocalTextStyle provides SettingDefaults.TitleTextStyle,
             LocalContentColor provides textColor
         ) {
             text()
         }
         if (summary != null) {
             CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.labelLarge,
+                LocalTextStyle provides SettingDefaults.SummaryTextStyle,
                 LocalContentColor provides textColor
             ) {
                 summary()

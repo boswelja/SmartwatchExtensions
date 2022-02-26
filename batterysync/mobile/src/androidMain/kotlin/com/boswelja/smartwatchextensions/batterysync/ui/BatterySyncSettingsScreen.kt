@@ -79,7 +79,7 @@ fun BatterySyncSettings(
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
 
-    val settingsModifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth()
+    val settingsModifier = Modifier.fillMaxWidth()
     Column(modifier) {
         HeroSetting(
             checked = batterySyncEnabled,

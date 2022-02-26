@@ -1,9 +1,9 @@
 package com.boswelja.smartwatchextensions.core.ui.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -43,16 +43,20 @@ fun SliderSetting(
     } else {
         LocalContentColor.current.copy(alpha = DisabledAlpha)
     }
-    Column(modifier) {
+    Column(
+        modifier = Modifier
+            .padding(SettingDefaults.Padding)
+            .then(modifier)
+    ) {
         CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.titleMedium,
+            LocalTextStyle provides SettingDefaults.TitleTextStyle,
             LocalContentColor provides textColor
         ) {
             text()
         }
         if (summaryText != null) {
             CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.labelLarge,
+                LocalTextStyle provides SettingDefaults.SummaryTextStyle,
                 LocalContentColor provides textColor
             ) {
                 summaryText(currentValue)
