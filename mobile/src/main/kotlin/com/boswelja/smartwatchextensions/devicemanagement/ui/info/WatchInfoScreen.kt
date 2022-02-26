@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
@@ -150,11 +150,9 @@ fun WatchNameField(
     var currentName by rememberSaveable(watchName) { mutableStateOf(watchName) }
     val nameValid = currentName.isNotBlank()
 
-    OutlinedTextField(
+    BasicTextField(
         modifier = modifier,
         value = currentName,
-        label = { Text(stringResource(R.string.watch_name_field_hint)) },
-        isError = !nameValid,
         singleLine = true,
         onValueChange = {
             currentName = it
