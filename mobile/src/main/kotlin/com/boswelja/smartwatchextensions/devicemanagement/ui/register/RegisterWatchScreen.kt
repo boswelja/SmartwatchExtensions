@@ -2,13 +2,12 @@ package com.boswelja.smartwatchextensions.devicemanagement.ui.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material3.Card
@@ -102,7 +101,6 @@ fun RegisterWatchesHeader(
  * @param contentPadding The content padding.
  * @param discoveredWatches The list of discovered watches to display.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DiscoveredWatchesList(
     modifier: Modifier = Modifier,
@@ -121,16 +119,14 @@ fun DiscoveredWatchesList(
             modifier = modifier
         ) {
             items(discoveredWatches) { watch ->
-                ListItem(
-                    text = { Text(watch.name) },
-                    icon = {
-                        Icon(
-                            Icons.Outlined.Watch,
-                            null,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                )
+                Row {
+                    Icon(
+                        Icons.Outlined.Watch,
+                        null,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Text(watch.name)
+                }
             }
         }
     }
