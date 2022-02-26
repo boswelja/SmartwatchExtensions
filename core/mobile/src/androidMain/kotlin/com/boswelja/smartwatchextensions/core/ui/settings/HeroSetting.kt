@@ -43,7 +43,7 @@ fun HeroSetting(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ProvideTextStyle(MaterialTheme.typography.titleLarge) {
+            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
                 text()
             }
             Checkbox(
