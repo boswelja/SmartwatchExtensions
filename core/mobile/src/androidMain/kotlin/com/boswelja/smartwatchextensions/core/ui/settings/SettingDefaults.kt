@@ -29,6 +29,14 @@ internal object SettingDefaults {
         get() = MaterialTheme.typography.bodyMedium
 
     /**
+     * The default text style used for settings headers.
+     */
+    internal val HeaderTextStyle: TextStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = MaterialTheme.typography.labelLarge
+
+    /**
      * The default settings item padding.
      */
     internal val Padding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
