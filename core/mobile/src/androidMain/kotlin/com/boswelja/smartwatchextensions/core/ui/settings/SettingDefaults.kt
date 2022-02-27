@@ -18,7 +18,7 @@ internal object SettingDefaults {
     internal val TitleTextStyle: TextStyle
         @Composable
         @ReadOnlyComposable
-        get() = MaterialTheme.typography.bodyLarge
+        get() = MaterialTheme.typography.titleMedium
 
     /**
      * The default text style used for settings summary.
