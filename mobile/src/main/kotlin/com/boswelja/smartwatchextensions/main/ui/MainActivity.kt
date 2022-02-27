@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MainScreen(viewModel)
+            MainScreen()
         }
 
         lifecycleScope.launch {

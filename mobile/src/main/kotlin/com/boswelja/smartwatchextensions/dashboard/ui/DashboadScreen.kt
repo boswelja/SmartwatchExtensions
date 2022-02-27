@@ -45,6 +45,8 @@ fun DashboardScreen(
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = getViewModel()
     val watchStatus by viewModel.status.collectAsState()
+    val selectedWatch by viewModel.selectedWatch.collectAsState()
+    val registeredWatches by viewModel.registeredWatches.collectAsState()
     val batteryStats by viewModel.batteryStats.collectAsState()
     val appCount by viewModel.appCount.collectAsState()
 
@@ -55,7 +57,14 @@ fun DashboardScreen(
             contentSpacing = contentPadding
         ) {
             DashboardItem(
-                content = { WatchStatusSummarySmall(watchStatus = watchStatus) }
+                content = {
+                    SelectedWatchSummary(
+                        selectedWatch = selectedWatch,
+                        watchStatus = watchStatus,
+                        registeredWatches = registeredWatches,
+                        onWatchSelected = viewModel::selectWatchById
+                    )
+                }
             )
             DashboardItem(
                 content = batteryStats?.let { batteryStats ->

@@ -14,19 +14,9 @@ class MainViewModel(
 ) : ViewModel() {
 
     /**
-     * Flows the selected watch.
-     */
-    val selectedWatch = watchManager.selectedWatch
-
-    /**
-     * Flows the registered watches.
-     */
-    val registeredWatches = watchManager.registeredWatches
-
-    /**
      * Flow whether the app needs setup.
      */
-    val needsSetup = registeredWatches.map { it.isEmpty() }
+    val needsSetup = watchManager.registeredWatches.map { it.isEmpty() }
 
     /**
      * Select a watch by it's ID.

@@ -1,39 +1,22 @@
 package com.boswelja.smartwatchextensions.common.ui
 
 import android.content.Intent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.HelpOutline
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.SmallTopAppBar
-import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.watchconnection.common.Watch
 
 /**
  * An app bar with a navigate up action.
@@ -42,7 +25,6 @@ import com.boswelja.watchconnection.common.Watch
 @Composable
 fun UpNavigationAppBar(
     title: @Composable () -> Unit = { },
-    actions: @Composable RowScope.() -> Unit = { },
     onNavigateUp: () -> Unit
 ) {
     MediumTopAppBar(
@@ -55,60 +37,35 @@ fun UpNavigationAppBar(
                 )
             }
         },
-        actions = actions
-    )
-}
-
-/**
- * An app bar with a watch picker.
- * @param selectedWatch The currently selected watch.
- * @param watches The list of available watches.
- * @param onWatchSelected Called when a watch is selected.
- */
-@Composable
-fun WatchPickerAppBar(
-    selectedWatch: Watch?,
-    watches: List<Watch>?,
-    onWatchSelected: (Watch) -> Unit
-) {
-    SmallTopAppBar(
-        title = {
-            WatchPickerDropdown(
-                selectedWatch = selectedWatch,
-                watches = watches,
-                onWatchSelected = onWatchSelected,
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
         actions = { WikiAction() }
     )
 }
 
-/**
- * An app bar with a watch picker and navigate up action.
- * @param selectedWatch The currently selected watch.
- * @param watches The list of available watches.
- * @param onWatchSelected Called when a watch is selected.
- * @param onNavigateUp Called when up navigation is requested.
- */
 @Composable
-fun UpNavigationWatchPickerAppBar(
-    selectedWatch: Watch?,
-    watches: List<Watch>?,
-    onWatchSelected: (Watch) -> Unit,
-    onNavigateUp: () -> Unit
+fun TopAppBar(
+    title: @Composable () -> Unit,
+    canNavigateUp: Boolean,
+    onNavigateUp: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-    UpNavigationAppBar(
-        onNavigateUp = onNavigateUp,
-        title = {
-            WatchPickerDropdown(
-                selectedWatch = selectedWatch,
-                watches = watches,
-                onWatchSelected = onWatchSelected,
-                modifier = Modifier.fillMaxWidth()
-            )
+    MediumTopAppBar(
+        title = title,
+        navigationIcon = {
+            AnimatedVisibility(
+                visible = canNavigateUp,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                IconButton(onNavigateUp) {
+                    Icon(
+                        Icons.Outlined.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            }
         },
-        actions = { WikiAction() }
+        actions = { WikiAction() },
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -128,49 +85,5 @@ fun WikiAction() {
         }
     ) {
         Icon(Icons.Outlined.HelpOutline, stringResource(R.string.wiki_label))
-    }
-}
-
-/**
- * A dropdown for selecting a watch from a list.
- * @param selectedWatch The currently selected watch.
- * @param watches The list of available watches.
- * @param onWatchSelected Called when a watch was selected.
- */
-@Composable
-fun WatchPickerDropdown(
-    selectedWatch: Watch?,
-    watches: List<Watch>?,
-    onWatchSelected: (Watch) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-        Modifier.wrapContentSize(Alignment.TopStart)
-    ) {
-        Row(
-            modifier = modifier.clickable { expanded = !expanded },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(selectedWatch?.name ?: stringResource(R.string.watch_status_connecting))
-            Spacer(Modifier.width(8.dp))
-            Icon(Icons.Outlined.ArrowDropDown, null)
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            watches?.forEach {
-                DropdownMenuItem(
-                    onClick = {
-                        expanded = false
-                        onWatchSelected(it)
-                    },
-                    text = {
-                        Text(it.name)
-                    }
-                )
-            }
-        }
     }
 }

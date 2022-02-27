@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * A ViewModel to provide data used on the dashboard.
@@ -26,6 +27,20 @@ class DashboardViewModel(
     private val watchRepository: WatchRepository,
     private val selectedWatchManager: SelectedWatchManager
 ) : ViewModel() {
+
+    val selectedWatch = selectedWatchManager.selectedWatch
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+
+    val registeredWatches = watchRepository.registeredWatches
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            emptyList()
+        )
 
     /**
      * Flow the status of the selected watch.
@@ -46,6 +61,15 @@ class DashboardViewModel(
      */
     val appCount = mapStateForSelectedWatch(0L) {
         appRepository.countFor(it.uid)
+    }
+
+    /**
+     * Select a watch by it's ID.
+     */
+    fun selectWatchById(watchId: String) {
+        viewModelScope.launch {
+            selectedWatchManager.selectWatch(watchId)
+        }
     }
 
     private fun <T> mapStateForSelectedWatch(
