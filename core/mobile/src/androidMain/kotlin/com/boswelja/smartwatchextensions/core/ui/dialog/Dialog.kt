@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.core.R
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 
 /**
  * A material dialog for selecting an option from a list of available options.
@@ -126,15 +127,13 @@ fun <T> DialogSetting(
     valueLabel: @Composable (T) -> Unit
 ) {
     var dialogVisible by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier.clickable(enabled = enabled) { dialogVisible = true }.then(modifier)
-    ) {
-        icon?.invoke()
-        Column {
-            label()
-            summary?.invoke()
-        }
-    }
+    ShortcutSetting(
+        text = label,
+        summary = summary,
+        onClick = { dialogVisible = true },
+        enabled = enabled,
+        modifier = modifier
+    )
     if (dialogVisible) {
         ConfirmationDialog(
             modifier = dialogModifier,
