@@ -99,4 +99,6 @@
     <string name="github_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions</string>
     <string name="changelog_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/releases</string>
     <string name="wiki_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/wiki</string>
+
+    <string name="data_age_recent_short">Just now</string>
 </resources>

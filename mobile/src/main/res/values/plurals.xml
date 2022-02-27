@@ -6,4 +6,8 @@
         <item quantity="other">%s\napps</item>
     </plurals>
 
+    <plurals name="data_age_short">
+        <item quantity="other">%s minutes ago</item>
+        <item quantity="one">%s minute ago</item>
+    </plurals>
 </resources>

@@ -1,19 +1,19 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Icon
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.R
-import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
-
-private const val ICON_WIDTH_PERCENT = 0.33f
+import com.boswelja.smartwatchextensions.core.ui.toMinutes
 
 /**
  * A Composable for displaying a small summary of a [BatteryStats].
@@ -25,42 +25,29 @@ fun BatterySummarySmall(
     modifier: Modifier = Modifier,
     batteryStats: BatteryStats
 ) {
-    FeatureSummarySmall(
-        modifier = modifier,
-        icon = {
-            BatteryIcon(
-                percent = batteryStats.percent,
-                modifier = Modifier
-                    .fillMaxWidth(ICON_WIDTH_PERCENT)
-                    .aspectRatio(1f)
-            )
-        },
-        text = {
-            Text(
-                text = stringResource(
-                    R.string.battery_percent,
-                    batteryStats.percent.toString()
-                ),
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
+    val resources = LocalContext.current.resources
+    val animatedBattery by animateFloatAsState(
+        targetValue = batteryStats.percent / 100f,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
-}
-
-/**
- * Displays a battery icon for the given percentage.
- * @param percent The battery percent to display an icon for.
- * @param modifier [Modifier].
- */
-@Composable
-fun BatteryIcon(
-    percent: Int,
-    modifier: Modifier = Modifier
-) {
-    val drawable = getBatteryDrawableRes(percent)
-    Icon(
-        painterResource(drawable),
-        null,
-        modifier
-    )
+    val ageMinutes by batteryStats.timestamp.toMinutes()
+    Column(modifier) {
+        Text(
+            text = stringResource(
+                R.string.battery_percent,
+                batteryStats.percent.toString()
+            ),
+            style = MaterialTheme.typography.titleLarge
+        )
+        LinearProgressIndicator(
+            progress = animatedBattery
+        )
+        Text(
+            text = if (ageMinutes > 0) {
+                resources.getQuantityString(com.boswelja.smartwatchextensions.R.plurals.data_age_short, ageMinutes, ageMinutes)
+            } else {
+                stringResource(com.boswelja.smartwatchextensions.R.string.data_age_recent_short)
+            }
+        )
+    }
 }

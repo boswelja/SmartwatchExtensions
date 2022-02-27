@@ -10,16 +10,13 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
-import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.minutes
+import com.boswelja.smartwatchextensions.core.ui.toMinutes
 
 /**
  * Display a header for Battery Sync settings.
@@ -93,19 +90,5 @@ fun BatteryStatsSummaryLarge(
         ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
             secondaryText()
         }
-    }
-}
-
-/**
- * Return a State that produces the elapsed minutes since this timestamp.
- */
-@Composable
-internal fun Long.toMinutes() = produceState(
-    initialValue = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this, TimeUnit.MILLISECONDS),
-    key1 = this
-) {
-    while (true) {
-        value = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this@toMinutes, TimeUnit.MILLISECONDS)
-        delay(1.minutes)
     }
 }
