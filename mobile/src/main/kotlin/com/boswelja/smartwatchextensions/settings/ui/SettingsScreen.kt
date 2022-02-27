@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.core.ui.dialog.DialogSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.SettingsHeader
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 import kotlinx.coroutines.Dispatchers
