@@ -18,8 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.Card
-import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.core.ui.settings.SettingsHeader
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 
 /**
@@ -53,49 +52,45 @@ fun AboutAppScreen(
 @Composable
 fun AboutApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    Card(
-        modifier = modifier,
-        header = {
-            CardHeader(
-                title = { Text(stringResource(R.string.about_category_about)) }
-            )
-        }
-    ) {
-        Column {
-            ShortcutSetting(
-                text = { Text(stringResource(R.string.about_priv_policy_title)) },
-                onClick = {
-                    context.startActivity { intent ->
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = context.getString(R.string.privacy_policy_url).toUri()
-                        intent
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            ShortcutSetting(
-                text = { Text(stringResource(R.string.about_github)) },
-                onClick = {
-                    context.startActivity { intent ->
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = context.getString(R.string.github_url).toUri()
-                        intent
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            ShortcutSetting(
-                text = { Text(stringResource(R.string.about_changelog)) },
-                onClick = {
-                    context.startActivity { intent ->
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = context.getString(R.string.changelog_url).toUri()
-                        intent
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+    Column(modifier) {
+        SettingsHeader(
+            text = {
+                Text(stringResource(R.string.about_category_about))
+            }
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.about_priv_policy_title)) },
+            onClick = {
+                context.startActivity { intent ->
+                    intent.action = Intent.ACTION_VIEW
+                    intent.data = context.getString(R.string.privacy_policy_url).toUri()
+                    intent
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.about_github)) },
+            onClick = {
+                context.startActivity { intent ->
+                    intent.action = Intent.ACTION_VIEW
+                    intent.data = context.getString(R.string.github_url).toUri()
+                    intent
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.about_changelog)) },
+            onClick = {
+                context.startActivity { intent ->
+                    intent.action = Intent.ACTION_VIEW
+                    intent.data = context.getString(R.string.changelog_url).toUri()
+                    intent
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -120,36 +115,34 @@ fun SupportApp(
             }
             .build()
 
-    Card(
-        modifier = modifier,
-        header = {
-            CardHeader(title = { Text(stringResource(R.string.about_category_support)) })
-        }
-    ) {
-        Column {
-            ShortcutSetting(
-                text = { Text(stringResource(R.string.about_share_title)) },
-                onClick = {
-                    Intent()
-                        .apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(
-                                Intent.EXTRA_TEXT,
-                                context.getString(
-                                    com.boswelja.smartwatchextensions.core.common.R.string.play_store_link
-                                )
+    Column(modifier) {
+        SettingsHeader(
+            text = {
+                Text(stringResource(R.string.about_category_support))
+            }
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.about_share_title)) },
+            onClick = {
+                Intent()
+                    .apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            context.getString(
+                                com.boswelja.smartwatchextensions.core.common.R.string.play_store_link
                             )
-                            putExtra(Intent.EXTRA_TITLE, shareTitle)
-                            data = shareDataUri
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            type = "text/plain"
-                        }
-                        .also {
-                            context.startActivity(Intent.createChooser(it, null))
-                        }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+                        )
+                        putExtra(Intent.EXTRA_TITLE, shareTitle)
+                        data = shareDataUri
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        type = "text/plain"
+                    }
+                    .also {
+                        context.startActivity(Intent.createChooser(it, null))
+                    }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
