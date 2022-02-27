@@ -46,7 +46,7 @@ fun <T> ConfirmationDialog(
     onDismissRequest: () -> Unit,
     itemContent: @Composable RowScope.(T) -> Unit,
     items: List<T>,
-    selectedItem: T,
+    selectedItem: T?,
     onItemSelectionChanged: (T) -> Unit,
     icon: @Composable (() -> Unit)? = null
 ) {
@@ -61,8 +61,9 @@ fun <T> ConfirmationDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
             TextButton(
+                enabled = dialogSelectedItem != null,
                 onClick = {
-                    onItemSelectionChanged(dialogSelectedItem)
+                    onItemSelectionChanged(dialogSelectedItem!!)
                     onDismissRequest()
                 }
             ) {
