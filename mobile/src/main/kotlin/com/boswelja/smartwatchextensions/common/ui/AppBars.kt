@@ -5,8 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -22,25 +22,6 @@ import com.boswelja.smartwatchextensions.common.startActivity
  * An app bar with a navigate up action.
  * @param onNavigateUp Called when up navigation is requested.
  */
-@Composable
-fun UpNavigationAppBar(
-    title: @Composable () -> Unit = { },
-    onNavigateUp: () -> Unit
-) {
-    MediumTopAppBar(
-        title = title,
-        navigationIcon = {
-            IconButton(onNavigateUp) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = null
-                )
-            }
-        },
-        actions = { WikiAction() }
-    )
-}
-
 @Composable
 fun TopAppBar(
     title: @Composable () -> Unit,
@@ -58,7 +39,7 @@ fun TopAppBar(
             ) {
                 IconButton(onNavigateUp) {
                     Icon(
-                        Icons.Outlined.ArrowBack,
+                        Icons.Default.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -84,6 +65,6 @@ fun WikiAction() {
             }
         }
     ) {
-        Icon(Icons.Outlined.HelpOutline, stringResource(R.string.wiki_label))
+        Icon(Icons.Default.Help, stringResource(R.string.wiki_label))
     }
 }

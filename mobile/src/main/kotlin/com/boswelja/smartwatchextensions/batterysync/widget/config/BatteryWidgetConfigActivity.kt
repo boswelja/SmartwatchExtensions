@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,26 +13,30 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -47,10 +52,25 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
         setContent {
             val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
+            val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+            val scrollBehavior = remember(decayAnimationSpec) {
+                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+            }
             HarmonizedTheme {
                 Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
-                        UpNavigationAppBar(onNavigateUp = { finish() })
+                        MediumTopAppBar(
+                            title = { },
+                            navigationIcon = {
+                                IconButton(onClick = this::finish) {
+                                    Icon(
+                                        Icons.Default.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        )
                     },
                     floatingActionButton = {
                         ExtendedFloatingActionButton(

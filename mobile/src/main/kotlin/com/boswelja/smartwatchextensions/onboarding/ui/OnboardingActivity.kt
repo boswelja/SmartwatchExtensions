@@ -5,12 +5,16 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 
@@ -29,9 +33,15 @@ class OnboardingActivity : AppCompatActivity() {
             HarmonizedTheme {
                 Scaffold(
                     topBar = {
-                        UpNavigationAppBar(
-                            onNavigateUp = {
-                                if (!navController.navigateUp()) finish()
+                        MediumTopAppBar(
+                            title = { },
+                            navigationIcon = {
+                                IconButton(onClick = this::finish) {
+                                    Icon(
+                                        Icons.Default.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         )
                     }
