@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -62,7 +63,7 @@ fun OnboardingScreen(
                 }
                 RegisterWatchScreen(
                     modifier = modifier.padding(bottom = 64.dp),
-                    contentPadding = contentPadding,
+                    contentPadding = PaddingValues(contentPadding),
                     onWatchRegistered = {
                         finishVisible = true
                     }

@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.main.ui
 
 import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,15 +20,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
-import com.boswelja.smartwatchextensions.common.ui.TopAppBar
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
-import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
+
+private const val StartDestination = "dashboard"
 
 /**
  * A Composable screen for displaying the main content.
@@ -45,32 +44,25 @@ fun MainNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavDestination.DASHBOARD.route
+        startDestination = StartDestination
     ) {
-        // Bottom nav destinations
-        composable(BottomNavDestination.ABOUT.route) {
-            AboutAppScreen(
-                modifier = modifier,
-                contentPadding = contentPadding
-            )
-        }
-
-        // Dashboard destinations
         dashboardGraph(
             modifier = modifier,
             contentPadding = contentPadding,
             navController = navController,
-            route = BottomNavDestination.DASHBOARD.route,
+            route = StartDestination,
             onShowSnackbar = onShowSnackbar
         )
 
-        // Load settings
-        appSettingsGraph(
+        appBarGraph(
+            onShowSnackbar = onShowSnackbar,
+            onNavigateTo = {
+                navController.navigate(it) {
+                    launchSingleTop = true
+                }
+            },
             modifier = modifier,
-            contentPadding = contentPadding,
-            navController = navController,
-            route = BottomNavDestination.SETTINGS.route,
-            onShowSnackbar = onShowSnackbar
+            contentPadding = PaddingValues(contentPadding)
         )
     }
 }
@@ -94,26 +86,19 @@ fun MainScreen() {
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             topBar = {
-                val showUpButton = BottomNavDestination.values()
-                    .none { it.route == backStackEntry?.destination?.route }
+                val showUpButton = backStackEntry?.destination?.route != "dashboard"
                 TopAppBar(
                     title = {
                         Text(stringResource(R.string.app_name))
                     },
                     canNavigateUp = showUpButton,
                     onNavigateUp = navController::navigateUp,
-                    scrollBehavior = scrollBehavior
-                )
-            },
-            bottomBar = {
-                BottomNavBar(
-                    currentDestination = backStackEntry?.destination,
                     onNavigateTo = {
-                        navController.navigate(it.route) {
-                            popUpTo(BottomNavDestination.DASHBOARD.route)
+                        navController.navigate(it) {
                             launchSingleTop = true
                         }
-                    }
+                    },
+                    scrollBehavior = scrollBehavior
                 )
             }
         ) {

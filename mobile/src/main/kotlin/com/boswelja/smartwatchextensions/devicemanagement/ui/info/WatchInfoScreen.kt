@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.devicemanagement.ui.info
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,7 +52,7 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun WatchInfoScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
+    contentPadding: PaddingValues,
     watch: Watch,
     onShowSnackbar: suspend (String) -> Unit,
     onWatchRemoved: () -> Unit
@@ -69,8 +70,7 @@ fun WatchInfoScreen(
         modifier = modifier
             .verticalScroll(scrollState)
             .padding(contentPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(Icons.Default.Watch, null, Modifier.size(180.dp))
         WatchActions(
@@ -110,7 +110,7 @@ fun WatchInfoScreen(
 @Composable
 fun WatchDetailsCard(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
+    contentPadding: PaddingValues,
     watch: Watch,
     capabilities: List<String>,
     onNicknameChanged: (String) -> Unit
@@ -120,8 +120,7 @@ fun WatchDetailsCard(
     ) {
         Column(
             Modifier.padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(contentPadding)
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             WatchNameField(
                 watchName = watch.name,

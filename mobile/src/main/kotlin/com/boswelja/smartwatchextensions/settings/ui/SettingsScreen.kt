@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.settings.ui
 
 import android.content.Intent
 import android.provider.Settings
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.SettingsHeader
@@ -35,13 +32,12 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun AppSettingsScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
+    contentPadding: PaddingValues = PaddingValues(),
     onNavigateTo: (SettingsDestination) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
+        contentPadding = contentPadding
     ) {
         item {
             AppSettings()

@@ -36,12 +36,6 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_reset">Reset</string>
 
-    <!-- Bottom Navigation Bar strings -->
-    <string name="bottom_nav_dashboard_label">Dashboard</string>
-    <string name="nav_messages_label">Messages</string>
-    <string name="bottom_nav_settings_label">Settings</string>
-    <string name="bottom_nav_about_label">About</string>
-
     <!-- Multi-watch strings -->
     <string name="watch_status_connected">Connected</string>
     <string name="watch_status_error">Error</string>
@@ -84,8 +78,11 @@
     <!-- Widget setup strings -->
     <string name="widget_config_battery_stats_hint">Choose a watch to show battery stats for in this widget</string>
 
-    <!-- Wiki strings -->
-    <string name="wiki_label">Get Help</string>
+    <!-- App Bar strings -->
+    <string name="app_bar_settings_label">Settings</string>
+    <string name="app_bar_overflow_label">More Options</string>
+    <string name="app_bar_wiki_label">Wiki</string>
+    <string name="app_bar_about_label">About App</string>
 
     <!-- Notification Channel strings -->
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>

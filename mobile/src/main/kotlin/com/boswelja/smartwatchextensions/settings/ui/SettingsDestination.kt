@@ -1,10 +1,8 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.devicemanagement.ui.watchManagerGraph
 
@@ -23,13 +21,12 @@ enum class SettingsDestination(
  * the route defined by [route].
  * @param modifier [Modifier].
  * @param contentPadding The padding for content.
- * @param navController [NavHostController].
  * @param route The entry point for this route.
  */
 fun NavGraphBuilder.appSettingsGraph(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
-    navController: NavHostController,
+    contentPadding: PaddingValues,
+    onNavigateTo: (String) -> Unit,
     route: String,
     onShowSnackbar: suspend (String) -> Unit
 ) {
@@ -37,13 +34,13 @@ fun NavGraphBuilder.appSettingsGraph(
         AppSettingsScreen(
             modifier = modifier,
             contentPadding = contentPadding,
-            onNavigateTo = { navController.navigate(it.route) }
+            onNavigateTo = { onNavigateTo(it.route) }
         )
     }
     watchManagerGraph(
         modifier = modifier,
         contentPadding = contentPadding,
-        navController = navController,
+        onNavigateTo = onNavigateTo,
         route = SettingsDestination.WATCH_MANAGER.route,
         onShowSnackbar = onShowSnackbar
     )

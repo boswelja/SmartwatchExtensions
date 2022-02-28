@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -29,12 +26,11 @@ import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 @Composable
 fun AboutAppScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
+        contentPadding = contentPadding
     ) {
         item {
             AboutApp()
