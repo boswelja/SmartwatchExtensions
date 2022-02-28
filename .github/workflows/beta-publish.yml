@@ -13,7 +13,7 @@ jobs:
           ref: ${{ github.head_ref }}   # checkout the correct branch name
           fetch-depth: 0                # fetch the whole repo history
 
-      - uses: actions/setup-java@v2.5.0
+      - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: 11
