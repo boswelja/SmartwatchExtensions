@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -62,10 +63,21 @@ fun TopAppBar(
             }
         },
         actions = {
-            IconButton(onClick = { onNavigateTo("settings") }) {
-                Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.app_bar_settings_label))
+            AnimatedVisibility(
+                visible = !canNavigateUp,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Row {
+                    IconButton(onClick = { onNavigateTo("settings") }) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.app_bar_settings_label)
+                        )
+                    }
+                    ToolbarOverflowAction(onNavigateTo = onNavigateTo)
+                }
             }
-            ToolbarOverflowAction(onNavigateTo = onNavigateTo)
         },
         scrollBehavior = scrollBehavior
     )
