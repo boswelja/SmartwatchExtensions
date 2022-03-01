@@ -29,9 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
-import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
+import com.boswelja.smartwatchextensions.aboutapp.ui.aboutAppGraph
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 
 /**
@@ -136,12 +135,12 @@ fun NavGraphBuilder.appBarGraph(
         action = Intent.ACTION_VIEW
         data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions/wiki")
     }
-    composable(TopAppBarDestinations.ABOUT.route) {
-        AboutAppScreen(
-            modifier = modifier,
-            contentPadding = contentPadding
-        )
-    }
+    aboutAppGraph(
+        graphRoute = TopAppBarDestinations.ABOUT.route,
+        onNavigateTo = onNavigateTo,
+        modifier = modifier,
+        contentPadding = contentPadding
+    )
 
     // Load settings
     appSettingsGraph(
