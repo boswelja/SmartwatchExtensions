@@ -97,13 +97,13 @@ jobs:
           onlyLastTag: true
 
       - name: Download mobile-release.aab
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           name: mobile-release.aab
           path: release/
 
       - name: Download wearos-release.aab
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           name: wearos-release.aab
           path: release/
