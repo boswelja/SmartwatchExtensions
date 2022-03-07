@@ -40,7 +40,7 @@ jobs:
       - name: Unit tests
         run: bash ./gradlew test
 
-      - uses: actions/upload-artifact@v2.3.1
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: Unit test results
