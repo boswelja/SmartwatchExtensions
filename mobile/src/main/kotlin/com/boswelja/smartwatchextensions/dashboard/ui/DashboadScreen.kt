@@ -1,15 +1,15 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -30,14 +29,12 @@ import org.koin.androidx.compose.getViewModel
  * @param contentPadding The screen padding.
  * @param onNavigateTo Called when navigation is requested.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
     onNavigateTo: (DashboardDestination) -> Unit
 ) {
-    val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = getViewModel()
     val watchStatus by viewModel.status.collectAsState()
     val selectedWatch by viewModel.selectedWatch.collectAsState()
@@ -45,12 +42,14 @@ fun DashboardScreen(
     val batteryStats by viewModel.batteryStats.collectAsState()
     val appCount by viewModel.appCount.collectAsState()
 
-    Column(modifier.verticalScroll(scrollState)) {
-        StaggeredVerticalGrid(
-            modifier = Modifier.padding(contentPadding),
-            cells = GridCells.Adaptive(172.dp),
-            contentSpacing = contentPadding
-        ) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(172.dp),
+        horizontalArrangement = Arrangement.spacedBy(contentPadding),
+        verticalArrangement = Arrangement.spacedBy(contentPadding),
+        contentPadding = PaddingValues(contentPadding),
+        modifier = modifier
+    ) {
+        item {
             DashboardItem(
                 content = {
                     SelectedWatchSummary(
@@ -61,6 +60,8 @@ fun DashboardScreen(
                     )
                 }
             )
+        }
+        item {
             DashboardItem(
                 content = batteryStats?.let { batteryStats ->
                     { BatterySummarySmall(batteryStats = batteryStats) }
@@ -68,6 +69,8 @@ fun DashboardScreen(
                 titleText = stringResource(R.string.battery_sync_title),
                 onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) }
             )
+        }
+        item {
             DashboardItem(
                 content = if (appCount > 0) {
                     { AppSummarySmall(appCount = appCount) }
@@ -75,16 +78,22 @@ fun DashboardScreen(
                 titleText = stringResource(R.string.main_app_manager_title),
                 onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) }
             )
+        }
+        item {
             DashboardItem(
                 titleText = stringResource(com.boswelja.smartwatchextensions.dndsync.R.string.main_dnd_sync_title),
                 onClick = { onNavigateTo(DashboardDestination.DND_SYNC_SETTINGS) }
             )
+        }
+        item {
             DashboardItem(
                 titleText = stringResource(
                     com.boswelja.smartwatchextensions.phonelocking.R.string.main_phone_locking_title
                 ),
                 onClick = { onNavigateTo(DashboardDestination.PHONE_LOCKING_SETTINGS) }
             )
+        }
+        item {
             DashboardItem(
                 titleText = stringResource(
                     com.boswelja.smartwatchextensions.proximity.R.string.proximity_settings_title
