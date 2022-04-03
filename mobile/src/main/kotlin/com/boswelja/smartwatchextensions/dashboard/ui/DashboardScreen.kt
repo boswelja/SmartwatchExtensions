@@ -34,7 +34,7 @@ fun DashboardScreen(
     val itemContentModifier = Modifier.padding(16.dp)
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(contentPadding),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(contentPadding),
         modifier = modifier
     ) {
