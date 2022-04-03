@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 
@@ -39,7 +41,7 @@ private const val StartDestination = "dashboard"
 fun MainNavHost(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    onShowSnackbar: suspend (String) -> Unit,
+    onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
     navController: NavHostController
 ) {
     NavHost(
@@ -55,7 +57,7 @@ fun MainNavHost(
         )
 
         appBarGraph(
-            onShowSnackbar = onShowSnackbar,
+            onShowSnackbar = { onShowSnackbar(snackbarVisuals(message = it)) },
             onNavigateTo = {
                 navController.navigate(it) {
                     launchSingleTop = true
