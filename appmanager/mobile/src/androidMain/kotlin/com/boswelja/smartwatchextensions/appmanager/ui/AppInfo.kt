@@ -4,14 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -106,30 +109,32 @@ fun AppHeaderView(
  */
 @Composable
 fun AppActionButtons(
-    modifier: Modifier = Modifier,
-    openEnabled: Boolean = true,
-    uninstallEnabled: Boolean = true,
     onOpenClicked: () -> Unit,
-    onUninstallClicked: () -> Unit
+    onUninstallClicked: () -> Unit,
+    openEnabled: Boolean,
+    uninstallEnabled: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     ) {
-        BigButton(
-            modifier = Modifier.weight(1f),
-            icon = { Icon(Icons.Outlined.OpenInNew, null) },
-            text = { Text(stringResource(R.string.appinfo_open)) },
+        FilledTonalButton(
             onClick = onOpenClicked,
             enabled = openEnabled
-        )
-        BigButton(
-            modifier = Modifier.weight(1f),
-            icon = { Icon(Icons.Outlined.Delete, null) },
-            text = { Text(stringResource(R.string.appinfo_uninstall)) },
+        ) {
+            Icon(Icons.Default.OpenInNew, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.appinfo_open))
+        }
+        FilledTonalButton(
             onClick = onUninstallClicked,
             enabled = uninstallEnabled
-        )
+        ) {
+            Icon(Icons.Default.Delete, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.appinfo_uninstall))
+        }
     }
 }
 
