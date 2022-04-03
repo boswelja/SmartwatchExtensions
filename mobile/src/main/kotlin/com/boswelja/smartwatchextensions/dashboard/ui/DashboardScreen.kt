@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import org.koin.androidx.compose.getViewModel
  */
 @Composable
 fun DashboardScreen(
+    onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
     onNavigateTo: (DashboardDestination) -> Unit
@@ -44,6 +46,7 @@ fun DashboardScreen(
                 watchStatus = watchStatus,
                 registeredWatches = registeredWatches,
                 onWatchSelected = viewModel::selectWatchById,
+                onShowSnackbar = onShowSnackbar,
                 contentModifier = itemContentModifier
             )
         }

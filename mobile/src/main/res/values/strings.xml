@@ -37,9 +37,9 @@
     <string name="dialog_button_reset">Reset</string>
 
     <!-- Multi-watch strings -->
-    <string name="watch_status_connected">Connected</string>
+    <string name="watch_status_connected">%s connected</string>
+    <string name="watch_status_connecting">%s disconnected</string>
     <string name="watch_status_error">Error</string>
-    <string name="watch_status_connecting">Connecting</string>
 
     <!-- Watch Info strings -->
     <string name="watch_name_field_hint">Nickname</string>
