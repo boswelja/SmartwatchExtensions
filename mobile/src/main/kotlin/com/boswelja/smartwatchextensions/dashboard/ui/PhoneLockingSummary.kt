@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.dndsync.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +23,7 @@ fun PhoneLockingSummary(
     ) {
         Column(Modifier.fillMaxWidth().then(contentModifier)) {
             Text(
-                text = stringResource(R.string.main_dnd_sync_title),
+                text = stringResource(com.boswelja.smartwatchextensions.phonelocking.R.string.main_phone_locking_title),
                 style = MaterialTheme.typography.labelMedium
             )
         }
