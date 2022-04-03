@@ -1,7 +1,5 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
-import android.content.Intent
-import android.provider.Settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
@@ -40,46 +37,11 @@ fun AppSettingsScreen(
         contentPadding = contentPadding
     ) {
         item {
-            AppSettings()
-        }
-        item {
             QSTileSettings()
         }
         item {
             WatchSettings(onNavigateTo = onNavigateTo)
         }
-    }
-}
-
-/**
- * A Composable for displaying app settings.
- * @param modifier [Modifier].
- */
-@Composable
-fun AppSettings(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
-    Column(modifier) {
-        SettingsHeader(
-            text = {
-                Text(stringResource(R.string.app_settings_title))
-            }
-        )
-        ShortcutSetting(
-            text = { Text(stringResource(R.string.noti_settings_title)) },
-            onClick = {
-                Intent()
-                    .apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName!!)
-                    }
-                    .also {
-                        context.startActivity(it)
-                    }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
