@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -45,18 +44,6 @@ class PhoneLockingSettingsViewModel(
             viewModelScope,
             SharingStarted.Lazily,
             false
-        )
-
-    /**
-     * Flows the currently selected watch name. Defaults to "Watch".
-     */
-    val watchName = selectedWatchManager.selectedWatch
-        .filterNotNull()
-        .map { it.name }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            "Watch"
         )
 
     /**
