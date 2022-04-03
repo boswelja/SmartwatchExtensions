@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -20,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -42,9 +40,7 @@ fun DashboardScreen(
     val batteryStats by viewModel.batteryStats.collectAsState()
     val appCount by viewModel.appCount.collectAsState()
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(172.dp),
-        horizontalArrangement = Arrangement.spacedBy(contentPadding),
+    LazyColumn(
         verticalArrangement = Arrangement.spacedBy(contentPadding),
         contentPadding = PaddingValues(contentPadding),
         modifier = modifier
@@ -62,21 +58,25 @@ fun DashboardScreen(
             )
         }
         item {
-            DashboardItem(
-                content = batteryStats?.let { batteryStats ->
-                    { BatterySummarySmall(batteryStats = batteryStats) }
-                },
-                titleText = stringResource(R.string.battery_sync_title),
-                onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) }
-            )
+            if (batteryStats == null) {
+                BatterySyncLoadingSummary(
+                    onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) },
+                    contentModifier = Modifier.padding(16.dp)
+                )
+            }
+            batteryStats?.let {
+                BatterySyncSummary(
+                    batteryStats = it,
+                    onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) },
+                    contentModifier = Modifier.padding(16.dp)
+                )
+            }
         }
         item {
-            DashboardItem(
-                content = if (appCount > 0) {
-                    { AppSummarySmall(appCount = appCount) }
-                } else null,
-                titleText = stringResource(R.string.main_app_manager_title),
-                onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) }
+            AppManagerSummary(
+                userAppCount = appCount,
+                onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) },
+                contentModifier = Modifier.padding(16.dp)
             )
         }
         item {
