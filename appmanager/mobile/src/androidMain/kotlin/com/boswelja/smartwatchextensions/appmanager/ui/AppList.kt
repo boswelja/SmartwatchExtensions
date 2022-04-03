@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -112,7 +113,9 @@ fun LazyListScope.appListItems(
     val itemModifier = Modifier.padding(contentPadding)
     item {
         Box(itemModifier) {
-            header()
+            ProvideTextStyle(MaterialTheme.typography.labelLarge) {
+                header()
+            }
         }
     }
     if (apps.isNotEmpty()) {
