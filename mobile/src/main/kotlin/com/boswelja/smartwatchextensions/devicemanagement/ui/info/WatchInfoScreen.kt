@@ -6,19 +6,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,19 +39,19 @@ import org.koin.androidx.compose.getViewModel
 
 /**
  * A screen displaying information & actions related to the given watch.
- * @param modifier [Modifier].
  * @param contentPadding The screen padding.
  * @param watch The watch to show info & actions for.
  * @param onShowSnackbar Called when a snackbar should be displayed.
  * @param onWatchRemoved Called when the watch was removed.
+ * @param modifier [Modifier].
  */
 @Composable
 fun WatchInfoScreen(
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     watch: Watch,
     onShowSnackbar: suspend (String) -> Unit,
-    onWatchRemoved: () -> Unit
+    onWatchRemoved: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val viewModel: WatchInfoViewModel = getViewModel()
@@ -72,7 +68,6 @@ fun WatchInfoScreen(
             .padding(contentPadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(Icons.Default.Watch, null, Modifier.size(180.dp))
         WatchActions(
             watchName = watch.name,
             onResetSettings = {
@@ -106,7 +101,6 @@ fun WatchInfoScreen(
  * @param capabilities The watches capabilities.
  * @param onNicknameChanged Called when the watch nickname changes.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchDetailsCard(
     modifier: Modifier = Modifier,
@@ -115,19 +109,15 @@ fun WatchDetailsCard(
     capabilities: List<String>,
     onNicknameChanged: (String) -> Unit
 ) {
-    Card(
-        modifier = modifier
+    Column(
+        modifier.padding(contentPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            Modifier.padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            WatchNameField(
-                watchName = watch.name,
-                onWatchNameChanged = onNicknameChanged
-            )
-            WatchCapabilities(capabilities = capabilities)
-        }
+        WatchNameField(
+            watchName = watch.name,
+            onWatchNameChanged = onNicknameChanged
+        )
+        WatchCapabilities(capabilities = capabilities)
     }
 }
 
@@ -149,7 +139,7 @@ fun WatchNameField(
     var currentName by rememberSaveable(watchName) { mutableStateOf(watchName) }
     val nameValid = currentName.isNotBlank()
 
-    BasicTextField(
+    OutlinedTextField(
         modifier = modifier,
         value = currentName,
         singleLine = true,
