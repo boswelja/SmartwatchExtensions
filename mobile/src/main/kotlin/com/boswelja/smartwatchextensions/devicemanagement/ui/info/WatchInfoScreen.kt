@@ -73,16 +73,14 @@ fun WatchInfoScreen(
         WatchActions(
             watchName = watch.name,
             onResetSettings = {
+                viewModel.resetWatchPreferences(watch)
                 scope.launch {
-                    viewModel.resetWatchPreferences(watch)
                     onShowSnackbar(context.getString(R.string.clear_preferences_success))
                 }
             },
             onForgetWatch = {
-                scope.launch {
-                    viewModel.forgetWatch(watch)
-                    onWatchRemoved()
-                }
+                viewModel.forgetWatch(watch)
+                onWatchRemoved()
             }
         )
         WatchDetailsCard(
