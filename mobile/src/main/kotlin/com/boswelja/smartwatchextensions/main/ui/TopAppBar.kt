@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -138,7 +139,7 @@ enum class TopAppBarDestinations(val route: String) {
  * Adds the App Bar navigation graph to the calling [NavGraphBuilder].
  */
 fun NavGraphBuilder.appBarGraph(
-    onShowSnackbar: suspend (String) -> Unit,
+    onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
     onNavigateTo: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues()

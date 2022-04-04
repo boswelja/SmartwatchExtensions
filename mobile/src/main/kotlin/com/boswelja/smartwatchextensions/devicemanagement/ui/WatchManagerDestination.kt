@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -26,7 +27,7 @@ fun NavGraphBuilder.watchManagerGraph(
     contentPadding: PaddingValues,
     onNavigateTo: (String) -> Unit,
     route: String,
-    onShowSnackbar: suspend (String) -> Unit
+    onShowSnackbar: suspend (SnackbarVisuals) -> Unit
 ) {
     composable(route) {
         WatchManagerScreen(

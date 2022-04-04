@@ -24,7 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 
@@ -57,7 +56,7 @@ fun MainNavHost(
         )
 
         appBarGraph(
-            onShowSnackbar = { onShowSnackbar(snackbarVisuals(message = it)) },
+            onShowSnackbar = onShowSnackbar,
             onNavigateTo = {
                 navController.navigate(it) {
                     launchSingleTop = true
