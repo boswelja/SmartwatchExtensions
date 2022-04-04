@@ -5,7 +5,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import com.boswelja.smartwatchextensions.core.ui.list.ListItem
 import com.boswelja.smartwatchextensions.devicemanagement.ui.info.WatchInfoScreen
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
@@ -104,26 +104,24 @@ fun WatchManagerCard(
         ) {
             LazyColumn {
                 items(registeredWatches) { watch ->
-                    Row (
-                        modifier = Modifier.clickable {
-                            onWatchSelected(watch)
-                        }
-                    ) {
-                        Icon(
-                            Icons.Outlined.Watch,
-                            null,
-                            Modifier.size(40.dp)
-                        )
-                        Text(watch.name)
-                    }
+                    ListItem(
+                        text = { Text(watch.name) },
+                        icon = {
+                            Icon(
+                                Icons.Outlined.Watch,
+                                null,
+                                Modifier.size(40.dp)
+                            )
+                        },
+                        modifier = Modifier.clickable { onWatchSelected(watch) }
+                    )
                 }
                 item {
-                    Row(
+                    ListItem(
+                        text = { Text(stringResource(R.string.watch_manager_add_watch_title)) },
+                        icon = { Icon(Icons.Outlined.Add, null) },
                         modifier = Modifier.clickable(onClick = onAddClicked)
-                    ) {
-                        Icon(Icons.Outlined.Add, null)
-                        Text(stringResource(R.string.watch_manager_add_watch_title))
-                    }
+                    )
                 }
             }
         }
