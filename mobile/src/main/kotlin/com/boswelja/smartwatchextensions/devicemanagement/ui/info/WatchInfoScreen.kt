@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.ui.BigButton
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -205,18 +207,16 @@ fun WatchActions(
     var forgetWatchDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(contentSpacing)) {
-        BigButton(
-            modifier = Modifier.weight(1f),
-            icon = { Icon(Icons.Default.ClearAll, null) },
-            text = { Text(stringResource(R.string.clear_preferences_button_text)) },
-            onClick = { clearSettingsDialogVisible = true }
-        )
-        BigButton(
-            modifier = Modifier.weight(1f),
-            icon = { Icon(Icons.Default.Delete, null) },
-            text = { Text(stringResource(R.string.button_forget_watch)) },
-            onClick = { forgetWatchDialogVisible = true }
-        )
+        FilledTonalButton(onClick = { clearSettingsDialogVisible = true }) {
+            Icon(Icons.Default.ClearAll, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.clear_preferences_button_text))
+        }
+        FilledTonalButton(onClick = { forgetWatchDialogVisible = true }) {
+            Icon(Icons.Default.Delete, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.button_forget_watch))
+        }
     }
     if (clearSettingsDialogVisible) {
         ResetSettingsDialog(
