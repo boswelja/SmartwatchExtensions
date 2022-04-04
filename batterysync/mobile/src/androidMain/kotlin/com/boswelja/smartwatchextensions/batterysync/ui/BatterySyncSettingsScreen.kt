@@ -19,9 +19,9 @@ import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 
-private const val BATTERY_CHARGE_MIN = 0.7f
-private const val BATTERY_LOW_MIN = 0.05f
-private const val BATTERY_LOW_MAX = 0.35f
+private const val BatteryChargeMin = 0.7f
+private const val BatteryLowMin = 0.05f
+private const val BatteryLowMax = 0.35f
 
 /**
  * A Composable screen for displaying Battery Sync settings.
@@ -88,7 +88,7 @@ fun BatterySyncSettings(
             modifier = settingsModifier
         )
         BatterySliderSetting(
-            valueRange = BATTERY_CHARGE_MIN..1f,
+            valueRange = BatteryChargeMin..1f,
             value = chargeThreshold / PROGRESS_FACTOR,
             onValueChanged = { viewModel.setChargeThreshold(round(it * PROGRESS_FACTOR).toInt()) },
             text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
@@ -96,7 +96,7 @@ fun BatterySyncSettings(
             modifier = settingsModifier
         )
         BatterySliderSetting(
-            valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
+            valueRange = BatteryLowMin..BatteryLowMax,
             value = lowThreshold / PROGRESS_FACTOR,
             onValueChanged = { viewModel.setLowBatteryThreshold(round(it * PROGRESS_FACTOR).toInt()) },
             text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },

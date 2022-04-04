@@ -67,7 +67,7 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(this, DnDSyncNotiChannelId)
             .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
             .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
             .setSmallIcon(R.drawable.ic_sync)
@@ -89,7 +89,7 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
             messageHandler.sendMessage(
                 watchUid,
                 Message(
-                    DND_STATUS_PATH,
+                    DnDStatusPath,
                     dndEnabled
                 )
             )
@@ -108,11 +108,11 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
      * Create a notification channel for DnD Sync status notifications.
      */
     private fun createNotificationChannel(notificationManager: NotificationManager) {
-        if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) ==
+        if (notificationManager.getNotificationChannel(DnDSyncNotiChannelId) ==
             null
         ) {
             NotificationChannel(
-                DND_SYNC_NOTI_CHANNEL_ID,
+                DnDSyncNotiChannelId,
                 getString(R.string.noti_channel_dnd_sync_title),
                 NotificationManager.IMPORTANCE_LOW
             )

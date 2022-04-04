@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.smartwatchextensions.bootorupdate.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
+import com.boswelja.smartwatchextensions.bootorupdate.BootUpdateNotiChannelId
 
 /**
  * A helper class for managing notification channels.
@@ -15,11 +15,11 @@ object NotificationChannelHelper {
      */
     fun createForBootOrUpdate(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-                BOOT_OR_UPDATE_NOTI_CHANNEL_ID
+                BootUpdateNotiChannelId
             ) == null
         ) {
             NotificationChannel(
-                BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                BootUpdateNotiChannelId,
                 context.getString(R.string.noti_channel_boot_or_update_title),
                 NotificationManager.IMPORTANCE_LOW
             )

@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.watchconnection.common.message.Message
@@ -36,7 +36,7 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         coroutineScope.launch {
             // Start listening for lock requests
-            messageClient.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
+            messageClient.incomingMessages().filter { it.path == LockPhone }.collect { message ->
                 tryLockDevice(message.sourceUid)
             }
         }
@@ -66,7 +66,7 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
                 // Try to update the watches local state
                 boolMessageHandler.sendMessage(
                     watchId,
-                    Message(UPDATE_BOOL_PREFERENCE, BoolSetting(PHONE_LOCKING_ENABLED_KEY, false))
+                    Message(UpdateBoolSetting, BoolSetting(PHONE_LOCKING_ENABLED_KEY, false))
                 )
             }
         }

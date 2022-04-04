@@ -12,8 +12,8 @@ import kotlinx.serialization.protobuf.ProtoBuf
 @OptIn(ExperimentalSerializationApi::class)
 object AddedOrUpdatedAppsSerializer : MessageSerializer<AppList> {
     override val messagePaths: Set<String> = setOf(
-        ADDED_APPS,
-        UPDATED_APPS
+        AddedAppsList,
+        UpdatedAppsList
     )
 
     override suspend fun deserialize(bytes: ByteArray?): AppList = ProtoBuf.decodeFromByteArray(bytes!!)

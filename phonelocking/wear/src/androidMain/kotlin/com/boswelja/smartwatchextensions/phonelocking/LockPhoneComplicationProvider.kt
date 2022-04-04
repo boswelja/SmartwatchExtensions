@@ -33,7 +33,7 @@ class LockPhoneComplicationProvider : ComplicationDataSourceService() {
 
     private fun createComplicationDataFor(type: ComplicationType): ComplicationData? {
         val intent = Intent(this, LockPhoneComplicationActivity::class.java).apply {
-            action = LOCK_PHONE
+            action = LockPhone
         }
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE

@@ -45,7 +45,7 @@ class AddedOrUpdatedAppReceiverTest {
             // Make the call
             receiver.onMessageReceived(
                 context,
-                ReceivedMessage(watchId, ADDED_APPS, appList)
+                ReceivedMessage(watchId, AddedAppsList, appList)
             )
 
             // Check the result

@@ -43,7 +43,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
 
         createNotificationChannel()
 
-        startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+        startForeground(DnDSyncLocalNotiId, createNotification())
 
         // Collect DnD Sync to Phone
         lifecycleScope.launch {
@@ -51,7 +51,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
                 dndSyncToPhone = it.dndSyncToPhone
                 dndSyncWithTheater = it.dndSyncWithTheater
                 if (!tryStop()) {
-                    startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+                    startForeground(DnDSyncLocalNotiId, createNotification())
                 }
             }
         }
@@ -75,7 +75,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
      * @return The notification to post for this service.
      */
     private fun createNotification(): Notification {
-        NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
+        NotificationCompat.Builder(this, DnDSyncNotiChannelId)
             .apply {
                 setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 when {
@@ -98,7 +98,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
 
                 PendingIntent.getActivity(
                     this@LocalDnDAndTheaterCollectorService,
-                    START_ACTIVITY_FROM_NOTI_ID,
+                    StartActivityIntentId,
                     launchIntent,
                     PendingIntent.FLAG_IMMUTABLE
                 ).also { setContentIntent(it) }
@@ -116,18 +116,18 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
         val phoneId = phoneState.data.map { it.id }.first()
         messageHandler.sendMessage(
             phoneId,
-            Message(DND_STATUS_PATH, dndSyncEnabled)
+            Message(DnDStatusPath, dndSyncEnabled)
         )
     }
 
     /**
-     * Creates a [NotificationChannel] for [DND_SYNC_NOTI_CHANNEL_ID].
+     * Creates a [NotificationChannel] for [DnDSyncNotiChannelId].
      */
     private fun createNotificationChannel() {
         val notificationManager = getSystemService(NotificationManager::class.java)
-        if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
+        if (notificationManager.getNotificationChannel(DnDSyncNotiChannelId) == null) {
             NotificationChannel(
-                DND_SYNC_NOTI_CHANNEL_ID,
+                DnDSyncNotiChannelId,
                 getString(com.boswelja.smartwatchextensions.dndsync.common.R.string.noti_channel_dnd_sync_title),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {

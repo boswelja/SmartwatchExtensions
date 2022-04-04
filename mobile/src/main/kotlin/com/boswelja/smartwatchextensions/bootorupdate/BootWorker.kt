@@ -33,7 +33,7 @@ class BootWorker(
             applicationContext, applicationContext.getSystemService()!!
         )
         val notification = NotificationCompat.Builder(
-            applicationContext, BOOT_OR_UPDATE_NOTI_CHANNEL_ID
+            applicationContext, BootUpdateNotiChannelId
         )
             .setOngoing(true)
             .setShowWhen(false)
@@ -42,6 +42,6 @@ class BootWorker(
             .setContentTitle(applicationContext.getString(R.string.notification_boot_handler_title))
             .setSmallIcon(R.drawable.noti_ic_update)
             .build()
-        return ForegroundInfo(NOTI_ID, notification)
+        return ForegroundInfo(NotiId, notification)
     }
 }

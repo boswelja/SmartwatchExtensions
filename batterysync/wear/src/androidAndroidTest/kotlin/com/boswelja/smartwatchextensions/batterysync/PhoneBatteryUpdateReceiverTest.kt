@@ -98,7 +98,7 @@ class PhoneBatteryUpdateReceiverTest {
             context,
             ReceivedMessage(
                 "uid",
-                BATTERY_STATUS_PATH,
+                BatteryStatus,
                 BatteryStats(0, false, 0)
             )
         )
@@ -116,7 +116,7 @@ class PhoneBatteryUpdateReceiverTest {
         val batteryStats = BatteryStats(50, false, 0)
         val uid = Watch.createUid("platform", "uid")
 
-        receiver.onMessageReceived(context, ReceivedMessage(uid, BATTERY_STATUS_PATH, batteryStats))
+        receiver.onMessageReceived(context, ReceivedMessage(uid, BatteryStatus, batteryStats))
 
         coVerify { batteryStatsRepository.updatePhoneBatteryStats(batteryStats) }
     }
@@ -127,7 +127,7 @@ class PhoneBatteryUpdateReceiverTest {
         val batteryStats = BatteryStats(50, false, 0)
         val uid = Watch.createUid("platform", "uid")
 
-        receiver.onMessageReceived(context, ReceivedMessage(uid, BATTERY_STATUS_PATH, batteryStats))
+        receiver.onMessageReceived(context, ReceivedMessage(uid, BatteryStatus, batteryStats))
 
         coVerify { batterySyncNotificationHandler.handleNotificationsFor(uid, batteryStats) }
     }
@@ -139,14 +139,14 @@ class PhoneBatteryUpdateReceiverTest {
 
         receiver.onMessageReceived(
             context,
-            ReceivedMessage(uid, BATTERY_STATUS_PATH, BatteryStats(50, false, 0))
+            ReceivedMessage(uid, BatteryStatus, BatteryStats(50, false, 0))
         )
 
         coVerify {
             messageClient.sendMessage(
                 uid,
                 match {
-                    it.path == BATTERY_STATUS_PATH && it.data != null
+                    it.path == BatteryStatus && it.data != null
                 }
             )
         }

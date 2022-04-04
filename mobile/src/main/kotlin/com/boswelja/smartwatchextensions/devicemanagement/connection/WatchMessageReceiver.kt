@@ -3,9 +3,9 @@ package com.boswelja.smartwatchextensions.devicemanagement.connection
 import android.content.Context
 import android.content.Intent
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.core.devicemanagement.CHECK_WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.core.devicemanagement.LAUNCH_APP
-import com.boswelja.smartwatchextensions.core.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.core.devicemanagement.CheckWatchRegistered
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestLaunchApp
+import com.boswelja.smartwatchextensions.core.devicemanagement.ConfirmWatchRegistered
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconnection.common.message.Message
@@ -30,8 +30,8 @@ class WatchMessageReceiver :
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         when (message.path) {
-            LAUNCH_APP -> launchApp(context)
-            CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(message.sourceUid)
+            RequestLaunchApp -> launchApp(context)
+            CheckWatchRegistered -> sendIsWatchRegistered(message.sourceUid)
         }
     }
 
@@ -52,7 +52,7 @@ class WatchMessageReceiver :
             val watch = watchRepository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
-                messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
+                messageClient.sendMessage(watch.uid, Message(ConfirmWatchRegistered, null))
             }
         }
     }

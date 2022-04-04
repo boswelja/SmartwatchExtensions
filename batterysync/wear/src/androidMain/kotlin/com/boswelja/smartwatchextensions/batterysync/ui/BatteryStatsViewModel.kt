@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
-import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
+import com.boswelja.smartwatchextensions.batterysync.RequestBatteryStatus
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
@@ -61,7 +61,7 @@ class BatteryStatsViewModel(
             return messageClient.sendMessage(
                 phoneId,
                 Message(
-                    REQUEST_BATTERY_UPDATE_PATH,
+                    RequestBatteryStatus,
                     null
                 )
             )

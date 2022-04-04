@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.REQUEST_APP_VERSION
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestAppVersion
 import com.boswelja.smartwatchextensions.core.devicemanagement.Version
 import com.boswelja.smartwatchextensions.core.devicemanagement.VersionSerializer
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
@@ -36,7 +36,7 @@ class AboutAppViewModel(
         viewModelScope.launch {
             watchManager.selectedWatch.collect { watch ->
                 if (watch?.uid != null) {
-                    watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
+                    watchManager.sendMessage(watch, RequestAppVersion, null)
                     _watchAppVersion.emit(null)
                 } else {
                     _watchAppVersion.emit(null)

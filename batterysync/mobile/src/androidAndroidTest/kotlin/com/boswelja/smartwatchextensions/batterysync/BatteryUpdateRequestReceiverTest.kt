@@ -68,7 +68,7 @@ class BatteryUpdateRequestReceiverTest {
             context,
             ReceivedMessage(
                 uid,
-                REQUEST_BATTERY_UPDATE_PATH,
+                RequestBatteryStatus,
                 null
             )
         )

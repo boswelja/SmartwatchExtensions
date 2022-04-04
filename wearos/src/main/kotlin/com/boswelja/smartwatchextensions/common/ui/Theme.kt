@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors
 import androidx.wear.compose.material.MaterialTheme
 
-private const val PURPLE_200 = 0xffce93d8
+private const val Purple200 = 0xffce93d8
 
 private val DarkColors = Colors(
-    primary = Color(PURPLE_200)
+    primary = Color(Purple200)
 )
 
 /**

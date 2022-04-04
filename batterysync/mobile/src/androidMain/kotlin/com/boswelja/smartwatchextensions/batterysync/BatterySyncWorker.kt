@@ -47,7 +47,7 @@ class BatterySyncWorker(
         batteryStats: BatteryStats
     ): Boolean {
         val handler = MessageHandler(BatteryStatsSerializer, messageClient)
-        return handler.sendMessage(targetUid, Message(BATTERY_STATUS_PATH, batteryStats))
+        return handler.sendMessage(targetUid, Message(BatteryStatus, batteryStats))
     }
 
     companion object {

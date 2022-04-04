@@ -66,7 +66,7 @@ class BatteryStatsReceiverTest {
             context,
             ReceivedMessage(
                 targetUid,
-                BATTERY_STATUS_PATH,
+                BatteryStatus,
                 batteryStats
             )
         )
@@ -90,7 +90,7 @@ class BatteryStatsReceiverTest {
             context,
             ReceivedMessage(
                 targetUid,
-                BATTERY_STATUS_PATH,
+                BatteryStatus,
                 batteryStats
             )
         )

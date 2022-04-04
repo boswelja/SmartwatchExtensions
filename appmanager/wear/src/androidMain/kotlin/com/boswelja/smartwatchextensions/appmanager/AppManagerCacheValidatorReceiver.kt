@@ -54,7 +54,7 @@ class AppManagerCacheValidatorReceiver :
         // Let the phone know what we're doing
         messageClient.sendMessage(
             targetUid,
-            Message(APP_SENDING_START, null)
+            Message(NotifyAppSendingStart, null)
         )
 
         val hasAddedApps = addedApps.isNotEmpty()
@@ -67,7 +67,7 @@ class AppManagerCacheValidatorReceiver :
                 addedOrUpdatedMessageHandler.sendMessage(
                     targetUid,
                     Message(
-                        ADDED_APPS,
+                        AddedAppsList,
                         addedApps
                     )
                 )
@@ -76,7 +76,7 @@ class AppManagerCacheValidatorReceiver :
                 addedOrUpdatedMessageHandler.sendMessage(
                     targetUid,
                     Message(
-                        UPDATED_APPS,
+                        UpdatedAppsList,
                         updatedApps
                     )
                 )
@@ -87,7 +87,7 @@ class AppManagerCacheValidatorReceiver :
             removedAppMessageHandler.sendMessage(
                 targetUid,
                 Message(
-                    REMOVED_APPS,
+                    RemovedAppsList,
                     removedApps
                 )
             )
@@ -96,7 +96,7 @@ class AppManagerCacheValidatorReceiver :
         // Send a message notifying the phone of a successful operation
         messageClient.sendMessage(
             targetUid,
-            Message(APP_SENDING_COMPLETE, null)
+            Message(NotifyAppSendingComplete, null)
         )
     }
 
@@ -115,7 +115,7 @@ class AppManagerCacheValidatorReceiver :
                 messageHandler.sendMessage(
                     targetUid,
                     Message(
-                        APP_ICON,
+                        RawAppIcon,
                         AppIcon(
                             app.packageName,
                             bytes

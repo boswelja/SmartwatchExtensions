@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.watchconnection.common.message.Message
@@ -61,7 +61,7 @@ class PhoneLockingSettingsViewModel(
             boolMessageHandler.sendMessage(
                 selectedWatch.uid,
                 Message(
-                    UPDATE_BOOL_PREFERENCE,
+                    UpdateBoolSetting,
                     BoolSetting(PHONE_LOCKING_ENABLED_KEY, isEnabled)
                 )
             )
