@@ -9,6 +9,6 @@ import org.koin.dsl.module
  * A Koin module to provide Watch Manager classes.
  */
 val watchManagerModule = module {
-    viewModel { WatchManagerViewModel(get()) }
+    viewModel { WatchManagerViewModel(get(), get()) }
     viewModel { RegisterWatchViewModel(get()) }
 }

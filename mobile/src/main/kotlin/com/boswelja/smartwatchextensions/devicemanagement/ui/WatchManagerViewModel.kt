@@ -2,15 +2,19 @@ package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for providing data to Watch Manager.
  */
 class WatchManagerViewModel(
-    private val watchRepository: WatchRepository
+    private val watchRepository: WatchRepository,
+    private val messageClient: MessageClient
 ) : ViewModel() {
 
     /**
@@ -25,7 +29,9 @@ class WatchManagerViewModel(
     }
 
     fun syncCapabilities(watch: Watch) {
-        TODO()
+        viewModelScope.launch {
+            messageClient.sendMessage(watch.uid, Message(RequestUpdateCapabilities, null))
+        }
     }
 
     fun renameWatch(watch: Watch, newName: String) {
