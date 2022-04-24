@@ -1,41 +1,41 @@
 plugins {
-    id("com.boswelja.smartwatchextensions.library")
+    kotlin("android")
+    id("com.android.library")
     id("com.boswelja.smartwatchextensions.detekt")
     kotlin("plugin.serialization") version "1.6.10"
 }
 
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(projects.core.common)
-                api(libs.watchconnection.common)
-                api(libs.watchconnection.serialization)
-                implementation(libs.kotlinx.serialization.protobuf)
-                implementation(libs.batterystats)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.mockk.core)
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.appcompat)
-            }
-        }
-        val androidAndroidTest by getting {
-            dependencies {
-                implementation(libs.androidx.test.corektx)
-                implementation(libs.androidx.test.runner)
-                implementation(libs.mockk.android)
-                implementation(libs.kotlinx.coroutines.test)
-                // Workaround for MockK 1.11.0 including a broken objenesis
-                implementation("org.objenesis:objenesis:3.2")
-            }
-        }
+android {
+    compileSdk = 32
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 32
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    implementation(projects.core.common)
+    api(libs.watchconnection.common)
+    api(libs.watchconnection.serialization)
+    implementation(libs.kotlinx.serialization.protobuf)
+    implementation(libs.batterystats)
+    implementation(libs.androidx.appcompat)
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk.core)
+
+    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    // Workaround for MockK 1.11.0 including a broken objenesis
+    androidTestImplementation("org.objenesis:objenesis:3.2")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
