@@ -1,11 +1,14 @@
 plugins {
-    id("com.boswelja.smartwatchextensions.library")
+    kotlin("android")
+    id("com.android.library")
     id("com.boswelja.smartwatchextensions.detekt")
 }
 
-kotlin {
-    sourceSets {
-        val commonMain by getting
-        val androidMain by getting
+android {
+    compileSdk = 32
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 32
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
