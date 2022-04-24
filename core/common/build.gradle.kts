@@ -1,24 +1,30 @@
 plugins {
-    id("com.boswelja.smartwatchextensions.library")
+    kotlin("android")
+    id("com.android.library")
     id("com.boswelja.smartwatchextensions.detekt")
     kotlin("plugin.serialization") version "1.6.10"
 }
 
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(libs.watchconnection.common)
-                api(libs.watchconnection.serialization)
-                implementation(libs.kotlinx.serialization.protobuf)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-        val androidMain by getting
+android {
+    compileSdk = 32
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 32
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    api(libs.watchconnection.common)
+    api(libs.watchconnection.serialization)
+    implementation(libs.kotlinx.serialization.protobuf)
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.kotlinx.coroutines.test)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }

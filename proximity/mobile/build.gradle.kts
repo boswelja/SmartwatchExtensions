@@ -2,28 +2,34 @@
 @file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
 
 plugins {
-    id("com.boswelja.smartwatchextensions.library")
+    kotlin("android")
+    id("com.android.library")
     id("com.boswelja.smartwatchextensions.detekt")
     alias(libs.plugins.compose)
 }
 
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(projects.proximity.common)
-                implementation(projects.core.mobile)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.watchconnection.mobile.core)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.bundles.lifecycle)
-                implementation(libs.koin.android)
-                implementation(libs.koin.compose)
-                implementation(libs.bundles.compose.mobile)
-            }
-        }
+android {
+    compileSdk = 32
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 32
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    api(projects.proximity.common)
+    implementation(projects.core.mobile)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.watchconnection.mobile.core)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.bundles.compose.mobile)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
