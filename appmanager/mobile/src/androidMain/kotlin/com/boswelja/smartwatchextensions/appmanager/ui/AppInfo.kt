@@ -4,25 +4,24 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -100,7 +99,7 @@ fun AppHeaderView(
         }
         Text(
             appName,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }
@@ -110,35 +109,31 @@ fun AppHeaderView(
  */
 @Composable
 fun AppActionButtons(
-    modifier: Modifier = Modifier,
-    openEnabled: Boolean = true,
-    uninstallEnabled: Boolean = true,
     onOpenClicked: () -> Unit,
-    onUninstallClicked: () -> Unit
+    onUninstallClicked: () -> Unit,
+    openEnabled: Boolean,
+    uninstallEnabled: Boolean,
+    modifier: Modifier = Modifier
 ) {
-    Surface(
+    Row(
         modifier = modifier,
-        color = Color.Transparent,
-        shape = MaterialTheme.shapes.medium
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     ) {
-        Row(
-            modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        FilledTonalButton(
+            onClick = onOpenClicked,
+            enabled = openEnabled
         ) {
-            BigButton(
-                modifier = Modifier.weight(1f),
-                icon = { Icon(Icons.Outlined.OpenInNew, null) },
-                text = { Text(stringResource(R.string.appinfo_open)) },
-                onClick = onOpenClicked,
-                enabled = openEnabled
-            )
-            BigButton(
-                modifier = Modifier.weight(1f),
-                icon = { Icon(Icons.Outlined.Delete, null) },
-                text = { Text(stringResource(R.string.appinfo_uninstall)) },
-                onClick = onUninstallClicked,
-                enabled = uninstallEnabled
-            )
+            Icon(Icons.Default.OpenInNew, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.appinfo_open))
+        }
+        FilledTonalButton(
+            onClick = onUninstallClicked,
+            enabled = uninstallEnabled
+        ) {
+            Icon(Icons.Default.Delete, null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.appinfo_uninstall))
         }
     }
 }
@@ -146,29 +141,28 @@ fun AppActionButtons(
 /**
  * Displays information about an app's permissions.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PermissionsInfo(
     permissions: List<String>,
     modifier: Modifier = Modifier
 ) {
     if (permissions.isNotEmpty()) {
-        val context = LocalContext.current
-        val permissionText = remember(context) {
-            context.resources.getQuantityString(
-                R.plurals.appinfo_requested_permissions_count,
-                permissions.count(),
-                permissions.count()
-            )
-        }
-        ListItem(
+        Column(
             modifier = modifier,
-            text = { Text(permissionText) }
-        )
-        permissions.forEach { permission ->
-            ListItem(
-                text = { Text(permission) }
-            )
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val context = LocalContext.current
+            val permissionText = remember(context) {
+                context.resources.getQuantityString(
+                    R.plurals.appinfo_requested_permissions_count,
+                    permissions.count(),
+                    permissions.count()
+                )
+            }
+            Text(permissionText)
+            permissions.forEach { permission ->
+                Text(permission)
+            }
         }
     }
 }
@@ -194,7 +188,7 @@ fun AppInstallInfo(
                     R.string.appinfo_first_installed,
                     dateFormatter.format(app.installTime)
                 ),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         if (app.installTime < app.updateTime) {
@@ -203,12 +197,12 @@ fun AppInstallInfo(
                     R.string.appinfo_last_updated,
                     dateFormatter.format(app.updateTime)
                 ),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Text(
             stringResource(R.string.appinfo_version, app.versionName),
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

@@ -3,17 +3,17 @@ package com.boswelja.smartwatchextensions.devicemanagement
 import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.RESET_APP
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestResetApp
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.core.devicemanagement.ConfirmWatchRegistered
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.RESET_SETTINGS
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_INT_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.ResetSettings
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
+import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
@@ -63,7 +63,7 @@ class WatchManager(
      */
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
+            messageClient.sendMessage(watch.uid, Message(ConfirmWatchRegistered, null))
             watchRepository.registerWatch(watch)
             AppCacheUpdateWorker.enqueueWorkerFor(context, watch.uid)
         }
@@ -78,7 +78,7 @@ class WatchManager(
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsRepository.removeStatsFor(watch.uid)
-            messageClient.sendMessage(watch.uid, Message(RESET_APP, null))
+            messageClient.sendMessage(watch.uid, Message(RequestResetApp, null))
             watchRepository.deregisterWatch(watch)
             AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
         }
@@ -103,7 +103,7 @@ class WatchManager(
         watch: Watch
     ) {
         batteryStatsRepository.removeStatsFor(watch.uid)
-        messageClient.sendMessage(watch.uid, Message(RESET_SETTINGS, null))
+        messageClient.sendMessage(watch.uid, Message(ResetSettings, null))
         settingsRepository.deleteForWatch(watch.uid)
     }
 
@@ -176,7 +176,7 @@ class WatchManager(
                     handler.sendMessage(
                         watch.uid,
                         Message(
-                            UPDATE_BOOL_PREFERENCE,
+                            UpdateBoolSetting,
                             BoolSetting(key, value)
                         )
                     )
@@ -187,7 +187,7 @@ class WatchManager(
                     handler.sendMessage(
                         watch.uid,
                         Message(
-                            UPDATE_INT_PREFERENCE,
+                            UpdateIntSetting,
                             IntSetting(key, value)
                         )
                     )

@@ -7,8 +7,8 @@ import com.boswelja.watchconnection.serialization.MessageSerializer
  */
 object PackageNameSerializer : MessageSerializer<String> {
     override val messagePaths: Set<String> = setOf(
-        REQUEST_OPEN_PACKAGE,
-        REQUEST_UNINSTALL_PACKAGE
+        RequestOpenPackage,
+        RequestUninstallPackage
     )
 
     override suspend fun deserialize(bytes: ByteArray?): String {

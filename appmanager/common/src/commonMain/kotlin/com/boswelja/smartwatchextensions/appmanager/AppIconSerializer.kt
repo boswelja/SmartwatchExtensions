@@ -11,7 +11,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  */
 @OptIn(ExperimentalSerializationApi::class)
 object AppIconSerializer : MessageSerializer<AppIcon> {
-    override val messagePaths: Set<String> = setOf(APP_ICON)
+    override val messagePaths: Set<String> = setOf(RawAppIcon)
     override suspend fun deserialize(bytes: ByteArray?): AppIcon = ProtoBuf.decodeFromByteArray(bytes!!)
     override suspend fun serialize(data: AppIcon): ByteArray = ProtoBuf.encodeToByteArray(data)
 }

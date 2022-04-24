@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.appmanager.MANAGE_APPS_CAPABILITY
-import com.boswelja.smartwatchextensions.batterysync.SYNC_BATTERY_CAPABILITY
-import com.boswelja.smartwatchextensions.dndsync.RECEIVE_DND_CAPABILITY
-import com.boswelja.smartwatchextensions.dndsync.SEND_DND_CAPABILITY
+import com.boswelja.smartwatchextensions.appmanager.ManageAppsCapability
+import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
+import com.boswelja.smartwatchextensions.dndsync.ReceiveDnDCapability
+import com.boswelja.smartwatchextensions.dndsync.SendDnDCapability
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 
 /**
@@ -32,44 +32,44 @@ class CapabilityUpdater(
     }
 
     /**
-     * Update [SEND_DND_CAPABILITY].
+     * Update [SendDnDCapability].
      */
     internal suspend fun updateSendDnD() {
         // We can always read DnD state
-        capabilityClient.addLocalCapability(SEND_DND_CAPABILITY)
+        capabilityClient.addLocalCapability(SendDnDCapability)
     }
 
     /**
-     * Update [RECEIVE_DND_CAPABILITY].
+     * Update [ReceiveDnDCapability].
      */
     internal suspend fun updateReceiveDnD() {
         // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
         // it's already granted.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
-            capabilityClient.addLocalCapability(RECEIVE_DND_CAPABILITY)
+            capabilityClient.addLocalCapability(ReceiveDnDCapability)
         } else {
-            capabilityClient.removeLocalCapability(RECEIVE_DND_CAPABILITY)
+            capabilityClient.removeLocalCapability(ReceiveDnDCapability)
         }
     }
 
     /**
-     * Update [SYNC_BATTERY_CAPABILITY].
+     * Update [SyncBatteryStatus].
      */
     internal suspend fun updateSendBattery() {
         // We can always get battery stats
-        capabilityClient.addLocalCapability(SYNC_BATTERY_CAPABILITY)
+        capabilityClient.addLocalCapability(SyncBatteryStatus)
     }
 
     /**
-     * Update [MANAGE_APPS_CAPABILITY].
+     * Update [ManageAppsCapability].
      */
     internal suspend fun updateManageApps() {
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
         if (canQueryAllPackages()) {
-            capabilityClient.addLocalCapability(MANAGE_APPS_CAPABILITY)
+            capabilityClient.addLocalCapability(ManageAppsCapability)
         } else {
-            capabilityClient.removeLocalCapability(MANAGE_APPS_CAPABILITY)
+            capabilityClient.removeLocalCapability(ManageAppsCapability)
         }
     }
 

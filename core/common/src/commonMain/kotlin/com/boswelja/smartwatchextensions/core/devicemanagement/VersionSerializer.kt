@@ -11,7 +11,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  */
 @OptIn(ExperimentalSerializationApi::class)
 object VersionSerializer : MessageSerializer<Version> {
-    override val messagePaths: Set<String> = setOf(REQUEST_APP_VERSION)
+    override val messagePaths: Set<String> = setOf(RequestAppVersion)
     override suspend fun deserialize(bytes: ByteArray?): Version = ProtoBuf.decodeFromByteArray(bytes!!)
     override suspend fun serialize(data: Version): ByteArray = ProtoBuf.encodeToByteArray(data)
 }

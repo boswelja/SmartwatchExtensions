@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.watchconnection.common.message.Message
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -48,18 +47,6 @@ class PhoneLockingSettingsViewModel(
         )
 
     /**
-     * Flows the currently selected watch name. Defaults to "Watch".
-     */
-    val watchName = selectedWatchManager.selectedWatch
-        .filterNotNull()
-        .map { it.name }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            "Watch"
-        )
-
-    /**
      * Set whether phone locking is enabled.
      */
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
@@ -74,7 +61,7 @@ class PhoneLockingSettingsViewModel(
             boolMessageHandler.sendMessage(
                 selectedWatch.uid,
                 Message(
-                    UPDATE_BOOL_PREFERENCE,
+                    UpdateBoolSetting,
                     BoolSetting(PHONE_LOCKING_ENABLED_KEY, isEnabled)
                 )
             )

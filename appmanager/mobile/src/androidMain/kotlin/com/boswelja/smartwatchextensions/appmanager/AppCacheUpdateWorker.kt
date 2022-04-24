@@ -57,7 +57,7 @@ class AppCacheUpdateWorker(
         return handler.sendMessage(
             targetUid,
             Message(
-                VALIDATE_CACHE,
+                RequestValidateCache,
                 cacheHash
             )
         )

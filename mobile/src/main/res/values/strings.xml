@@ -36,16 +36,10 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_reset">Reset</string>
 
-    <!-- Bottom Navigation Bar strings -->
-    <string name="bottom_nav_dashboard_label">Dashboard</string>
-    <string name="nav_messages_label">Messages</string>
-    <string name="bottom_nav_settings_label">Settings</string>
-    <string name="bottom_nav_about_label">About</string>
-
     <!-- Multi-watch strings -->
-    <string name="watch_status_connected">Connected</string>
+    <string name="watch_status_connected">%s connected</string>
+    <string name="watch_status_connecting">%s disconnected</string>
     <string name="watch_status_error">Error</string>
-    <string name="watch_status_connecting">Connecting</string>
 
     <!-- Watch Info strings -->
     <string name="watch_name_field_hint">Nickname</string>
@@ -60,6 +54,10 @@
     <!-- Watch Manager strings -->
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
+    <string name="watch_manager_rename">Rename</string>
+    <string name="watch_manager_forget">Forget</string>
+    <string name="watch_manager_sync">Sync Capabilities</string>
+    <string name="watch_manager_sync_in_progress">Syncing Capabilities. This may take a while</string>
 
     <!-- Register Watch strings -->
     <string name="register_watch_title">Searching for Watches</string>
@@ -84,15 +82,17 @@
     <!-- Widget setup strings -->
     <string name="widget_config_battery_stats_hint">Choose a watch to show battery stats for in this widget</string>
 
-    <!-- Wiki strings -->
-    <string name="wiki_label">Get Help</string>
+    <!-- App Bar strings -->
+    <string name="app_bar_settings_label">Settings</string>
+    <string name="app_bar_overflow_label">More Options</string>
+    <string name="app_bar_wiki_label">Wiki</string>
+    <string name="app_bar_about_label">About App</string>
 
     <!-- Notification Channel strings -->
     <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
 
     <!-- QS Tile strings -->
     <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
-    <string name="button_done">Done</string>
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
 
@@ -100,4 +100,6 @@
     <string name="github_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions</string>
     <string name="changelog_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/releases</string>
     <string name="wiki_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/wiki</string>
+
+    <string name="data_age_recent_short">Just now</string>
 </resources>

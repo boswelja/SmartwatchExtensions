@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
@@ -31,11 +30,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.SwipeDismissTarget
 import androidx.wear.compose.material.SwipeToDismissBox
+import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
 import com.boswelja.smartwatchextensions.R
@@ -83,7 +81,6 @@ class MainActivity : ComponentActivity() {
  * @param contentPadding The padding around the content.
  * @param groupPadding The padding between groups.
  */
-@OptIn(ExperimentalWearMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
@@ -126,7 +123,7 @@ fun MainScreen(
     ) {
         val aboutBoxState = rememberSwipeToDismissBoxState(
             confirmStateChange = {
-                if (it == SwipeDismissTarget.Dismissal) {
+                if (it == SwipeToDismissValue.Dismissed) {
                     aboutVisible = false
                 }
                 true

@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * A Koin module to provide Dashboard classes.
  */
 val dashboardModule = module {
-    viewModel { DashboardViewModel(get(), get(), get()) }
+    viewModel { DashboardViewModel(get(), get(), get(), get()) }
 }

@@ -1,12 +1,24 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.SettingsHeader
+import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
+import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable screen for displaying app settings.
@@ -17,22 +29,76 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AppSettingsScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
+    contentPadding: PaddingValues = PaddingValues(),
     onNavigateTo: (SettingsDestination) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
+        contentPadding = contentPadding
     ) {
         item {
-            AppSettingsCard()
-        }
-        item {
-            QSTileSettingsCard()
+            QSTileSettings()
         }
         item {
             WatchSettings(onNavigateTo = onNavigateTo)
         }
+    }
+}
+
+/**
+ * A Composable for displaying QS Tile settings.
+ * @param modifier [Modifier].
+ */
+@Composable
+fun QSTileSettings(
+    modifier: Modifier = Modifier
+) {
+    val viewModel: AppSettingsViewModel = getViewModel()
+    val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
+    val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
+
+    Column(modifier) {
+        SettingsHeader(
+            text = {
+                Text(stringResource(R.string.category_qstiles))
+            }
+        )
+        DialogSetting(
+            icon = { Icon(Icons.Outlined.Watch, null) },
+            label = { Text(stringResource(R.string.qstiles_selected_watch)) },
+            summary = { Text(qsTilesWatch?.name ?: "") },
+            values = registeredWatches,
+            value = qsTilesWatch,
+            onValueChanged = {
+                viewModel.setQSTilesWatch(it!!)
+            },
+            valueLabel = {
+                Text(it?.name ?: stringResource(R.string.watch_status_error))
+            }
+        )
+    }
+}
+
+/**
+ * A Composable for displaying watch settings.
+ * @param modifier [Modifier].
+ * @param onNavigateTo Called when navigation is requested.
+ */
+@Composable
+fun WatchSettings(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (SettingsDestination) -> Unit
+) {
+    Column(modifier) {
+        SettingsHeader(
+            text = {
+                Text(stringResource(R.string.category_watch_settings))
+            }
+        )
+        ShortcutSetting(
+            text = { Text(stringResource(R.string.manage_watches_title)) },
+            onClick = { onNavigateTo(SettingsDestination.WATCH_MANAGER) },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

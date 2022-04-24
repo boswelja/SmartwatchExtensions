@@ -1,12 +1,12 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
 import app.cash.turbine.test
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
+import com.boswelja.smartwatchextensions.appmanager.NotifyAppSendingComplete
+import com.boswelja.smartwatchextensions.appmanager.NotifyAppSendingStart
 import com.boswelja.smartwatchextensions.appmanager.AppVersion
 import com.boswelja.smartwatchextensions.appmanager.AppVersions
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
-import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
+import com.boswelja.smartwatchextensions.appmanager.RequestValidateCache
 import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
@@ -117,7 +117,7 @@ class AppManagerViewModelTest {
             messageClient.sendMessage(
                 watchUid,
                 match {
-                    it.path == VALIDATE_CACHE && it.data.contentEquals(versionBytes)
+                    it.path == RequestValidateCache && it.data.contentEquals(versionBytes)
                 }
             )
         }
@@ -133,7 +133,7 @@ class AppManagerViewModelTest {
             incomingMessages.emit(
                 ReceivedMessage(
                     "uid",
-                    APP_SENDING_START,
+                    NotifyAppSendingStart,
                     null
                 )
             )
@@ -143,7 +143,7 @@ class AppManagerViewModelTest {
             incomingMessages.emit(
                 ReceivedMessage(
                     "uid",
-                    APP_SENDING_COMPLETE,
+                    NotifyAppSendingComplete,
                     null
                 )
             )
@@ -161,7 +161,7 @@ class AppManagerViewModelTest {
             incomingMessages.emit(
                 ReceivedMessage(
                     "uid",
-                    VALIDATE_CACHE,
+                    RequestValidateCache,
                     null
                 )
             )

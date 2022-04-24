@@ -53,7 +53,7 @@ class PhoneBatteryUpdateReceiver :
         if (batteryStats != null) {
             handler.sendMessage(
                 targetUid,
-                Message(BATTERY_STATUS_PATH, batteryStats)
+                Message(BatteryStatus, batteryStats)
             )
         }
     }

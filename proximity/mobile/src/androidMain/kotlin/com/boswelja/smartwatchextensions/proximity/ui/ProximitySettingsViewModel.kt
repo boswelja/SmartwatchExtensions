@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for providing data to Proximity Settings.
@@ -44,21 +45,25 @@ class ProximitySettingsViewModel(
     /**
      * Set whether phone separation alerts are enabled.
      */
-    suspend fun setPhoneProximityNotiEnabled(enabled: Boolean) {
-        selectedWatchManager.selectedWatch.first()?.let {
-            settingsRepository.putBoolean(it.uid, PHONE_SEPARATION_NOTI_KEY, enabled)
+    fun setPhoneProximityNotiEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            selectedWatchManager.selectedWatch.first()?.let {
+                settingsRepository.putBoolean(it.uid, PHONE_SEPARATION_NOTI_KEY, enabled)
+            }
         }
     }
 
     /**
      * Set whether watch separation alerts are enabled.
      */
-    suspend fun setWatchProximityNotiEnabled(enabled: Boolean) {
-        selectedWatchManager.selectedWatch.first()?.let {
-            settingsRepository.putBoolean(it.uid, WATCH_SEPARATION_NOTI_KEY, enabled)
-        }
-        if (enabled) {
-            SeparationObserverService.start(getApplication())
+    fun setWatchProximityNotiEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            selectedWatchManager.selectedWatch.first()?.let {
+                settingsRepository.putBoolean(it.uid, WATCH_SEPARATION_NOTI_KEY, enabled)
+            }
+            if (enabled) {
+                SeparationObserverService.start(getApplication())
+            }
         }
     }
 

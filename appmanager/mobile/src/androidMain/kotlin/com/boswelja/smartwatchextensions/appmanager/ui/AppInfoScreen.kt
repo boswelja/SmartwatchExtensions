@@ -36,26 +36,24 @@ fun AppInfoScreen(
     }
 
     appDetails?.let { app ->
-        if (appDetails != null) {
-            AppInfo(
-                modifier = modifier,
-                app = app,
-                onOpenClicked = {
-                    coroutineScope.launch {
-                        if (viewModel.sendOpenRequest(it)) {
-                            onShowSnackbar(context.getString(R.string.appmanager_continue_on_watch))
-                        }
-                    }
-                },
-                onUninstallClicked = {
-                    coroutineScope.launch {
-                        if (viewModel.sendUninstallRequest(it)) {
-                            onShowSnackbar(context.getString(R.string.appmanager_continue_on_watch))
-                        }
+        AppInfo(
+            modifier = modifier,
+            app = app,
+            onOpenClicked = {
+                coroutineScope.launch {
+                    if (viewModel.sendOpenRequest(it)) {
+                        onShowSnackbar(context.getString(R.string.appmanager_continue_on_watch))
                     }
                 }
-            )
-        }
+            },
+            onUninstallClicked = {
+                coroutineScope.launch {
+                    if (viewModel.sendUninstallRequest(it)) {
+                        onShowSnackbar(context.getString(R.string.appmanager_continue_on_watch))
+                    }
+                }
+            }
+        )
     }
 
 }

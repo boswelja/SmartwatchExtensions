@@ -12,7 +12,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
 @OptIn(ExperimentalSerializationApi::class)
 object BoolSettingSerializer : MessageSerializer<BoolSetting> {
 
-    override val messagePaths: Set<String> = setOf(UPDATE_BOOL_PREFERENCE)
+    override val messagePaths: Set<String> = setOf(UpdateBoolSetting)
 
     override suspend fun deserialize(
         bytes: ByteArray?

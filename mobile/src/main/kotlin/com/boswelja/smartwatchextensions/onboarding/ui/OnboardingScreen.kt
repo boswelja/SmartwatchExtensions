@@ -7,12 +7,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +63,7 @@ fun OnboardingScreen(
                 }
                 RegisterWatchScreen(
                     modifier = modifier.padding(bottom = 64.dp),
-                    contentPadding = contentPadding,
+                    contentPadding = PaddingValues(contentPadding),
                     onWatchRegistered = {
                         finishVisible = true
                     }
@@ -77,7 +78,7 @@ fun OnboardingScreen(
                         modifier = Modifier
                             .padding(contentPadding),
                         text = { Text(stringResource(R.string.button_finish)) },
-                        icon = { Icon(Icons.Outlined.Check, null) },
+                        icon = { Icon(Icons.Default.Check, null) },
                         onClick = onFinished
                     )
                 }

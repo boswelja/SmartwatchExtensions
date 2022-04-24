@@ -12,7 +12,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
 @OptIn(ExperimentalSerializationApi::class)
 object CacheValidationSerializer : MessageSerializer<AppVersions> {
 
-    override val messagePaths: Set<String> = setOf(VALIDATE_CACHE)
+    override val messagePaths: Set<String> = setOf(RequestValidateCache)
 
     override suspend fun deserialize(bytes: ByteArray?): AppVersions =
         ProtoBuf.decodeFromByteArray(bytes!!)

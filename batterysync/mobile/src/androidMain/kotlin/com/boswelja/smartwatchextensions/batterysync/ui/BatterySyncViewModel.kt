@@ -13,13 +13,13 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BAT
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
-import com.boswelja.smartwatchextensions.batterysync.SYNC_BATTERY_CAPABILITY
+import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_BOOL_PREFERENCE
-import com.boswelja.smartwatchextensions.core.settings.UPDATE_INT_PREFERENCE
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
+import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.watchconnection.common.Watch
@@ -106,7 +106,7 @@ class BatterySyncViewModel(
      * Flow whether the selected watch supports Battery Sync.
      */
     val canSyncBattery = mapStateForSelectedWatch(false) {
-        discoveryClient.hasCapability(it.uid, SYNC_BATTERY_CAPABILITY)
+        discoveryClient.hasCapability(it.uid, SyncBatteryStatus)
     }
 
     /**
@@ -177,7 +177,7 @@ class BatterySyncViewModel(
         intMessageHandler.sendMessage(
             watchUid,
             Message(
-                UPDATE_INT_PREFERENCE,
+                UpdateIntSetting,
                 IntSetting(key, value)
             )
         )
@@ -192,7 +192,7 @@ class BatterySyncViewModel(
         boolMessageHandler.sendMessage(
             watchUid,
             Message(
-                UPDATE_BOOL_PREFERENCE,
+                UpdateBoolSetting,
                 BoolSetting(key, value)
             )
         )

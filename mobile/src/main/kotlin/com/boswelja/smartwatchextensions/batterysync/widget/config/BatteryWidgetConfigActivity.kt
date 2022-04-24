@@ -2,37 +2,42 @@ package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -41,20 +46,36 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
-            AppTheme {
+            val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+            val scrollBehavior = remember(decayAnimationSpec) {
+                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+            }
+            HarmonizedTheme {
                 Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
-                        UpNavigationAppBar(onNavigateUp = { finish() })
+                        MediumTopAppBar(
+                            title = { },
+                            navigationIcon = {
+                                IconButton(onClick = this::finish) {
+                                    Icon(
+                                        Icons.Default.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        )
                     },
                     floatingActionButton = {
                         ExtendedFloatingActionButton(
                             text = { Text(stringResource(R.string.button_finish)) },
-                            icon = { Icon(Icons.Outlined.Check, null) },
+                            icon = { Icon(Icons.Default.Check, null) },
                             onClick = {
                                 selectedWatch?.let {
                                     finishWidgetConfig(it)
@@ -70,9 +91,11 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                         )
                         Text(
                             stringResource(R.string.widget_config_battery_stats_hint),
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.headlineSmall,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().padding(16.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                         )
                         WatchPickerList(
                             watches = registeredWatches,
@@ -91,7 +114,7 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
      * @param selectedWatch The currently selected watch.
      * @param onWatchSelected Called when a new watch is selected.
      */
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WatchPickerList(
         watches: List<Watch>,
@@ -104,16 +127,10 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                 .fillMaxSize()
         ) {
             items(watches) { watch ->
-                ListItem(
-                    text = { Text(watch.name) },
-                    icon = {
-                        RadioButton(
-                            selected = watch == selectedWatch,
-                            onClick = null
-                        )
-                    },
-                    modifier = Modifier.clickable { onWatchSelected(watch) }
-                )
+                Row(Modifier.clickable { onWatchSelected(watch) }) {
+                    RadioButton(selected = watch == selectedWatch, onClick = null)
+                    Text(watch.name)
+                }
             }
         }
     }

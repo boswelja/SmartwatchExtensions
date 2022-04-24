@@ -54,7 +54,7 @@ class RemovedAppReceiverTest {
                 context,
                 ReceivedMessage(
                     watchId,
-                    REMOVED_APPS,
+                    RemovedAppsList,
                     RemovedApps(apps.apps.map { it.packageName })
                 )
             )
@@ -83,7 +83,7 @@ class RemovedAppReceiverTest {
             context,
             ReceivedMessage(
                 watchId,
-                REMOVED_APPS,
+                RemovedAppsList,
                 RemovedApps(apps.apps.map { it.packageName })
             )
         )

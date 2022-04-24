@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.NavigateNext
+import androidx.compose.material.icons.filled.NavigateNext
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,17 +52,17 @@ fun WelcomeScreen(
         Spacer(Modifier.height(contentPadding))
         Text(
             stringResource(R.string.welcome_to_text),
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.headlineMedium
         )
         Text(
             stringResource(R.string.app_name),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h4
+            style = MaterialTheme.typography.headlineLarge
         )
         Spacer(Modifier.height(contentPadding))
         ExtendedFloatingActionButton(
             text = { Text(stringResource(R.string.get_started)) },
-            icon = { Icon(Icons.Outlined.NavigateNext, null) },
+            icon = { Icon(Icons.Default.NavigateNext, null) },
             onClick = { onNavigateTo(OnboardingDestination.REGISTER_WATCHES) }
         )
     }

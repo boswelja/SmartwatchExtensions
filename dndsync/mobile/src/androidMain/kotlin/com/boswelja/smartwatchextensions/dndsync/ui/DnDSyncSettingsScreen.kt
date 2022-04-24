@@ -5,14 +5,14 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.boswelja.smartwatchextensions.core.settings.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.R
@@ -94,9 +94,9 @@ fun SyncToWatchSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_watch_summary)
@@ -106,7 +106,7 @@ fun SyncToWatchSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }
 
@@ -124,9 +124,9 @@ fun SyncToPhoneSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_phone_summary)
@@ -136,7 +136,7 @@ fun SyncToPhoneSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }
 
@@ -154,9 +154,9 @@ fun SyncWithTheaterSetting(
     enabled: Boolean = true,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    SwitchSetting(
+    CheckboxSetting(
         modifier = modifier,
-        label = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
+        text = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
         summary = {
             val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_with_theater_summary)
@@ -165,6 +165,6 @@ fun SyncWithTheaterSetting(
         },
         checked = checked,
         enabled = enabled,
-        onCheckChanged = onCheckChanged
+        onCheckedChange = onCheckChanged
     )
 }

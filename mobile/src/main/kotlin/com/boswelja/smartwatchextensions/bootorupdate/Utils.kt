@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.map
 /**
  * A notification channel ID for boot/update worker status notifications.
  */
-const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+const val BootUpdateNotiChannelId = "boot_or_update_noti_channel"
 
-internal const val NOTI_ID = 69102
+internal const val NotiId = 69102
 
 internal suspend fun Context.restartServices(
     settingsRepository: WatchSettingsRepository

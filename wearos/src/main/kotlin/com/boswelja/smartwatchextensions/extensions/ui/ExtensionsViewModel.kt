@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.PhoneState
-import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
+import com.boswelja.smartwatchextensions.phonelocking.LockPhone
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
@@ -55,7 +55,7 @@ class ExtensionsViewModel internal constructor(
     suspend fun requestLockPhone(): Boolean {
         if (phoneConnected().first()) {
             val phoneId = discoveryClient.pairedPhone()!!.uid
-            return messageClient.sendMessage(phoneId, Message(LOCK_PHONE, null))
+            return messageClient.sendMessage(phoneId, Message(LockPhone, null))
         }
         return false
     }

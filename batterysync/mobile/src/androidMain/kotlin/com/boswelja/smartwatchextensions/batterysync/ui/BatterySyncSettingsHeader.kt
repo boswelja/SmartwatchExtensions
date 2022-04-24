@@ -3,23 +3,20 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
-import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.minutes
+import com.boswelja.smartwatchextensions.core.ui.toMinutes
 
 /**
  * Display a header for Battery Sync settings.
@@ -83,29 +80,15 @@ fun BatteryStatsSummaryLarge(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
     Column(modifier) {
-        ProvideTextStyle(MaterialTheme.typography.h4) {
+        ProvideTextStyle(MaterialTheme.typography.headlineMedium) {
             text()
         }
         LinearProgressIndicator(
             progress = animatedBattery,
             modifier = Modifier.fillMaxWidth()
         )
-        ProvideTextStyle(MaterialTheme.typography.body1) {
+        ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
             secondaryText()
         }
-    }
-}
-
-/**
- * Return a State that produces the elapsed minutes since this timestamp.
- */
-@Composable
-internal fun Long.toMinutes() = produceState(
-    initialValue = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this, TimeUnit.MILLISECONDS),
-    key1 = this
-) {
-    while (true) {
-        value = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this@toMinutes, TimeUnit.MILLISECONDS)
-        delay(1.minutes)
     }
 }

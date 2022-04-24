@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -8,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.appmanager.ui.appManagerNavigation
 import com.boswelja.smartwatchextensions.batterysync.ui.batterySyncNavigation
+import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
 import com.boswelja.smartwatchextensions.dndsync.ui.dndSyncNavigation
 import com.boswelja.smartwatchextensions.phonelocking.ui.phoneLockingNavigation
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
@@ -39,10 +41,11 @@ fun NavGraphBuilder.dashboardGraph(
     contentPadding: Dp = 16.dp,
     navController: NavHostController,
     route: String,
-    onShowSnackbar: suspend (String) -> Unit
+    onShowSnackbar: suspend (SnackbarVisuals) -> Unit
 ) {
     composable(route) {
         DashboardScreen(
+            onShowSnackbar = onShowSnackbar,
             modifier = modifier,
             contentPadding = contentPadding,
             onNavigateTo = { navController.navigate(it.route) }
@@ -50,7 +53,7 @@ fun NavGraphBuilder.dashboardGraph(
     }
     appManagerNavigation(
         DashboardDestination.APP_MANAGER.route,
-        onShowSnackbar = onShowSnackbar,
+        onShowSnackbar = { onShowSnackbar(snackbarVisuals(message = it)) },
         onNavigate = { navController.navigate(it) },
         screenModifier = modifier
     )

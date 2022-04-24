@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.appmanager.PackageNameSerializer
-import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
-import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.smartwatchextensions.appmanager.RequestOpenPackage
+import com.boswelja.smartwatchextensions.appmanager.RequestUninstallPackage
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
@@ -37,7 +37,7 @@ class AppInfoViewModel(
             packageMessageHandler.sendMessage(
                 watch.uid,
                 Message(
-                    REQUEST_OPEN_PACKAGE,
+                    RequestOpenPackage,
                     app.packageName,
                     Message.Priority.HIGH
                 )
@@ -56,7 +56,7 @@ class AppInfoViewModel(
             packageMessageHandler.sendMessage(
                 watch.uid,
                 Message(
-                    REQUEST_UNINSTALL_PACKAGE,
+                    RequestUninstallPackage,
                     app.packageName,
                     Message.Priority.HIGH
                 )

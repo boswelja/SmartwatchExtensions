@@ -1,5 +1,6 @@
-package com.boswelja.smartwatchextensions.aboutapp.ui
+package com.boswelja.smartwatchextensions.aboutapp
 
+import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

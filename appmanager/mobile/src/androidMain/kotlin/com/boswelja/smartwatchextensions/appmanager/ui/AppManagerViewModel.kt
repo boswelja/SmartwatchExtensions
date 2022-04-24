@@ -3,12 +3,12 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
+import com.boswelja.smartwatchextensions.appmanager.NotifyAppSendingComplete
+import com.boswelja.smartwatchextensions.appmanager.NotifyAppSendingStart
 import com.boswelja.smartwatchextensions.appmanager.AppVersion
 import com.boswelja.smartwatchextensions.appmanager.AppVersions
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
-import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
+import com.boswelja.smartwatchextensions.appmanager.RequestValidateCache
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
@@ -110,8 +110,8 @@ class AppManagerViewModel(
     val isUpdatingCache = messageClient.incomingMessages()
         .map {
             when (it.path) {
-                APP_SENDING_COMPLETE -> false
-                APP_SENDING_START -> true
+                NotifyAppSendingComplete -> false
+                NotifyAppSendingStart -> true
                 else -> null
             }
         }
@@ -161,7 +161,7 @@ class AppManagerViewModel(
             cacheMessageHandler.sendMessage(
                 watch.uid,
                 Message(
-                    VALIDATE_CACHE,
+                    RequestValidateCache,
                     AppVersions(appVersionList),
                     Message.Priority.HIGH
                 )

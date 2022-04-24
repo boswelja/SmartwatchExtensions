@@ -4,7 +4,7 @@ import android.content.Context
 import com.boswelja.batterystats.BatteryInfo
 import com.boswelja.batterystats.BatteryManager
 
-private const val PERCENT_MULTIPLIER = 100
+private const val BatteryPercentMultiplier = 100
 
 /**
  * Get an up to date [BatteryStats] for this device.
@@ -13,7 +13,7 @@ private const val PERCENT_MULTIPLIER = 100
 fun Context.batteryStats(): BatteryStats? {
     return BatteryManager(this).getBatteryInfo()?.let {
         BatteryStats(
-            (it.percent * PERCENT_MULTIPLIER).toInt(),
+            (it.percent * BatteryPercentMultiplier).toInt(),
             it.status == BatteryInfo.Status.CHARGING,
             System.currentTimeMillis()
         )

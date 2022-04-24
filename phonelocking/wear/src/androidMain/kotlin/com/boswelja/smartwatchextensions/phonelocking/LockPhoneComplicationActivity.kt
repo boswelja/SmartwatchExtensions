@@ -33,7 +33,7 @@ class LockPhoneComplicationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        require(intent.action == LOCK_PHONE)
+        require(intent.action == LockPhone)
 
         setContent {
             MaterialTheme {
@@ -54,14 +54,14 @@ class LockPhoneComplicationActivity : ComponentActivity() {
         }
     }
     /**
-     * Checks if phone locking is enabled, and tries to send [LOCK_PHONE] to the registered phone.
+     * Checks if phone locking is enabled, and tries to send [LockPhone] to the registered phone.
      * If phone locking is disabled, a failure animation will be shown and the activity will finish.
      */
     private suspend fun tryLockPhone() {
         val phoneLockingEnabled = phoneLockingStateRepository.getPhoneLockingState().first().phoneLockingEnabled
         if (phoneLockingEnabled) {
             sendMessage(
-                LOCK_PHONE,
+                LockPhone,
                 getString(R.string.lock_phone_success),
                 getString(R.string.lock_phone_failed)
             )

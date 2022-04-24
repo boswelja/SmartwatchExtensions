@@ -5,12 +5,12 @@ import android.content.Context
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.core.devicemanagement.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.core.devicemanagement.REQUEST_UPDATE_CAPABILITIES
-import com.boswelja.smartwatchextensions.core.devicemanagement.RESET_APP
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestAppVersion
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
+import com.boswelja.smartwatchextensions.core.devicemanagement.RequestResetApp
 import com.boswelja.smartwatchextensions.core.devicemanagement.Version
 import com.boswelja.smartwatchextensions.core.devicemanagement.VersionSerializer
-import com.boswelja.smartwatchextensions.core.settings.RESET_SETTINGS
+import com.boswelja.smartwatchextensions.core.settings.ResetSettings
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.watchconnection.common.message.Message
@@ -34,19 +34,19 @@ class MessageReceiver :
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         when (message.path) {
-            REQUEST_APP_VERSION -> {
+            RequestAppVersion -> {
                 val handler = MessageHandler(VersionSerializer, messageClient)
                 val version = Version(BuildConfig.VERSION_CODE.toLong(), BuildConfig.VERSION_NAME)
                 handler.sendMessage(
                     discoveryClient.pairedPhone()!!.uid,
-                    Message(REQUEST_APP_VERSION, version)
+                    Message(RequestAppVersion, version)
                 )
             }
-            RESET_APP -> {
+            RequestResetApp -> {
                 val activityManager = context.getSystemService<ActivityManager>()
                 activityManager?.clearApplicationUserData()
             }
-            RESET_SETTINGS -> {
+            ResetSettings -> {
                 // TODO Add separate feature states
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
@@ -55,7 +55,7 @@ class MessageReceiver :
                     )
                 }
             }
-            REQUEST_UPDATE_CAPABILITIES -> {
+            RequestUpdateCapabilities -> {
                 CapabilityUpdater(context, discoveryClient).updateCapabilities()
             }
         }

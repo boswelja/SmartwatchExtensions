@@ -2,8 +2,12 @@
 <resources>
 
     <plurals name="app_manager_app_count">
-        <item quantity="one">%s\napp</item>
-        <item quantity="other">%s\napps</item>
+        <item quantity="one">%s app</item>
+        <item quantity="other">%s apps</item>
     </plurals>
 
+    <plurals name="data_age_short">
+        <item quantity="other">%s minutes ago</item>
+        <item quantity="one">%s minute ago</item>
+    </plurals>
 </resources>

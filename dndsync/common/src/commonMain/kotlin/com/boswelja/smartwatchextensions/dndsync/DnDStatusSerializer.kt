@@ -9,7 +9,7 @@ object DnDStatusSerializer : MessageSerializer<Boolean> {
     private const val trueByte: Byte = 1
     private const val falseByte: Byte = 0
 
-    override val messagePaths: Set<String> = setOf(DND_STATUS_PATH)
+    override val messagePaths: Set<String> = setOf(DnDStatusPath)
 
     override suspend fun deserialize(bytes: ByteArray?): Boolean {
         require(bytes!!.size == 1) { "Invalid data received" }

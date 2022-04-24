@@ -10,17 +10,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] to receive [REQUEST_BATTERY_UPDATE_PATH].
+ * A [MessageReceiver] to receive [RequestBatteryStatus].
  */
 class BatteryUpdateRequestReceiver : MessageReceiver(), KoinComponent {
 
     private val messageClient: MessageClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
-        if (message.path == REQUEST_BATTERY_UPDATE_PATH) {
+        if (message.path == RequestBatteryStatus) {
             val batteryStats = context.batteryStats()!!
             val handler = MessageHandler(BatteryStatsSerializer, messageClient)
-            handler.sendMessage(message.sourceUid, Message(BATTERY_STATUS_PATH, batteryStats))
+            handler.sendMessage(message.sourceUid, Message(BatteryStatus, batteryStats))
         }
     }
 }
