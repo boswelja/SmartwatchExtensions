@@ -87,6 +87,9 @@ fun WatchManagerScreen(
     }
 }
 
+/**
+ * Displays information about a watch that was registered.
+ */
 @Composable
 fun RegisteredWatchItem(
     watchName: String,
@@ -103,9 +106,7 @@ fun RegisteredWatchItem(
         trailing = {
             var menuVisible by remember { mutableStateOf(false) }
             Box(Modifier.wrapContentSize()) {
-                IconButton(onClick = { menuVisible = true }) {
-                    Icon(Icons.Default.MoreVert, null)
-                }
+                IconButton(onClick = { menuVisible = true }) { Icon(Icons.Default.MoreVert, null) }
                 DropdownMenu(expanded = menuVisible, onDismissRequest = { menuVisible = false }) {
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.watch_manager_sync)) },
@@ -128,18 +129,14 @@ fun RegisteredWatchItem(
         AlertDialog(
             onDismissRequest = { forgetDialogVisible = false },
             title = { Text(stringResource(R.string.forget_watch_dialog_title)) },
-            text = {
-                Text(stringResource(R.string.forget_watch_dialog_message, watchName, watchName))
-            },
+            text = { Text(stringResource(R.string.forget_watch_dialog_message, watchName, watchName)) },
             confirmButton = {
                 TextButton(
                     onClick = {
                         onForget()
                         forgetDialogVisible = false
                     }
-                ) {
-                    Text(stringResource(R.string.button_forget_watch))
-                }
+                ) { Text(stringResource(R.string.button_forget_watch)) }
             },
             dismissButton = {
                 TextButton(onClick = { forgetDialogVisible = false }) {
@@ -169,9 +166,7 @@ fun RegisteredWatchItem(
                         onRename(newName)
                         renameDialogVisible = false
                     }
-                ) {
-                    Text(stringResource(R.string.watch_manager_rename))
-                }
+                ) { Text(stringResource(R.string.watch_manager_rename)) }
             },
             dismissButton = {
                 TextButton(onClick = { renameDialogVisible = false }) {

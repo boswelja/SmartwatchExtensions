@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 
+/**
+ * Displays a summary of the Phone Locking feature.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneLockingSummary(

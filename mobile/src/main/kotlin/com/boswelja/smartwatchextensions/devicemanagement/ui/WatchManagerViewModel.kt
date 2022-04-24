@@ -22,18 +22,27 @@ class WatchManagerViewModel(
      */
     val registeredWatches = watchRepository.registeredWatches
 
+    /**
+     * Removes the given watch from Smartwatch Extensions.
+     */
     fun forgetWatch(watch: Watch) {
         viewModelScope.launch {
             watchRepository.deregisterWatch(watch)
         }
     }
 
+    /**
+     * Requests the given watch update its capabilities.
+     */
     fun syncCapabilities(watch: Watch) {
         viewModelScope.launch {
             messageClient.sendMessage(watch.uid, Message(RequestUpdateCapabilities, null))
         }
     }
 
+    /**
+     * Rename the given watch.
+     */
     fun renameWatch(watch: Watch, newName: String) {
         viewModelScope.launch {
             watchRepository.renameWatch(watch, newName)

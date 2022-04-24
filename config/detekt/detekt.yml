@@ -60,7 +60,7 @@ complexity:
   LongMethod:
     active: true
     threshold: 60
-    ignoreAnnotated: []
+    ignoreAnnotated: ['Composable']
   LongParameterList:
     active: true
     functionThreshold: 6
@@ -612,6 +612,7 @@ style:
       - '0'
       - '1'
       - '2'
+      - '100'
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
     ignoreLocalVariableDeclaration: false

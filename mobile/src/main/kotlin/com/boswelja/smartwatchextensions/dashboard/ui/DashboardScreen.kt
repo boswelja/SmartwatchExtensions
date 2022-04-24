@@ -34,7 +34,6 @@ fun DashboardScreen(
     val appCount by viewModel.appCount.collectAsState()
 
     val itemContentModifier = Modifier.padding(16.dp)
-
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(contentPadding),

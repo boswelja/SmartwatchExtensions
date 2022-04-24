@@ -28,6 +28,9 @@ class DashboardViewModel(
     private val selectedWatchManager: SelectedWatchManager
 ) : ViewModel() {
 
+    /**
+     * Flows the current selected watch, or null if no watch is selected.
+     */
     val selectedWatch = selectedWatchManager.selectedWatch
         .stateIn(
             viewModelScope,
@@ -35,6 +38,9 @@ class DashboardViewModel(
             null
         )
 
+    /**
+     * Flows the currently registered watches.
+     */
     val registeredWatches = watchRepository.registeredWatches
         .stateIn(
             viewModelScope,
