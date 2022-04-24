@@ -1,10 +1,8 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -16,14 +14,6 @@ class AddedOrUpdatedAppsSerializerTest {
         val bytes = AddedOrUpdatedAppsSerializer.serialize(appList)
         val deserializedList = AddedOrUpdatedAppsSerializer.deserialize(bytes)
         assertEquals(appList, deserializedList)
-    }
-
-    @Test
-    fun throwsWhenBytesInvalid() = runTest {
-        val bytes = byteArrayOf(1)
-        assertThrows(Exception::class.java) {
-            runBlocking { AddedOrUpdatedAppsSerializer.deserialize(bytes) }
-        }
     }
 
     private fun createAppList(count: Int): AppList {
