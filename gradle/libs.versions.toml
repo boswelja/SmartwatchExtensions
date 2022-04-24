@@ -25,7 +25,7 @@ kotlinxCoroutines = "1.6.0"
 kotlinxSerialization = "1.3.2"
 
 # Misc versions
-androidGradlePlugin = "7.3.0-alpha07"
+androidGradlePlugin = "7.3.0-alpha09"
 kotlin = "1.6.10"
 detekt = "1.19.0"
 batterystats = "0.1.0"
