@@ -110,6 +110,6 @@ detekt {
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }
