@@ -16,8 +16,11 @@ android {
 
 dependencies {
     api(projects.dndsync.common)
+
     implementation(projects.core.wear)
+
     implementation(libs.watchconnection.wear)
+
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.datastore.proto)

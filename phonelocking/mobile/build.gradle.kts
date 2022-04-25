@@ -19,8 +19,11 @@ android {
 
 dependencies {
     implementation(projects.phonelocking.common)
+
     implementation(projects.core.mobile)
+
     implementation(libs.watchconnection.mobile.core)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)

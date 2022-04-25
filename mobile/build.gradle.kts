@@ -76,8 +76,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.protobuf)
 
-    implementation(libs.googleplay.core)
-    implementation(libs.googleplay.corektx)
     implementation(libs.migration)
     implementation(libs.watchconnection.platform.wearos)
 

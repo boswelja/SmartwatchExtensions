@@ -6,7 +6,5 @@ plugins {
 
 detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
-    source = files("src")
-    buildUponDefaultConfig = true
     parallel = true
 }

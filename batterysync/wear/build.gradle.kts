@@ -20,10 +20,12 @@ android {
 
 dependencies {
     api(projects.batterysync.common)
+
     implementation(projects.core.wear)
-    implementation(libs.kotlinx.serialization.protobuf)
+
     implementation(libs.watchconnection.wear)
-    implementation(libs.koin.core)
+
+    implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.wear.complications.data.source)

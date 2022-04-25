@@ -19,8 +19,11 @@ android {
 
 dependencies {
     api(projects.dndsync.common)
+
     implementation(projects.core.mobile)
+
     implementation(libs.watchconnection.mobile.core)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)

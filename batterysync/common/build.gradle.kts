@@ -16,8 +16,10 @@ android {
 
 dependencies {
     implementation(projects.core.common)
+
     api(libs.watchconnection.common)
     api(libs.watchconnection.serialization)
+
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.batterystats)
     implementation(libs.androidx.appcompat)
@@ -30,8 +32,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

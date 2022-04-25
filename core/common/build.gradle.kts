@@ -17,6 +17,7 @@ android {
 dependencies {
     api(libs.watchconnection.common)
     api(libs.watchconnection.serialization)
+
     implementation(libs.kotlinx.serialization.protobuf)
 
     testImplementation("junit:junit:4.13.2")

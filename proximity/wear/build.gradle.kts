@@ -16,9 +16,12 @@ android {
 
 dependencies {
     api(projects.proximity.common)
+
     implementation(projects.core.wear)
-    implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.watchconnection.wear)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.kotlinx.serialization.protobuf)

@@ -16,6 +16,7 @@ android {
 
 dependencies {
     api(projects.core.common)
+
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.koin.android)

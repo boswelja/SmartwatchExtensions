@@ -21,12 +21,13 @@ android {
 
 dependencies {
     api(projects.core.common)
+
     implementation(libs.watchconnection.mobile.core)
+
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
-    implementation(libs.koin.core)
-    implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.sqldelight.android)
+    implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.bundles.compose.mobile)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.koin.android)

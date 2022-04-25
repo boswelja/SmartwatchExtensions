@@ -20,11 +20,13 @@ android {
 
 dependencies {
     api(projects.batterysync.common)
-    implementation(libs.watchconnection.mobile.core)
+
     implementation(projects.core.mobile)
+
+    implementation(libs.watchconnection.mobile.core)
+
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
-    implementation(libs.koin.core)
     implementation(libs.sqldelight.android)
     implementation(libs.androidx.work.ktx)
     implementation(libs.koin.android)
@@ -43,8 +45,6 @@ dependencies {
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
 }
 
 sqldelight {

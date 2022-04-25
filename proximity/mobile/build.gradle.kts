@@ -19,9 +19,12 @@ android {
 
 dependencies {
     api(projects.proximity.common)
+
     implementation(projects.core.mobile)
-    implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.watchconnection.mobile.core)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.bundles.lifecycle)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)

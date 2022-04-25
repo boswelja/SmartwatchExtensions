@@ -19,13 +19,14 @@ android {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
     api(projects.appmanager.common)
-    api(libs.kotlinx.coroutines.core)
+
+    api(libs.watchconnection.common)
+    implementation(libs.watchconnection.mobile.core)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
-    implementation(libs.koin.core)
-    implementation(libs.watchconnection.mobile.core)
     implementation(projects.core.mobile)
     implementation(libs.sqldelight.android)
     implementation(libs.androidx.work.ktx)
@@ -48,8 +49,6 @@ dependencies {
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
 }
 
 sqldelight {
