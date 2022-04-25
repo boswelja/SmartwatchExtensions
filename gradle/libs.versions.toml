@@ -29,8 +29,6 @@ androidGradlePlugin = "7.3.0-alpha09"
 kotlin = "1.6.10"
 detekt = "1.19.0"
 batterystats = "0.1.0"
-googlePlayCore = "1.10.2"
-googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
 koin = "3.1.4"
 migration = "2.1.1"
@@ -92,9 +90,6 @@ compose-navigation = { module = "androidx.navigation:navigation-compose", versio
 batterystats = { module = "io.github.boswelja.batterystats:batterystats", version.ref = "batterystats" }
 
 accompanist-sysui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-
-googleplay-core = { module = "com.google.android.play:core", version.ref = "googlePlayCore" }
-googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref = "googlePlayCoreKtx" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 

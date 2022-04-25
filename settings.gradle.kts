@@ -1,4 +1,3 @@
-includeBuild("plugins")
 include(
     ":appmanager:common",
     ":appmanager:mobile",
@@ -36,5 +35,4 @@ dependencyResolutionManagement {
     }
 }
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

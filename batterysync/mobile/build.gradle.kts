@@ -4,7 +4,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
     id("com.squareup.sqldelight")
     alias(libs.plugins.compose)
 }
@@ -45,6 +45,11 @@ dependencies {
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
 
 sqldelight {

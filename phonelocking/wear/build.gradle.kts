@@ -4,7 +4,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("plugin.serialization") version "1.6.10"
     alias(libs.plugins.compose)
 }
@@ -31,6 +31,11 @@ dependencies {
     implementation(libs.bundles.compose.wear)
     implementation(libs.androidx.wear.core)
     implementation(libs.androidx.wear.complications.data.source)
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

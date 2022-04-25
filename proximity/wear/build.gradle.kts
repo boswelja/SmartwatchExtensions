@@ -1,7 +1,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("plugin.serialization") version "1.6.10"
 }
 
@@ -26,4 +26,9 @@ dependencies {
     implementation(libs.androidx.datastore.proto)
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.koin.android)
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
