@@ -1,12 +1,8 @@
-// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 plugins {
     kotlin("android")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
     id("com.squareup.sqldelight")
-    alias(libs.plugins.compose)
 }
 
 android {
@@ -15,6 +11,11 @@ android {
         minSdk = 26
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 }
 
