@@ -19,7 +19,7 @@ dependencies {
     api(libs.watchconnection.common)
     implementation(libs.watchconnection.wear)
 
-    implementation(libs.koin.core)
+    implementation(libs.koin.android)
     implementation(libs.androidx.core)
 
     testImplementation("junit:junit:4.13.2")
