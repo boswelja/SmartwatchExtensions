@@ -74,13 +74,11 @@ androidx-work-test = { module = "androidx.work:work-testing", version.ref = "and
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
 androidx-datastore-proto = { module = "androidx.datastore:datastore", version.ref = "androidxDataStore" }
 
-compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose"}
 compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose"}
@@ -124,20 +122,18 @@ koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", versio
 
 [bundles]
 compose-mobile = [
-    "compose-ui-core",
+    "compose-ui",
     "compose-foundation",
     "compose-material3",
-    "compose-material-icons-core",
-    "compose-material-icons-extended",
+    "compose-material-icons",
     "compose-viewmodel",
     "compose-navigation",
     "accompanist-sysui",
     "androidx-activity-compose"
 ]
 compose-wear = [
-    "compose-ui-core",
-    "compose-material-icons-core",
-    "compose-material-icons-extended",
+    "compose-ui",
+    "compose-material-icons",
     "compose-viewmodel",
     "compose-wear-material",
     "compose-wear-foundation",
