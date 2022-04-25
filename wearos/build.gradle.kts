@@ -65,12 +65,12 @@ dependencies {
     implementation(projects.proximity.wear)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.androidx.wear.core)
     implementation(libs.androidx.wear.complications.data.source)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.protobuf)
@@ -82,7 +82,7 @@ dependencies {
 
     implementation(libs.bundles.compose.wear)
 
-    testImplementation(libs.androidx.test.corektx)
+    testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
@@ -92,7 +92,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
 }

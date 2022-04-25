@@ -28,7 +28,7 @@ dependencies {
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.android)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.bundles.lifecycle)
@@ -40,7 +40,7 @@ dependencies {
     testImplementation(libs.sqldelight.sqlitedriver)
 
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)

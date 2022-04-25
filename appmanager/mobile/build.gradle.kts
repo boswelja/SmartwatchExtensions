@@ -29,7 +29,7 @@ dependencies {
     implementation(libs.sqldelight.coroutines)
     implementation(projects.core.mobile)
     implementation(libs.sqldelight.android)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.bundles.lifecycle)
@@ -43,7 +43,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation(libs.turbine)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.work.test)

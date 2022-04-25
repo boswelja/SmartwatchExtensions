@@ -67,10 +67,10 @@ dependencies {
     implementation(projects.proximity.mobile)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.lifecycle)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
 
@@ -88,7 +88,7 @@ dependencies {
     implementation(libs.bundles.compose.mobile)
 
     testImplementation(libs.androidx.work.test)
-    testImplementation(libs.androidx.test.corektx)
+    testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
 }

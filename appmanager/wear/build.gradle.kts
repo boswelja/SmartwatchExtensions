@@ -20,10 +20,10 @@ dependencies {
     implementation(libs.watchconnection.wear)
 
     implementation(libs.koin.core)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)

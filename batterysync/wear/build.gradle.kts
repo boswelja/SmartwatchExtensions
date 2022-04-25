@@ -37,7 +37,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)

@@ -51,7 +51,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
 
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidxSplashscreen" }
 
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
@@ -59,7 +59,7 @@ androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", ve
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidxLifecycle" }
 
-androidx-test-corektx = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidxEspresso" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.0-alpha02" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
@@ -68,14 +68,13 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version.ref 
 androidx-wear-core = { module = "androidx.wear:wear", version.ref = "androidxWear" }
 androidx-wear-complications-data-source = { module = "androidx.wear.watchface:watchface-complications-data-source-ktx", version.ref = "androidxWearWatchface" }
 
-androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
 androidx-work-test = { module = "androidx.work:work-testing", version.ref = "androidxWork" }
 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
 androidx-datastore-proto = { module = "androidx.datastore:datastore", version.ref = "androidxDataStore" }
 
 compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
