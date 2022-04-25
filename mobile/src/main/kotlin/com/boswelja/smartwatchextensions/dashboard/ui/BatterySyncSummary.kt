@@ -27,6 +27,7 @@ import com.boswelja.smartwatchextensions.core.ui.toMinutes
 /**
  * A Composable for displaying a summary of a [BatteryStats].
  */
+@Suppress("MagicNumber")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatterySyncSummary(
