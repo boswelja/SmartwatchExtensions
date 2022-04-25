@@ -14,8 +14,6 @@ import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
-import com.boswelja.smartwatchextensions.updatechecker.GooglePlayUpdateChecker
-import com.boswelja.smartwatchextensions.core.UpdateChecker
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
@@ -104,9 +102,6 @@ val clientsModule = module {
                 WearOSDiscoveryPlatform(get())
             )
         )
-    }
-    single<UpdateChecker> {
-        GooglePlayUpdateChecker(get())
     }
 }
 
