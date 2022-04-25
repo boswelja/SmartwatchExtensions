@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.20"
 }
 
 android {
