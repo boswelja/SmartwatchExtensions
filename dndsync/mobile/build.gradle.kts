@@ -1,11 +1,7 @@
-// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
-    alias(libs.plugins.compose)
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -15,12 +11,20 @@ android {
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
 }
 
 dependencies {
     api(projects.dndsync.common)
+
     implementation(projects.core.mobile)
+
     implementation(libs.watchconnection.mobile.core)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
@@ -28,8 +32,13 @@ dependencies {
     implementation(libs.bundles.compose.mobile)
 }
 
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

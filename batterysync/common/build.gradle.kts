@@ -1,8 +1,8 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
-    kotlin("plugin.serialization") version "1.6.10"
+    id("io.gitlab.arturbosch.detekt")
+    kotlin("plugin.serialization") version "1.6.20"
 }
 
 android {
@@ -16,8 +16,10 @@ android {
 
 dependencies {
     implementation(projects.core.common)
+
     api(libs.watchconnection.common)
     api(libs.watchconnection.serialization)
+
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.batterystats)
     implementation(libs.androidx.appcompat)
@@ -26,16 +28,19 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk.core)
 
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

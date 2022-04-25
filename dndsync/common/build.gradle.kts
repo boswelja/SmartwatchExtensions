@@ -1,7 +1,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -16,13 +16,19 @@ android {
 dependencies {
     api(libs.watchconnection.common)
     api(libs.watchconnection.serialization)
-    api(libs.kotlinx.coroutines.core)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.lifecycle.runtime)
 }
 
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -11,4 +11,9 @@ android {
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }

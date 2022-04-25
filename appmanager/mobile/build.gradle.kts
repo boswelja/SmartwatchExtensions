@@ -1,12 +1,8 @@
-// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
     id("com.squareup.sqldelight")
-    alias(libs.plugins.compose)
 }
 
 android {
@@ -16,19 +12,25 @@ android {
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
 }
 
 dependencies {
-    api(libs.watchconnection.common)
     api(projects.appmanager.common)
-    api(libs.kotlinx.coroutines.core)
+
+    api(libs.watchconnection.common)
+    implementation(libs.watchconnection.mobile.core)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
-    implementation(libs.koin.core)
-    implementation(libs.watchconnection.mobile.core)
     implementation(projects.core.mobile)
     implementation(libs.sqldelight.android)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.bundles.lifecycle)
@@ -42,14 +44,17 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation(libs.turbine)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
 
 sqldelight {
@@ -60,6 +65,6 @@ sqldelight {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

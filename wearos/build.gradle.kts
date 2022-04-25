@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("plugin.serialization") version "1.6.10"
-    id("com.boswelja.smartwatchextensions.detekt")
+    kotlin("plugin.serialization") version "1.6.20"
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -65,12 +65,12 @@ dependencies {
     implementation(projects.proximity.wear)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.androidx.wear.core)
     implementation(libs.androidx.wear.complications.data.source)
-    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.protobuf)
@@ -82,7 +82,7 @@ dependencies {
 
     implementation(libs.bundles.compose.wear)
 
-    testImplementation(libs.androidx.test.corektx)
+    testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
@@ -92,13 +92,18 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
 }
 
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

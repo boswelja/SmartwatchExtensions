@@ -1,7 +1,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -14,17 +14,22 @@ android {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
     api(projects.appmanager.common)
+
+    api(libs.watchconnection.common)
     implementation(libs.watchconnection.wear)
-    implementation(libs.koin.core)
-    implementation(libs.androidx.core.ktx)
+
+    implementation(libs.koin.android)
+    implementation(libs.androidx.core)
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
-    // Workaround for MockK 1.11.0 including a broken objenesis
-    androidTestImplementation("org.objenesis:objenesis:3.2")
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }

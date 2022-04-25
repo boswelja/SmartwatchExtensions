@@ -1,12 +1,8 @@
-// Suppress DSL_SCOPE_VIOLATION for https://youtrack.jetbrains.com/issue/KTIJ-19369
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("com.boswelja.smartwatchextensions.detekt")
-    kotlin("plugin.serialization") version "1.6.10"
-    alias(libs.plugins.compose)
+    id("io.gitlab.arturbosch.detekt")
+    kotlin("plugin.serialization") version "1.6.20"
 }
 
 android {
@@ -16,14 +12,21 @@ android {
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
 }
 
 dependencies {
     api(projects.batterysync.common)
+
     implementation(projects.core.wear)
-    implementation(libs.kotlinx.serialization.protobuf)
+
     implementation(libs.watchconnection.wear)
-    implementation(libs.koin.core)
+
+    implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.wear.complications.data.source)
@@ -35,15 +38,20 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(libs.koin.test)
     androidTestImplementation(libs.mockk.android)
 }
 
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
+    parallel = true
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

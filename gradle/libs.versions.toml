@@ -1,39 +1,37 @@
 [versions]
 # AndroidX versions
-androidxActivity = "1.5.0-alpha04"
+androidxActivity = "1.5.0-beta01"
 androidxAppCompat = "1.4.1"
-androidxCore = "1.8.0-alpha06"
+androidxCore = "1.8.0-beta01"
 androidxDataStore = "1.0.0"
-androidxEspresso = "3.5.0-alpha03"
-androidxLifecycle = "2.5.0-alpha05"
+androidxEspresso = "3.5.0-alpha05"
+androidxLifecycle = "2.5.0-beta01"
 androidxSplashscreen = "1.0.0-beta02"
 androidxTest = "1.4.1-alpha05"
 androidxTestExt = "1.1.4-alpha05"
 androidxWear = "1.3.0-alpha02"
-androidxWearWatchface = "1.1.0-alpha04"
-androidxWork = "2.8.0-alpha01"
+androidxWearWatchface = "1.1.0-beta01"
+androidxWork = "2.8.0-alpha02"
 
 # Compose versions
-accompanist = "0.24.5-alpha"
-compose = "1.2.0-alpha06"
-material3 = "1.0.0-alpha08"
-navigationCompose = "2.5.0-alpha03"
-wearCompose = "1.0.0-alpha19"
+accompanist = "0.24.7-alpha"
+compose = "1.2.0-alpha08"
+material3 = "1.0.0-alpha10"
+navigationCompose = "2.5.0-beta01"
+wearCompose = "1.0.0-alpha21"
 
 # KotlinX versions
-kotlinxCoroutines = "1.6.0"
+kotlinxCoroutines = "1.6.1"
 kotlinxSerialization = "1.3.2"
 
 # Misc versions
 androidGradlePlugin = "7.3.0-alpha09"
-kotlin = "1.6.10"
-detekt = "1.19.0"
+kotlin = "1.6.20"
+detekt = "1.20.0"
 batterystats = "0.1.0"
-googlePlayCore = "1.10.2"
-googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
-koin = "3.1.4"
-migration = "2.1.1"
+koin = "3.1.6"
+migration = "2.1.4"
 mockk = "1.12.3"
 robolectric = "4.7.3"
 sqldelight = "1.5.3"
@@ -43,7 +41,6 @@ watchconnection = "7.0.6"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-compose = { id = "org.jetbrains.compose", version = "1.1.1" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqldelight" }
@@ -53,7 +50,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
 
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidxSplashscreen" }
 
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
@@ -61,7 +58,7 @@ androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", ve
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidxLifecycle" }
 
-androidx-test-corektx = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidxEspresso" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.0-alpha02" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
@@ -70,20 +67,17 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version.ref 
 androidx-wear-core = { module = "androidx.wear:wear", version.ref = "androidxWear" }
 androidx-wear-complications-data-source = { module = "androidx.wear.watchface:watchface-complications-data-source-ktx", version.ref = "androidxWearWatchface" }
 
-androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
 androidx-work-test = { module = "androidx.work:work-testing", version.ref = "androidxWork" }
 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
 androidx-datastore-proto = { module = "androidx.datastore:datastore", version.ref = "androidxDataStore" }
 
-compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose"}
 compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose"}
@@ -92,9 +86,6 @@ compose-navigation = { module = "androidx.navigation:navigation-compose", versio
 batterystats = { module = "io.github.boswelja.batterystats:batterystats", version.ref = "batterystats" }
 
 accompanist-sysui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-
-googleplay-core = { module = "com.google.android.play:core", version.ref = "googlePlayCore" }
-googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref = "googlePlayCoreKtx" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 
@@ -124,26 +115,23 @@ kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-seria
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 [bundles]
 compose-mobile = [
-    "compose-ui-core",
+    "compose-ui",
     "compose-foundation",
     "compose-material3",
-    "compose-material-icons-core",
-    "compose-material-icons-extended",
+    "compose-material-icons",
     "compose-viewmodel",
     "compose-navigation",
     "accompanist-sysui",
     "androidx-activity-compose"
 ]
 compose-wear = [
-    "compose-ui-core",
-    "compose-material-icons-core",
-    "compose-material-icons-extended",
+    "compose-ui",
+    "compose-material-icons",
     "compose-viewmodel",
     "compose-wear-material",
     "compose-wear-foundation",
