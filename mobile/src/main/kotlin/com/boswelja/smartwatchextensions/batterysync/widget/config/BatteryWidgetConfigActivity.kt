@@ -25,6 +25,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,8 +54,12 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
         setContent {
             val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
             val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+            val topBarScrollState = rememberTopAppBarScrollState()
             val scrollBehavior = remember(decayAnimationSpec) {
-                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+                    decayAnimationSpec = decayAnimationSpec,
+                    state = topBarScrollState
+                )
             }
             HarmonizedTheme {
                 Scaffold(
@@ -69,7 +74,8 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                                         contentDescription = null
                                     )
                                 }
-                            }
+                            },
+                            scrollBehavior = scrollBehavior
                         )
                     },
                     floatingActionButton = {
@@ -84,7 +90,10 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                         )
                     }
                 ) {
-                    Column(Modifier.fillMaxSize()) {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it)) {
                         val viewModel: BatteryWidgetConfigViewModel = getViewModel()
                         val registeredWatches by viewModel.registeredWatches.collectAsState(
                             emptyList()
