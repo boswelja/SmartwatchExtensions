@@ -10,8 +10,10 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryCh
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncNotificationHandler
@@ -39,14 +41,16 @@ val batterySyncModule = module {
 
     // domain
     single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get()) }
-    single { GetBatteryStats(get(), get()) }
-    single { GetBatterySyncEnabled(get()) }
-    single { GetBatteryChargeThreshold(get()) }
-    single { GetBatteryLowThreshold(get()) }
-    single { GetWatchChargeNotificationEnabled(get(), get()) }
-    single { GetWatchLowNotificationEnabled(get(), get()) }
-    single { GetPhoneChargeNotificationEnabled(get(), get()) }
-    single { GetPhoneLowNotificationEnabled(get(), get()) }
+    single { GetBatteryStats(get(), get(), get()) }
+    single { GetBatterySyncEnabled(get(), get()) }
+    single { GetBatteryChargeThreshold(get(), get()) }
+    single { GetBatteryLowThreshold(get(), get()) }
+    single { GetWatchChargeNotificationEnabled(get(), get(), get()) }
+    single { GetWatchLowNotificationEnabled(get(), get(), get()) }
+    single { GetPhoneChargeNotificationEnabled(get(), get(), get()) }
+    single { GetPhoneLowNotificationEnabled(get(), get(), get()) }
+    single { GetPhoneBatteryNotificationState(get(), get(), get()) }
+    single { GetWatchBatteryNotificationState(get(), get(), get()) }
 
     // platform
     single<BatterySyncNotificationHandler> {
@@ -54,7 +58,7 @@ val batterySyncModule = module {
     }
 
     // ui
-    viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get()) }
+    viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get()) }
     viewModel { WatchBatteryNotiSettingsViewModel(get(), get()) }
 }
