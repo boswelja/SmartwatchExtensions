@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
+import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
@@ -45,8 +46,8 @@ fun BatterySyncSettingsScreen(
             .then(modifier)
     ) {
         BatterySyncSettingsHeader(
-            batterySyncEnabled = batterySyncEnabled,
-            batteryStats = batteryStats,
+            batterySyncEnabled = batterySyncEnabled == true,
+            batteryStats = batteryStats?.data,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -74,15 +75,13 @@ fun BatterySyncSettings(
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     val chargeThreshold by viewModel.chargeThreshold.collectAsState()
     val lowThreshold by viewModel.batteryLowThreshold.collectAsState()
-    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState()
-    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState()
-    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
-    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
+    val watchBatteryNotiState by viewModel.watchBatteryNotiState.collectAsState()
+    val phoneBatteryNotiState by viewModel.phoneBatteryNotiState.collectAsState()
 
     val settingsModifier = Modifier.fillMaxWidth()
     Column(modifier) {
         HeroSetting(
-            checked = batterySyncEnabled,
+            checked = batterySyncEnabled == true,
             onCheckedChange = viewModel::setBatterySyncEnabled,
             text = { Text(stringResource(R.string.battery_sync_toggle_title)) },
             modifier = settingsModifier
@@ -92,7 +91,7 @@ fun BatterySyncSettings(
             value = chargeThreshold / PROGRESS_FACTOR,
             onValueChanged = { viewModel.setChargeThreshold(round(it * PROGRESS_FACTOR).toInt()) },
             text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
-            enabled = batterySyncEnabled,
+            enabled = batterySyncEnabled == true,
             modifier = settingsModifier
         )
         BatterySliderSetting(
@@ -100,23 +99,23 @@ fun BatterySyncSettings(
             value = lowThreshold / PROGRESS_FACTOR,
             onValueChanged = { viewModel.setLowBatteryThreshold(round(it * PROGRESS_FACTOR).toInt()) },
             text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
-            enabled = batterySyncEnabled,
+            enabled = batterySyncEnabled == true,
             modifier = settingsModifier
         )
         ShortcutSetting(
             text = { Text(stringResource(R.string.phone_battery_noti_title)) },
-            summary = { Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled)) },
+            summary = { Text(phoneBatteryNotiState.notificationSummaryText()) },
             modifier = settingsModifier,
-            enabled = batterySyncEnabled,
+            enabled = batterySyncEnabled == true,
             onClick = {
                 onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
             }
         )
         ShortcutSetting(
             text = { Text(stringResource(R.string.watch_battery_noti_title)) },
-            summary = { Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled)) },
+            summary = { Text(watchBatteryNotiState.notificationSummaryText()) },
             modifier = settingsModifier,
-            enabled = batterySyncEnabled,
+            enabled = batterySyncEnabled == true,
             onClick = { onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route) }
         )
     }
@@ -124,16 +123,14 @@ fun BatterySyncSettings(
 
 /**
  * Gets the appropriate battery notification summary text for the provided parameters.
- * @param lowNotificationEnabled Whether low notifications are enabled.
- * @param chargeNotificationEnabled Whether charge notifications are enabled.
  */
 @Composable
-fun notificationSummaryText(lowNotificationEnabled: Boolean, chargeNotificationEnabled: Boolean): String {
-    return if (lowNotificationEnabled && chargeNotificationEnabled) {
+fun DeviceBatteryNotificationState.notificationSummaryText(): String {
+    return if (lowNotificationsEnabled && chargeNotificationsEnabled) {
         stringResource(R.string.battery_noti_low_and_charged)
-    } else if (chargeNotificationEnabled) {
+    } else if (chargeNotificationsEnabled) {
         stringResource(R.string.battery_noti_charged)
-    } else if (lowNotificationEnabled) {
+    } else if (lowNotificationsEnabled) {
         stringResource(R.string.battery_noti_low)
     } else {
         stringResource(R.string.battery_noti_none)

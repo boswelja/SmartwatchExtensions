@@ -5,16 +5,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
-import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryNotificationState
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchBatteryNotificationState
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.getOrElse
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
@@ -29,11 +32,13 @@ import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -47,7 +52,12 @@ class BatterySyncViewModel(
     discoveryClient: DiscoveryClient,
     private val selectedWatchManager: SelectedWatchManager,
     private val settingsRepository: WatchSettingsRepository,
-    private val batteryStatsRepository: BatteryStatsRepository
+    getBatterySyncEnabled: GetBatterySyncEnabled,
+    getBatteryStats: GetBatteryStats,
+    getBatteryChargeThreshold: GetBatteryChargeThreshold,
+    getBatteryLowThreshold: GetBatteryLowThreshold,
+    getPhoneBatteryNotificationState: GetPhoneBatteryNotificationState,
+    getWatchBatteryNotificationState: GetWatchBatteryNotificationState
 ) : AndroidViewModel(application) {
 
     private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
@@ -56,51 +66,82 @@ class BatterySyncViewModel(
     /**
      * Flow whether Battery Sync is enabled for the selected watch.
      */
-    val batterySyncEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BATTERY_SYNC_ENABLED_KEY)
-    }
+    val batterySyncEnabled = getBatterySyncEnabled()
+        .map {
+            it.getOrElse {
+                _isError.value = true
+                null
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            null
+        )
 
     /**
      * Flow the charge percent threshold.
      */
-    val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
-    }
+    val chargeThreshold = getBatteryChargeThreshold()
+        .map {
+            it.getOrElse {
+                _isError.value = true
+                DefaultValues.CHARGE_THRESHOLD
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DefaultValues.CHARGE_THRESHOLD
+        )
 
     /**
      * Flow the low percent threshold.
      */
-    val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
-    }
+    val batteryLowThreshold = getBatteryLowThreshold()
+        .map {
+            it.getOrElse {
+                _isError.value = true
+                DefaultValues.LOW_THRESHOLD
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DefaultValues.LOW_THRESHOLD
+        )
 
     /**
      * Flow whether watch charge notifications are enabled for the selected watch.
      */
-    val watchChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_CHARGE_NOTI_KEY)
-    }
-
-    /**
-     * Flow whether watch low notifications are enabled for the selected watch.
-     */
-    val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_LOW_NOTI_KEY)
-    }
+    val watchBatteryNotiState = getWatchBatteryNotificationState()
+        .map {
+            it.getOrElse {
+                _isError.value = true
+                DeviceBatteryNotificationState(false, false)
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DeviceBatteryNotificationState(false, false)
+        )
 
     /**
      * Flow whether phone charge notifications are enabled for the selected watch.
      */
-    val phoneChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_CHARGE_NOTI_KEY)
-    }
-
-    /**
-     * Flow whether phone low notifications are enabled for the selected watch.
-     */
-    val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_LOW_NOTI_KEY)
-    }
+    val phoneBatteryNotiState = getPhoneBatteryNotificationState()
+        .map {
+            it.getOrElse {
+                _isError.value = true
+                DeviceBatteryNotificationState(false, false)
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DeviceBatteryNotificationState(false, false)
+        )
 
     /**
      * Flow whether the selected watch supports Battery Sync.
@@ -112,9 +153,15 @@ class BatterySyncViewModel(
     /**
      * Flow the stored battery stats for the selected watch.
      */
-    val batteryStats = mapStateForSelectedWatch(null) {
-        batteryStatsRepository.batteryStatsFor(it.uid)
-    }
+    val batteryStats = getBatteryStats()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            null
+        )
+
+    private val _isError = MutableStateFlow(false)
+    val isError: StateFlow<Boolean> = _isError
 
     /**
      * Set whether Battery Sync is enabled.

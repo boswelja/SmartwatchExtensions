@@ -22,3 +22,7 @@ sealed class FeatureData<T>(
      */
     class Error<T>(override val throwable: Throwable): FeatureData<T>(null, throwable)
 }
+
+fun <T> FeatureData<T>.getOrElse(onFailure: (Throwable?) -> T): T {
+    return data ?: onFailure(throwable)
+}
