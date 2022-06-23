@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
@@ -14,6 +13,7 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BAT
 import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
