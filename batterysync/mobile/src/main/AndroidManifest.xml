@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <receiver
-            android:name=".BatteryStatsReceiver"
+            android:name=".platform.BatteryStatsReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".BatteryUpdateRequestReceiver"
+            android:name=".platform.BatteryUpdateRequestReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

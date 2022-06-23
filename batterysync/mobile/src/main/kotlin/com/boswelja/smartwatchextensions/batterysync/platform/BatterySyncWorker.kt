@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.platform
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -9,6 +9,10 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
 import androidx.work.workDataOf
+import com.boswelja.smartwatchextensions.batterysync.BatteryStats
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
+import com.boswelja.smartwatchextensions.batterysync.batteryStats
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler

@@ -1,6 +1,10 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.platform
 
 import android.content.Context
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
+import com.boswelja.smartwatchextensions.batterysync.RequestBatteryStatus
+import com.boswelja.smartwatchextensions.batterysync.batteryStats
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage

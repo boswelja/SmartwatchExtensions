@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync
 
 import androidx.core.content.getSystemService
+import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti.WatchBatteryNotiSettingsViewModel

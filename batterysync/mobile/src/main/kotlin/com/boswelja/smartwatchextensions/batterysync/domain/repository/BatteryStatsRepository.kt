@@ -1,5 +1,6 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.domain.repository
 
+import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import kotlinx.coroutines.flow.Flow
 
 /**

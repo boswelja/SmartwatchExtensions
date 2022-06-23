@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.devicemanagement
 
 import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestResetApp
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.devicemanagement.ConfirmWatchRegistered

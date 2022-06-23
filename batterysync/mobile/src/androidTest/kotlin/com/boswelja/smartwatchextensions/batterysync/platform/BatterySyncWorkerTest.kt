@@ -1,11 +1,11 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.platform
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker.Companion.EXTRA_WATCH_ID
+import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker.Companion.EXTRA_WATCH_ID
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.core.message.MessageClient
 import io.mockk.coEvery
@@ -14,12 +14,12 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.dsl.module
 import org.koin.test.KoinTestRule
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncWorkerTest {
