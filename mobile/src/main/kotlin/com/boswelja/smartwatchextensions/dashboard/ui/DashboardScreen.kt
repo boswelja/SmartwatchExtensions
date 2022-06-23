@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.SnackbarVisuals
@@ -30,10 +31,9 @@ fun DashboardScreen(
     val watchStatus by viewModel.status.collectAsState()
     val selectedWatch by viewModel.selectedWatch.collectAsState()
     val registeredWatches by viewModel.registeredWatches.collectAsState()
-    val batteryStats by viewModel.batteryStats.collectAsState()
     val appCount by viewModel.appCount.collectAsState()
 
-    val itemContentModifier = Modifier.padding(16.dp)
+    val itemContentModifier = Modifier.padding(16.dp).fillMaxWidth()
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(contentPadding),
@@ -50,15 +50,15 @@ fun DashboardScreen(
             )
         }
         item {
+            val batteryStats by viewModel.batteryStats.collectAsState()
             if (batteryStats == null) {
-                BatterySyncLoadingSummary(
+                BatterySyncDisabledSummary(
                     onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) },
                     contentModifier = itemContentModifier
                 )
-            }
-            batteryStats?.let {
+            } else {
                 BatterySyncSummary(
-                    batteryStats = it,
+                    batteryStats = batteryStats!!,
                     onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) },
                     contentModifier = itemContentModifier
                 )

@@ -89,7 +89,7 @@ fun BatterySyncSummary(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BatterySyncLoadingSummary(
+fun BatterySyncDisabledSummary(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier
@@ -108,12 +108,9 @@ fun BatterySyncLoadingSummary(
 
             Text(
                 text = stringResource(
-                    com.boswelja.smartwatchextensions.batterysync.R.string.battery_sync_header_loading
+                    com.boswelja.smartwatchextensions.batterysync.R.string.battery_sync_header_disabled
                 ),
                 style = MaterialTheme.typography.titleMedium
-            )
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth()
             )
         }
     }
