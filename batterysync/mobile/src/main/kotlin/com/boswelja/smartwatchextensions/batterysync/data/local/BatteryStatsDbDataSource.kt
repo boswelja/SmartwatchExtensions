@@ -1,27 +1,23 @@
-package com.boswelja.smartwatchextensions.batterysync.data.repository
+package com.boswelja.smartwatchextensions.batterysync.data.local
 
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
-import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-/**
- * A repository for managing [BatteryStats] for different watches.
- */
-class BatteryStatsDbRepository(
+class BatteryStatsDbDataSource(
     private val database: BatteryStatsDatabase,
     private val dispatcher: CoroutineContext
-) : BatteryStatsRepository {
+) {
 
     /**
      * Flow the battery stats for a watch with a given ID.
      * @param watchId The ID of the watch to flow stats for.
      */
-    override fun batteryStatsFor(watchId: String): Flow<BatteryStats?> = database
+    fun batteryStatsFor(watchId: String): Flow<BatteryStats?> = database
         .watchBatteryStatsQueries
         .getFor(watchId) { _, percent, charging, timestamp ->
             BatteryStats(percent, charging, timestamp)
@@ -33,7 +29,7 @@ class BatteryStatsDbRepository(
      * Remove the battery stats for a watch with the given ID.
      * @param watchId The ID of the watch whose battery stats should be removed.
      */
-    override suspend fun removeStatsFor(watchId: String) {
+    suspend fun removeStatsFor(watchId: String) {
         withContext(dispatcher) {
             database.watchBatteryStatsQueries.removeFor(watchId)
         }
@@ -44,7 +40,7 @@ class BatteryStatsDbRepository(
      * @param watchId The ID of the watch whose stats should be updated.
      * @param newStats The new [BatteryStats] to store.
      */
-    override suspend fun updateStatsFor(watchId: String, newStats: BatteryStats) {
+    suspend fun updateStatsFor(watchId: String, newStats: BatteryStats) {
         withContext(dispatcher) {
             database.watchBatteryStatsQueries.insert(
                 watchId,
