@@ -126,7 +126,7 @@ class WatchAppDbRepositoryTest {
             repository.getDetailsFor(
                 initialAppDetails.watchId,
                 initialAppDetails.packageName
-            ).test(2000) {
+            ).test {
                 // Check first item is emitted correctly
                 assertEquals(initialAppDetails, awaitItem())
 
