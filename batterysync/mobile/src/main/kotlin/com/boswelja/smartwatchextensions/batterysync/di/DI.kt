@@ -6,7 +6,14 @@ import com.boswelja.smartwatchextensions.batterysync.data.local.BatteryStatsDbDa
 import com.boswelja.smartwatchextensions.batterysync.data.repository.BatteryStatsRepositoryImpl
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryStatsForWatch
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneChargeNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
@@ -32,7 +39,14 @@ val batterySyncModule = module {
 
     // domain
     single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get()) }
-    single { GetBatteryStatsForWatch(get(), get()) }
+    single { GetBatteryStats(get(), get()) }
+    single { GetBatterySyncEnabled(get()) }
+    single { GetBatteryChargeThreshold(get()) }
+    single { GetBatteryLowThreshold(get()) }
+    single { GetWatchChargeNotificationEnabled(get(), get()) }
+    single { GetWatchLowNotificationEnabled(get(), get()) }
+    single { GetPhoneChargeNotificationEnabled(get(), get()) }
+    single { GetPhoneLowNotificationEnabled(get(), get()) }
 
     // platform
     single<BatterySyncNotificationHandler> {
