@@ -40,106 +40,125 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
 import com.boswelja.watchconnection.common.Watch
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.compose.getViewModel
 
 /**
  * A [BaseWidgetConfigActivity] for configuring a Battery Sync widget.
  */
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
-            val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-            val topBarScrollState = rememberTopAppBarScrollState()
-            val scrollBehavior = remember(decayAnimationSpec) {
-                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-                    decayAnimationSpec = decayAnimationSpec,
-                    state = topBarScrollState
+            BatteryWidgetConfigScreen(
+                onFinishConfig = {
+                    if (it != null) {
+                        finishWidgetConfig(it)
+                    } else {
+                        finish()
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BatteryWidgetConfigScreen(
+    onFinishConfig: (Watch?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val topBarScrollState = rememberTopAppBarScrollState()
+    val scrollBehavior = remember(decayAnimationSpec) {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            decayAnimationSpec = decayAnimationSpec,
+            state = topBarScrollState
+        )
+    }
+    HarmonizedTheme {
+        Scaffold(
+            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                MediumTopAppBar(
+                    title = { },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { onFinishConfig(null) }
+                        ) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior
+                )
+            },
+            floatingActionButton = {
+                ExtendedFloatingActionButton(
+                    text = { Text(stringResource(R.string.button_finish)) },
+                    icon = { Icon(Icons.Default.Check, null) },
+                    onClick = {
+                        selectedWatch?.let {
+                            onFinishConfig(it)
+                        }
+                    }
                 )
             }
-            HarmonizedTheme {
-                Scaffold(
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    topBar = {
-                        MediumTopAppBar(
-                            title = { },
-                            navigationIcon = {
-                                IconButton(onClick = this::finish) {
-                                    Icon(
-                                        Icons.Default.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            },
-                            scrollBehavior = scrollBehavior
-                        )
-                    },
-                    floatingActionButton = {
-                        ExtendedFloatingActionButton(
-                            text = { Text(stringResource(R.string.button_finish)) },
-                            icon = { Icon(Icons.Default.Check, null) },
-                            onClick = {
-                                selectedWatch?.let {
-                                    finishWidgetConfig(it)
-                                }
-                            }
-                        )
-                    }
-                ) {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(it)) {
-                        val viewModel: BatteryWidgetConfigViewModel = getViewModel()
-                        val registeredWatches by viewModel.registeredWatches.collectAsState(
-                            emptyList()
-                        )
-                        Text(
-                            stringResource(R.string.widget_config_battery_stats_hint),
-                            style = MaterialTheme.typography.headlineSmall,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-                        WatchPickerList(
-                            watches = registeredWatches,
-                            selectedWatch = selectedWatch,
-                            onWatchSelected = onWatchSelected
-                        )
-                    }
-                }
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)) {
+                val viewModel: BatteryWidgetConfigViewModel = getViewModel()
+                val registeredWatches by viewModel.registeredWatches.collectAsState(
+                    emptyList()
+                )
+                Text(
+                    stringResource(R.string.widget_config_battery_stats_hint),
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+                WatchPickerList(
+                    watches = registeredWatches,
+                    selectedWatch = selectedWatch,
+                    onWatchSelected = onWatchSelected
+                )
             }
         }
     }
+}
 
-    /**
-     * Displays a column of watches and allows the user to select a watch.
-     * @param watches The list of available watches.
-     * @param selectedWatch The currently selected watch.
-     * @param onWatchSelected Called when a new watch is selected.
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun WatchPickerList(
-        watches: List<Watch>,
-        selectedWatch: Watch?,
-        onWatchSelected: (Watch) -> Unit
+/**
+ * Displays a column of watches and allows the user to select a watch.
+ * @param watches The list of available watches.
+ * @param selectedWatch The currently selected watch.
+ * @param onWatchSelected Called when a new watch is selected.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WatchPickerList(
+    watches: List<Watch>,
+    selectedWatch: Watch?,
+    onWatchSelected: (Watch) -> Unit
+) {
+    LazyColumn(
+        Modifier
+            .selectableGroup()
+            .fillMaxSize()
     ) {
-        LazyColumn(
-            Modifier
-                .selectableGroup()
-                .fillMaxSize()
-        ) {
-            items(watches) { watch ->
-                Row(Modifier.clickable { onWatchSelected(watch) }) {
-                    RadioButton(selected = watch == selectedWatch, onClick = null)
-                    Text(watch.name)
-                }
+        items(watches) { watch ->
+            Row(Modifier.clickable { onWatchSelected(watch) }) {
+                RadioButton(selected = watch == selectedWatch, onClick = null)
+                Text(watch.name)
             }
         }
     }
