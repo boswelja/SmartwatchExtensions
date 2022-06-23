@@ -15,7 +15,7 @@ sealed class FeatureData<T>(
     /**
      * Indicates the feature is enabled and data was loaded successfully.
      */
-    class Success<T>(data: T?): FeatureData<T>(data, null)
+    class Success<T>(override val data: T?): FeatureData<T>(data, null)
 
     /**
      * Indicates there was an error loading the data.
