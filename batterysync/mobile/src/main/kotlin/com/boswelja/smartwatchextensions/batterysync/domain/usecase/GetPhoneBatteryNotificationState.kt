@@ -2,9 +2,9 @@ package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.runCatching
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,15 +24,11 @@ class GetPhoneBatteryNotificationState(
             getPhoneChargeNotificationEnabled(watchId),
             getPhoneLowNotificationEnabled(watchId)
         ) { phoneChargeNotiEnabled, phoneLowNotiEnabled ->
-            Result.success(
-                DeviceBatteryNotificationState(
-                    chargeNotificationsEnabled = phoneChargeNotiEnabled.getOrDefault(false),
-                    lowNotificationsEnabled = phoneLowNotiEnabled.getOrDefault(false)
-                )
+            DeviceBatteryNotificationState(
+                chargeNotificationsEnabled = phoneChargeNotiEnabled.getOrDefault(false),
+                lowNotificationsEnabled = phoneLowNotiEnabled.getOrDefault(false)
             )
-        }.catch { throwable ->
-            emit(Result.failure(throwable))
-        }
+        }.runCatching()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -41,9 +37,6 @@ class GetPhoneBatteryNotificationState(
             .filterNotNull()
             .flatMapLatest {
                 invoke(it.uid)
-            }
-            .catch { throwable ->
-                emit(Result.failure(throwable))
             }
     }
 }

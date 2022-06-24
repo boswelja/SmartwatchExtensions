@@ -2,13 +2,12 @@ package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.runCatching
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 
 /**
  * Gets the whether battery charge notifications are enabled for this device on watch with the given ID.
@@ -19,12 +18,7 @@ class GetPhoneChargeNotificationEnabled(
 ) {
     operator fun invoke(watchId: String): Flow<Result<Boolean>> {
         return settingsRepository.getBoolean(watchId, BATTERY_PHONE_CHARGE_NOTI_KEY)
-            .map { phoneChargeNotiEnabled ->
-                Result.success(phoneChargeNotiEnabled)
-            }
-            .catch { throwable ->
-                emit(Result.failure(throwable))
-            }
+            .runCatching()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,9 +27,6 @@ class GetPhoneChargeNotificationEnabled(
             .filterNotNull()
             .flatMapLatest { watch ->
                 invoke(watch.uid)
-            }
-            .catch { throwable ->
-                emit(Result.failure(throwable))
             }
     }
 }
