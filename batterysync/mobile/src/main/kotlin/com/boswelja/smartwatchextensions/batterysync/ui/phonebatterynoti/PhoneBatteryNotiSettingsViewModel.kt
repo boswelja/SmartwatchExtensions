@@ -2,27 +2,24 @@ package com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneChargeNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowNotificationEnabled
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -32,37 +29,57 @@ import kotlinx.coroutines.launch
 class PhoneBatteryNotiSettingsViewModel(
     messageClient: MessageClient,
     private val selectedWatchManager: SelectedWatchManager,
-    private val settingsRepository: WatchSettingsRepository
+    private val settingsRepository: WatchSettingsRepository,
+    getPhoneChargeNotificationEnabled: GetPhoneChargeNotificationEnabled,
+    getPhoneLowNotificationEnabled: GetPhoneLowNotificationEnabled,
+    getBatteryChargeThreshold: GetBatteryChargeThreshold,
+    getBatteryLowThreshold: GetBatteryLowThreshold
 ) : ViewModel() {
     private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
 
     /**
      * Flow whether phone charge notifications are enabled for the selected watch.
      */
-    val phoneChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_CHARGE_NOTI_KEY)
-    }
+    val phoneChargeNotiEnabled = getPhoneChargeNotificationEnabled()
+        .map { it.getOrDefault(false) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            false
+        )
 
     /**
      * Flow whether phone low notifications are enabled for the selected watch.
      */
-    val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BATTERY_PHONE_LOW_NOTI_KEY)
-    }
+    val phoneLowNotiEnabled = getPhoneLowNotificationEnabled()
+        .map { it.getOrDefault(false) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            false
+        )
 
     /**
      * Flow the charge percent threshold.
      */
-    val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD)
-    }
+    val chargeThreshold = getBatteryChargeThreshold()
+        .map { it.getOrDefault(DefaultValues.CHARGE_THRESHOLD) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DefaultValues.CHARGE_THRESHOLD
+        )
 
     /**
      * Flow the low percent threshold.
      */
-    val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
-        settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD)
-    }
+    val batteryLowThreshold = getBatteryLowThreshold()
+        .map { it.getOrDefault(DefaultValues.LOW_THRESHOLD) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DefaultValues.LOW_THRESHOLD
+        )
 
     /**
      * Set whether phone charge notifications are enabled.
@@ -98,18 +115,4 @@ class PhoneBatteryNotiSettingsViewModel(
             )
         )
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun <T> mapStateForSelectedWatch(
-        defaultValue: T,
-        block: (Watch) -> Flow<T>
-    ): StateFlow<T> =
-        selectedWatchManager.selectedWatch
-            .filterNotNull()
-            .flatMapLatest(block)
-            .stateIn(
-                viewModelScope,
-                SharingStarted.Lazily,
-                defaultValue
-            )
 }

@@ -59,6 +59,6 @@ val batterySyncModule = module {
 
     // ui
     viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get()) }
+    viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WatchBatteryNotiSettingsViewModel(get(), get()) }
 }
