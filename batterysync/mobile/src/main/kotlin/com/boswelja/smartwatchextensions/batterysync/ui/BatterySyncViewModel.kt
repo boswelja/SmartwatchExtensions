@@ -17,7 +17,6 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySy
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchBatteryNotificationState
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.getOrElse
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
@@ -118,13 +117,19 @@ class BatterySyncViewModel(
         .map {
             it.getOrElse {
                 _isError.value = true
-                DeviceBatteryNotificationState(false, false)
+                DeviceBatteryNotificationState(
+                    chargeNotificationsEnabled = false,
+                    lowNotificationsEnabled = false
+                )
             }
         }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            DeviceBatteryNotificationState(false, false)
+            DeviceBatteryNotificationState(
+                chargeNotificationsEnabled = false,
+                lowNotificationsEnabled = false
+            )
         )
 
     /**
@@ -134,13 +139,19 @@ class BatterySyncViewModel(
         .map {
             it.getOrElse {
                 _isError.value = true
-                DeviceBatteryNotificationState(false, false)
+                DeviceBatteryNotificationState(
+                    chargeNotificationsEnabled = false,
+                    lowNotificationsEnabled = false
+                )
             }
         }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            DeviceBatteryNotificationState(false, false)
+            DeviceBatteryNotificationState(
+                chargeNotificationsEnabled = false,
+                lowNotificationsEnabled = false
+            )
         )
 
     /**

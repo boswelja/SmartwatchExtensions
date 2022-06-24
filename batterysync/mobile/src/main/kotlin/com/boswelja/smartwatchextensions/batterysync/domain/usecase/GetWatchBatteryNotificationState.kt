@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
-import com.boswelja.smartwatchextensions.core.FeatureData
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -20,35 +19,31 @@ class GetWatchBatteryNotificationState(
     private val selectedWatchManager: SelectedWatchManager
 ) {
 
-    operator fun invoke(watchId: String): Flow<FeatureData<DeviceBatteryNotificationState>> {
+    operator fun invoke(watchId: String): Flow<Result<DeviceBatteryNotificationState>> {
         return combine(
             getWatchChargeNotificationEnabled(watchId),
             getWatchLowNotificationEnabled(watchId)
         ) { watchChargeNotiEnabled, watchLowNotiEnabled ->
-            if (watchChargeNotiEnabled is FeatureData.Disabled || watchLowNotiEnabled is FeatureData.Disabled) {
-                FeatureData.Disabled()
-            } else {
-                FeatureData.Success(
-                    DeviceBatteryNotificationState(
-                        watchChargeNotiEnabled.data == true,
-                        watchLowNotiEnabled.data == true
-                    )
+            Result.success(
+                DeviceBatteryNotificationState(
+                    watchChargeNotiEnabled.getOrDefault(false),
+                    watchLowNotiEnabled.getOrDefault(false)
                 )
-            }
+            )
         }.catch { throwable ->
-            emit(FeatureData.Error(throwable))
+            emit(Result.failure(throwable))
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<FeatureData<DeviceBatteryNotificationState>> {
+    operator fun invoke(): Flow<Result<DeviceBatteryNotificationState>> {
         return selectedWatchManager.selectedWatch
             .filterNotNull()
             .flatMapLatest {
                 invoke(it.uid)
             }
             .catch { throwable ->
-                emit(FeatureData.Error(throwable))
+                emit(Result.failure(throwable))
             }
     }
 }

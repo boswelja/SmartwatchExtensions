@@ -45,10 +45,10 @@ val batterySyncModule = module {
     single { GetBatterySyncEnabled(get(), get()) }
     single { GetBatteryChargeThreshold(get(), get()) }
     single { GetBatteryLowThreshold(get(), get()) }
-    single { GetWatchChargeNotificationEnabled(get(), get(), get()) }
-    single { GetWatchLowNotificationEnabled(get(), get(), get()) }
-    single { GetPhoneChargeNotificationEnabled(get(), get(), get()) }
-    single { GetPhoneLowNotificationEnabled(get(), get(), get()) }
+    single { GetWatchChargeNotificationEnabled(get(), get()) }
+    single { GetWatchLowNotificationEnabled(get(), get()) }
+    single { GetPhoneChargeNotificationEnabled(get(), get()) }
+    single { GetPhoneLowNotificationEnabled(get(), get()) }
     single { GetPhoneBatteryNotificationState(get(), get(), get()) }
     single { GetWatchBatteryNotificationState(get(), get(), get()) }
 
