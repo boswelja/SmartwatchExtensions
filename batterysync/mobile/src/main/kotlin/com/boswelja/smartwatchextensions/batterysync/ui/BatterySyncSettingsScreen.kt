@@ -35,7 +35,6 @@ fun BatterySyncSettingsScreen(
 ) {
     val viewModel: BatterySyncViewModel = getViewModel()
 
-    val canSyncBattery by viewModel.canSyncBattery.collectAsState()
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     val batteryStats by viewModel.batteryStats.collectAsState()
 
@@ -52,14 +51,10 @@ fun BatterySyncSettingsScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         )
-        if (canSyncBattery) {
-            BatterySyncSettings(
-                viewModel = viewModel,
-                onNavigate = onNavigate
-            )
-        } else {
-            Text(stringResource(R.string.battery_sync_not_supported))
-        }
+        BatterySyncSettings(
+            viewModel = viewModel,
+            onNavigate = onNavigate
+        )
     }
 }
 
