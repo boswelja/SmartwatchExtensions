@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.phoneconnectionmanager
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage

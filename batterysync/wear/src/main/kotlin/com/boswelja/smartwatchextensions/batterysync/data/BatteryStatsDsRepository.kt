@@ -1,9 +1,11 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.boswelja.smartwatchextensions.batterysync.BatteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray

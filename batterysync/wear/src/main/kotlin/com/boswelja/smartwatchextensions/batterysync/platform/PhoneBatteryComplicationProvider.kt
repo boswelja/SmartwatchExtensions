@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.platform
 
 import android.content.ComponentName
 import android.content.Context
@@ -13,6 +13,10 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceSe
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
+import com.boswelja.smartwatchextensions.batterysync.R
+import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject

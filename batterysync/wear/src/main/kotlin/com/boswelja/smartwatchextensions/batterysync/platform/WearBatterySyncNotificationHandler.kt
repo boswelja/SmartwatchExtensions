@@ -1,8 +1,10 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.platform
 
 import android.app.NotificationManager
 import android.content.Context
 import androidx.datastore.core.DataStore
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
+import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.PhoneState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

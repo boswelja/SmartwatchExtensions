@@ -2,8 +2,8 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.RequestBatteryStatus
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message

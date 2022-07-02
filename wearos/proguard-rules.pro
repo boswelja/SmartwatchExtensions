@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 -keep class androidx.wear.complications.** { *; }
 -keep class com.boswelja.smartwatchextensions.phonelocking.LockPhoneComplicationProvider { *; }
--keep class com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider { *; }
+-keep class com.boswelja.smartwatchextensions.batterysync.platform.PhoneBatteryComplicationProvider { *; }
 -keep class android.support.wearable.complications.** { *; } # Workaround for androidx lib still using wearable support lib
 
 # Keep `Companion` object fields of serializable classes.

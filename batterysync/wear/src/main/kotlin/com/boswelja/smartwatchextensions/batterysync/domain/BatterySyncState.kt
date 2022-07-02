@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.batterysync
+package com.boswelja.smartwatchextensions.batterysync.domain
 
 import kotlinx.serialization.Serializable
 
