@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class BatteryStatsDbDataSource(
+class WatchBatteryStatsDbDataSource(
     private val database: BatteryStatsDatabase,
     private val dispatcher: CoroutineContext
 ) {

@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync.di
 
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
-import com.boswelja.smartwatchextensions.batterysync.data.local.BatteryStatsDbDataSource
+import com.boswelja.smartwatchextensions.batterysync.data.local.WatchBatteryStatsDbDataSource
 import com.boswelja.smartwatchextensions.batterysync.data.repository.BatteryStatsRepositoryImpl
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
@@ -45,7 +45,7 @@ val batterySyncModule = module {
             get { parametersOf(BatteryStatsDatabase.Schema, "batterystats.db") }
         )
     }
-    single { BatteryStatsDbDataSource(get(), get(named("database"))) }
+    single { WatchBatteryStatsDbDataSource(get(), get(named("database"))) }
 
     // domain/repository
     single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get()) }
