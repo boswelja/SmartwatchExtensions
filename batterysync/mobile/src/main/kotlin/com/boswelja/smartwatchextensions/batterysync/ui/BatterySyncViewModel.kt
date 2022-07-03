@@ -1,12 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
@@ -15,19 +10,10 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySt
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchBatteryNotificationState
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.settings.BoolSetting
-import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
-import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
-import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.core.settings.IntSetting
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatteryChargeThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatteryLowThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatterySyncEnabled
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -36,20 +22,16 @@ import kotlinx.coroutines.launch
  * A ViewModel to provide data for Battery Sync
  */
 class BatterySyncViewModel(
-    application: Application,
-    messageClient: MessageClient,
-    private val selectedWatchManager: SelectedWatchManager,
-    private val settingsRepository: WatchSettingsRepository,
     getBatterySyncEnabled: GetBatterySyncEnabled,
     getBatteryStats: GetBatteryStats,
     getBatteryChargeThreshold: GetBatteryChargeThreshold,
     getBatteryLowThreshold: GetBatteryLowThreshold,
     getPhoneBatteryNotificationState: GetPhoneBatteryNotificationState,
-    getWatchBatteryNotificationState: GetWatchBatteryNotificationState
-) : AndroidViewModel(application) {
-
-    private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
-    private val intMessageHandler = MessageHandler(IntSettingSerializer, messageClient)
+    getWatchBatteryNotificationState: GetWatchBatteryNotificationState,
+    private val setBatterySyncEnabled: SetBatterySyncEnabled,
+    private val setBatteryLowThreshold: SetBatteryLowThreshold,
+    private val setBatteryChargeThreshold: SetBatteryChargeThreshold
+) : ViewModel() {
 
     /**
      * Flow whether Battery Sync is enabled for the selected watch.
@@ -153,30 +135,7 @@ class BatterySyncViewModel(
      */
     fun setBatterySyncEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            if (isEnabled) {
-                val workerStartSuccessful = BatterySyncWorker
-                    .startSyncingFor(getApplication(), selectedWatch!!.uid)
-                if (workerStartSuccessful) {
-                    updateBoolSetting(
-                        selectedWatch.uid,
-                        BATTERY_SYNC_ENABLED_KEY,
-                        isEnabled
-                    )
-                }
-            } else {
-                updateBoolSetting(
-                    selectedWatch!!.uid,
-                    BATTERY_SYNC_ENABLED_KEY,
-                    isEnabled
-                )
-                BatterySyncWorker.stopSyncingFor(
-                    getApplication(), selectedWatch.uid
-                )
-                // TODO reenable this
-//                WatchBatteryTileService.requestTileUpdate(getApplication())
-//                WatchWidgetProvider.updateWidgets(getApplication())
-            }
+            setBatterySyncEnabled.invoke(isEnabled)
         }
     }
 
@@ -185,8 +144,7 @@ class BatterySyncViewModel(
      */
     fun setChargeThreshold(chargeThreshold: Int) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateIntSetting(selectedWatch!!.uid, BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold)
+            setBatteryChargeThreshold(chargeThreshold)
         }
     }
 
@@ -195,38 +153,7 @@ class BatterySyncViewModel(
      */
     fun setLowBatteryThreshold(lowThreshold: Int) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateIntSetting(selectedWatch!!.uid, BATTERY_LOW_THRESHOLD_KEY, lowThreshold)
+            setBatteryLowThreshold(lowThreshold)
         }
-    }
-
-    private suspend fun updateIntSetting(
-        watchUid: String,
-        key: String,
-        value: Int
-    ) {
-        settingsRepository.putInt(watchUid, key, value)
-        intMessageHandler.sendMessage(
-            watchUid,
-            Message(
-                UpdateIntSetting,
-                IntSetting(key, value)
-            )
-        )
-    }
-
-    private suspend fun updateBoolSetting(
-        watchUid: String,
-        key: String,
-        value: Boolean
-    ) {
-        settingsRepository.putBoolean(watchUid, key, value)
-        boolMessageHandler.sendMessage(
-            watchUid,
-            Message(
-                UpdateBoolSetting,
-                BoolSetting(key, value)
-            )
-        )
     }
 }
