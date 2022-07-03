@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.batterysync.domain
+package com.boswelja.smartwatchextensions.batterysync.domain.model
 
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  * @param notificationPosted Whether phone charge/low notifications have been posted.
  */
 @Serializable
-data class BatterySyncState(
+data class BatterySyncConfig(
     val batterySyncEnabled: Boolean,
     val phoneChargeNotificationEnabled: Boolean,
     val phoneLowNotificationEnabled: Boolean,

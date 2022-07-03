@@ -2,8 +2,8 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
 import com.boswelja.smartwatchextensions.batterysync.RequestBatteryStatus
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 class BatteryStatsViewModel(
     batteryStatsRepository: BatteryStatsRepository,
-    batterySyncStateRepository: BatterySyncStateRepository,
+    batterySyncConfigRepository: BatterySyncConfigRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient
 ) : ViewModel() {
@@ -33,7 +33,7 @@ class BatteryStatsViewModel(
     /**
      * Flow whether Battery Sync is enabled.
      */
-    val batterySyncEnabled = batterySyncStateRepository.getBatterySyncState()
+    val batterySyncEnabled = batterySyncConfigRepository.getBatterySyncState()
         .map { it.batterySyncEnabled }
         .stateIn(
             viewModelScope,

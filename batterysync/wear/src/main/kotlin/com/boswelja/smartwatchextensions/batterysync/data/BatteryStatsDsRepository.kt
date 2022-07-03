@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
-import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray

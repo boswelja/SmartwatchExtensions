@@ -6,8 +6,8 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.batteryStats
-import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
@@ -26,14 +26,14 @@ class PhoneBatteryUpdateReceiver :
 
     private val messageClient: MessageClient by inject()
     private val batteryStatsRepository: BatteryStatsRepository by inject()
-    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
+    private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
     private val batterySyncNotificationHandler: BatterySyncNotificationHandler by inject()
 
     override suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<BatteryStats>
     ) {
-        val batterySyncState = batterySyncStateRepository.getBatterySyncState().first()
+        val batterySyncState = batterySyncConfigRepository.getBatterySyncState().first()
 
         if (!batterySyncState.batterySyncEnabled) return
 

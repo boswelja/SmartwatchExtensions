@@ -106,18 +106,4 @@ class WatchBatteryNotiSettingsViewModel(
     ) {
         settingsRepository.putBoolean(watchUid, key, value)
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun <T> mapStateForSelectedWatch(
-        defaultValue: T,
-        block: (Watch) -> Flow<T>
-    ): StateFlow<T> =
-        selectedWatchManager.selectedWatch
-            .filterNotNull()
-            .flatMapLatest(block)
-            .stateIn(
-                viewModelScope,
-                SharingStarted.Lazily,
-                defaultValue
-            )
 }

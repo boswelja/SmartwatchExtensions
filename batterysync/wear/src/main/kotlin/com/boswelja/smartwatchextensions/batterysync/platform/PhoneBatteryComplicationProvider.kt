@@ -14,8 +14,8 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUp
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
 import com.boswelja.smartwatchextensions.batterysync.R
-import com.boswelja.smartwatchextensions.batterysync.domain.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
 import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -26,7 +26,7 @@ import org.koin.android.ext.android.inject
  */
 class PhoneBatteryComplicationProvider : SuspendingComplicationDataSourceService() {
 
-    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
+    private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
     private val batteryStatsRepository: BatteryStatsRepository by inject()
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
@@ -34,7 +34,7 @@ class PhoneBatteryComplicationProvider : SuspendingComplicationDataSourceService
     }
 
     override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationData? {
-        val batterySyncEnabled = batterySyncStateRepository.getBatterySyncState()
+        val batterySyncEnabled = batterySyncConfigRepository.getBatterySyncState()
             .map { it.batterySyncEnabled }
             .first()
         val complicationData = if (batterySyncEnabled) {

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
-import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncState
-import com.boswelja.smartwatchextensions.batterysync.domain.BatterySyncStateRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.model.BatterySyncConfig
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
@@ -14,15 +14,15 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
-private val Context.batterySyncStateStore: DataStore<BatterySyncState> by dataStore(
+private val Context.batterySyncConfigStore: DataStore<BatterySyncConfig> by dataStore(
     "batterysyncstate.pb",
     BatterySyncStateSerializer
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
 @OptIn(ExperimentalSerializationApi::class)
-private object BatterySyncStateSerializer : Serializer<BatterySyncState> {
-    override val defaultValue = BatterySyncState(
+private object BatterySyncStateSerializer : Serializer<BatterySyncConfig> {
+    override val defaultValue = BatterySyncConfig(
         batterySyncEnabled = false,
         phoneChargeNotificationEnabled = false,
         phoneLowNotificationEnabled = false,
@@ -31,23 +31,23 @@ private object BatterySyncStateSerializer : Serializer<BatterySyncState> {
         notificationPosted = false
     )
 
-    override suspend fun readFrom(input: InputStream): BatterySyncState =
+    override suspend fun readFrom(input: InputStream): BatterySyncConfig =
         ProtoBuf.decodeFromByteArray(input.readBytes())
 
-    override suspend fun writeTo(t: BatterySyncState, output: OutputStream) =
+    override suspend fun writeTo(t: BatterySyncConfig, output: OutputStream) =
         output.write(ProtoBuf.encodeToByteArray(t))
 }
 
 /**
- * A [BatterySyncStateRepository] backed by a DataStore.
+ * A [BatterySyncConfigRepository] backed by a DataStore.
  */
-class BatterySyncStateDsRepository(context: Context) : BatterySyncStateRepository {
+class BatterySyncConfigDsRepository(context: Context) : BatterySyncConfigRepository {
 
-    private val dataStore = context.batterySyncStateStore
+    private val dataStore = context.batterySyncConfigStore
 
-    override fun getBatterySyncState(): Flow<BatterySyncState> = dataStore.data
+    override fun getBatterySyncState(): Flow<BatterySyncConfig> = dataStore.data
 
-    override suspend fun updateBatterySyncState(block: (BatterySyncState) -> BatterySyncState) {
+    override suspend fun updateBatterySyncState(block: (BatterySyncConfig) -> BatterySyncConfig) {
         dataStore.updateData(block)
     }
 }
