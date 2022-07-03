@@ -9,13 +9,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
 import androidx.work.workDataOf
-import com.boswelja.smartwatchextensions.batterysync.BatteryStats
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
 import com.boswelja.smartwatchextensions.batterysync.batteryStats
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendUpdatedBatteryStatsToWatch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
@@ -28,30 +23,16 @@ class BatterySyncWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    private val messageClient: MessageClient by inject()
+    private val sendUpdatedBatteryStatsToWatch: SendUpdatedBatteryStatsToWatch by inject()
 
     override suspend fun doWork(): Result {
         val watchId = inputData.getString(EXTRA_WATCH_ID) ?: return Result.failure()
         val batteryStats = applicationContext.batteryStats()!!
-        return if (onSendBatteryStats(watchId, batteryStats)) {
+        return if (sendUpdatedBatteryStatsToWatch(watchId, batteryStats)) {
             Result.success()
         } else {
             Result.retry()
         }
-    }
-
-    /**
-     * Called when the device battery stats are ready to send. Sending battery stats should be
-     * handled here.
-     * @param targetUid The target device UID.
-     * @param batteryStats The device battery stats to send.
-     */
-    private suspend fun onSendBatteryStats(
-        targetUid: String,
-        batteryStats: BatteryStats
-    ): Boolean {
-        val handler = MessageHandler(BatteryStatsSerializer, messageClient)
-        return handler.sendMessage(targetUid, Message(BatteryStatus, batteryStats))
     }
 
     companion object {

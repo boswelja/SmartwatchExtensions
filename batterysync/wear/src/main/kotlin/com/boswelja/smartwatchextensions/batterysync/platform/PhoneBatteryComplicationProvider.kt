@@ -14,11 +14,10 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUp
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
 import com.boswelja.smartwatchextensions.batterysync.R
-import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
+import com.boswelja.smartwatchextensions.core.FeatureData
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
 
 /**
@@ -26,24 +25,19 @@ import org.koin.android.ext.android.inject
  */
 class PhoneBatteryComplicationProvider : SuspendingComplicationDataSourceService() {
 
-    private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
-    private val batteryStatsRepository: BatteryStatsRepository by inject()
+    private val getPhoneBatteryStats: GetPhoneBatteryStats by inject()
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
         return createComplicationDataFor(PREVIEW_PERCENT, type)
     }
 
     override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationData? {
-        val batterySyncEnabled = batterySyncConfigRepository.getBatterySyncState()
-            .map { it.batterySyncEnabled }
-            .first()
-        val complicationData = if (batterySyncEnabled) {
-            val batteryStats = batteryStatsRepository.getPhoneBatteryStats()
-                .map { it.percent }
-                .first()
-            createComplicationDataFor(batteryStats, request.complicationType)
-        } else {
-            createDisabledComplicationData(request.complicationType)
+        val complicationData = when (val batteryStatsFeatureData = getPhoneBatteryStats().first()) {
+            is FeatureData.Success -> {
+                createComplicationDataFor(batteryStatsFeatureData.data.percent, request.complicationType)
+            }
+            is FeatureData.Disabled,
+            is FeatureData.Error -> createDisabledComplicationData(request.complicationType)
         }
 
         return complicationData
@@ -56,11 +50,7 @@ class PhoneBatteryComplicationProvider : SuspendingComplicationDataSourceService
      * @return The created [ComplicationData], or null if type was invalid for this complication.
      */
     private fun createComplicationDataFor(percent: Int, type: ComplicationType): ComplicationData? {
-        val text = if (percent > 0) {
-            getString(R.string.battery_percent, percent.toString())
-        } else {
-            getString(R.string.battery_percent_unknown)
-        }
+        val text = getString(R.string.battery_percent, percent.toString())
         val icon = MonochromaticImage.Builder(
             Icon.createWithResource(this, getBatteryDrawableRes(percent))
         ).build()

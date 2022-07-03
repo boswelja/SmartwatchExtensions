@@ -27,9 +27,11 @@ class GetBatteryStats(
                 result.fold(
                     onSuccess = { batterySyncEnabled ->
                         if (batterySyncEnabled) {
-                            batteryStatsRepository.batteryStatsFor(watchId).map { batteryStats ->
-                                FeatureData.Success(batteryStats)
-                            }
+                            batteryStatsRepository.batteryStatsFor(watchId)
+                                .filterNotNull()
+                                .map { batteryStats ->
+                                    FeatureData.Success(batteryStats)
+                                }
                         } else {
                             flowOf(FeatureData.Disabled())
                         }

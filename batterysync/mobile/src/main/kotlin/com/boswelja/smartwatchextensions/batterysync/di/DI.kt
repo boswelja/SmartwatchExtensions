@@ -16,6 +16,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowN
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendUpdatedBatteryStatsToWatch
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatteryChargeThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetBatterySyncEnabled
@@ -23,6 +24,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneChar
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneLowNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetWatchChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetWatchLowNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.StoreBatteryStatsForWatch
 import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
@@ -45,29 +47,36 @@ val batterySyncModule = module {
     }
     single { BatteryStatsDbDataSource(get(), get(named("database"))) }
 
-    // domain
+    // domain/repository
     single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get()) }
-    single { GetBatteryStats(get(), get(), get()) }
-    single { GetBatterySyncEnabled(get(), get()) }
+
+    // domain/usecase
     single { GetBatteryChargeThreshold(get(), get()) }
     single { GetBatteryLowThreshold(get(), get()) }
-    single { GetWatchChargeNotificationEnabled(get(), get()) }
-    single { GetWatchLowNotificationEnabled(get(), get()) }
+    single { GetBatteryStats(get(), get(), get()) }
+    single { GetBatterySyncEnabled(get(), get()) }
+    single { GetPhoneBatteryNotificationState(get(), get(), get()) }
     single { GetPhoneChargeNotificationEnabled(get(), get()) }
     single { GetPhoneLowNotificationEnabled(get(), get()) }
-    single { GetPhoneBatteryNotificationState(get(), get(), get()) }
     single { GetWatchBatteryNotificationState(get(), get(), get()) }
+    single { GetWatchChargeNotificationEnabled(get(), get()) }
+    single { GetWatchLowNotificationEnabled(get(), get()) }
+
+    single { SendUpdatedBatteryStatsToWatch(get()) }
+
+    single { SetBatteryChargeThreshold(get(), get(), get()) }
+    single { SetBatteryLowThreshold(get(), get(), get()) }
     single { SetBatterySyncEnabled(get(), get(), get(), get()) }
     single { SetPhoneChargeNotificationEnabled(get(), get(), get()) }
     single { SetPhoneLowNotificationEnabled(get(), get(), get()) }
-    single { SetWatchLowNotificationEnabled(get(), get()) }
     single { SetWatchChargeNotificationEnabled(get(), get()) }
-    single { SetBatteryChargeThreshold(get(), get(), get()) }
-    single { SetBatteryLowThreshold(get(), get(), get()) }
+    single { SetWatchLowNotificationEnabled(get(), get()) }
+
+    single { StoreBatteryStatsForWatch(get(), get()) }
 
     // platform
     single<BatterySyncNotificationHandler> {
-        MobileBatterySyncNotificationHandler(get(), get(), androidContext(), androidContext().getSystemService()!!)
+        MobileBatterySyncNotificationHandler(get(), get(), get(), get(), get(), get(), get(), androidContext().getSystemService()!!)
     }
 
     // ui

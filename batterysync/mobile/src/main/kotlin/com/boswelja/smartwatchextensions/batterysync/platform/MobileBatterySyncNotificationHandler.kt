@@ -3,12 +3,12 @@ package com.boswelja.smartwatchextensions.batterysync.platform
 import android.app.NotificationManager
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_STATS_NOTIFICATION_SENT
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
@@ -19,6 +19,10 @@ import kotlinx.coroutines.flow.first
 class MobileBatterySyncNotificationHandler(
     private val settingsRepository: WatchSettingsRepository,
     private val watchRepository: WatchRepository,
+    private val getWatchLowNotificationEnabled: GetWatchLowNotificationEnabled,
+    private val getWatchChargeNotificationEnabled: GetWatchChargeNotificationEnabled,
+    private val getBatteryChargeThreshold: GetBatteryChargeThreshold,
+    private val getBatteryLowThreshold: GetBatteryLowThreshold,
     context: Context,
     notificationManager: NotificationManager
 ) : BatterySyncNotificationHandler(context, notificationManager) {
@@ -38,18 +42,14 @@ class MobileBatterySyncNotificationHandler(
         settingsRepository.getBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, false).first()
 
     override suspend fun getChargeNotificationsEnabled(targetUid: String): Boolean =
-        settingsRepository
-            .getBoolean(targetUid, BATTERY_WATCH_CHARGE_NOTI_KEY, DefaultValues.NOTIFICATIONS_ENABLED)
-            .first()
+        getWatchChargeNotificationEnabled().first().getOrDefault(DefaultValues.NOTIFICATIONS_ENABLED)
 
     override suspend fun getLowNotificationsEnabled(targetUid: String): Boolean =
-        settingsRepository
-            .getBoolean(targetUid, BATTERY_WATCH_LOW_NOTI_KEY, DefaultValues.NOTIFICATIONS_ENABLED)
-            .first()
+        getWatchLowNotificationEnabled().first().getOrDefault(DefaultValues.NOTIFICATIONS_ENABLED)
 
     override suspend fun getChargeThreshold(targetUid: String): Int =
-        settingsRepository.getInt(targetUid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD).first()
+        getBatteryChargeThreshold().first().getOrDefault(DefaultValues.CHARGE_THRESHOLD)
 
     override suspend fun getLowThreshold(targetUid: String): Int =
-        settingsRepository.getInt(targetUid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD).first()
+        getBatteryLowThreshold().first().getOrDefault(DefaultValues.LOW_THRESHOLD)
 }

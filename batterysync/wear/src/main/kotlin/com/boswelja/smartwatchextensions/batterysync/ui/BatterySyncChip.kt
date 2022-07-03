@@ -13,6 +13,7 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.batterysync.R
+import com.boswelja.smartwatchextensions.core.fold
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -29,34 +30,42 @@ fun BatterySyncChip(
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
     val viewModel: BatteryStatsViewModel = getViewModel()
+    val batteryStatsFeatureData by viewModel.batteryStats.collectAsState()
 
-    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
-    if (batterySyncEnabled) {
-        val batteryStats by viewModel.batteryStats.collectAsState()
-        BatterySyncDetailsChip(
-            percent = batteryStats?.percent ?: -1,
-            phoneName = phoneName,
-            onClick = {
-                coroutineScope.launch {
-                    val result = viewModel.trySyncBattery()
-                    if (result) {
-                        view.showConfirmationOverlay(
-                            type = ConfirmationOverlay.SUCCESS_ANIMATION,
-                            message = view.context.getString(R.string.battery_sync_refresh_success)
-                        )
-                    } else {
-                        view.showConfirmationOverlay(
-                            type = ConfirmationOverlay.FAILURE_ANIMATION,
-                            message = view.context.getString(R.string.phone_not_connected)
-                        )
+    batteryStatsFeatureData.fold(
+        success = { batteryStats ->
+            BatterySyncDetailsChip(
+                percent = batteryStats.percent,
+                phoneName = phoneName,
+                onClick = {
+                    coroutineScope.launch {
+                        val result = viewModel.trySyncBattery()
+                        if (result) {
+                            view.showConfirmationOverlay(
+                                type = ConfirmationOverlay.SUCCESS_ANIMATION,
+                                message = view.context.getString(R.string.battery_sync_refresh_success)
+                            )
+                        } else {
+                            view.showConfirmationOverlay(
+                                type = ConfirmationOverlay.FAILURE_ANIMATION,
+                                message = view.context.getString(R.string.phone_not_connected)
+                            )
+                        }
                     }
-                }
-            },
-            modifier = modifier
-        )
-    } else {
-        BatterySyncDisabledChip(modifier = modifier)
-    }
+                },
+                modifier = modifier
+            )
+        },
+        disabled = {
+            BatterySyncDisabledChip(modifier = modifier)
+        },
+        error = {
+            // TODO
+        },
+        loading = {
+            BatterySyncDisabledChip(modifier = modifier)
+        }
+    )
 }
 
 /**
