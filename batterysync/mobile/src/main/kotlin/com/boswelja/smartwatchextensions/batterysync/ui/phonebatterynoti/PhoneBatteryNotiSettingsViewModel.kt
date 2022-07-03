@@ -2,23 +2,14 @@ package com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryChargeThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowNotificationEnabled
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.settings.BoolSetting
-import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
-import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
-import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneChargeNotificationEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneLowNotificationEnabled
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,15 +18,13 @@ import kotlinx.coroutines.launch
  * A ViewModel to provide data for phone battery notification settings.
  */
 class PhoneBatteryNotiSettingsViewModel(
-    messageClient: MessageClient,
-    private val selectedWatchManager: SelectedWatchManager,
-    private val settingsRepository: WatchSettingsRepository,
     getPhoneChargeNotificationEnabled: GetPhoneChargeNotificationEnabled,
     getPhoneLowNotificationEnabled: GetPhoneLowNotificationEnabled,
     getBatteryChargeThreshold: GetBatteryChargeThreshold,
-    getBatteryLowThreshold: GetBatteryLowThreshold
+    getBatteryLowThreshold: GetBatteryLowThreshold,
+    private val setPhoneChargeNotificationEnabled: SetPhoneChargeNotificationEnabled,
+    private val setPhoneLowNotificationEnabled: SetPhoneLowNotificationEnabled
 ) : ViewModel() {
-    private val boolMessageHandler = MessageHandler(BoolSettingSerializer, messageClient)
 
     /**
      * Flow whether phone charge notifications are enabled for the selected watch.
@@ -86,8 +75,7 @@ class PhoneBatteryNotiSettingsViewModel(
      */
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled)
+            setPhoneChargeNotificationEnabled(isEnabled)
         }
     }
 
@@ -96,23 +84,7 @@ class PhoneBatteryNotiSettingsViewModel(
      */
     fun setPhoneLowNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled)
+            setPhoneLowNotificationEnabled(isEnabled)
         }
-    }
-
-    private suspend fun updateBoolSetting(
-        watchUid: String,
-        key: String,
-        value: Boolean
-    ) {
-        settingsRepository.putBoolean(watchUid, key, value)
-        boolMessageHandler.sendMessage(
-            watchUid,
-            Message(
-                UpdateBoolSetting,
-                BoolSetting(key, value)
-            )
-        )
     }
 }
