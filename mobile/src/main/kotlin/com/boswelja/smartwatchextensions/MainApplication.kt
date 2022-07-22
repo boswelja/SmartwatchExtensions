@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.boswelja.smartwatchextensions.aboutapp.aboutAppModule
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
-import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
+import com.boswelja.smartwatchextensions.batterysync.di.batterySyncModule
 import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
 import com.boswelja.smartwatchextensions.core.coreModule
 import com.boswelja.smartwatchextensions.dashboard.dashboardModule
@@ -74,9 +74,6 @@ class MainApplication : Application() {
 val watchManagerModule = module {
     single {
         WatchManager(
-            get(),
-            get(),
-            get(),
             get(),
             get(),
             get(),

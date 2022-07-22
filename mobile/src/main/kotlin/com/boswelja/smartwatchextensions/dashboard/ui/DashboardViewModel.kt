@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.watchconnection.common.Watch
@@ -59,7 +59,7 @@ class DashboardViewModel(
      * Flow battery stats for the selected watch.
      */
     val batteryStats = mapStateForSelectedWatch(null) {
-        batteryStatsRepository.batteryStatsFor(it.uid)
+        batteryStatsRepository.getBatteryStatsForWatch(it.uid)
     }
 
     /**

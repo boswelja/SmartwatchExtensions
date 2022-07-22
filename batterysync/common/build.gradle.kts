@@ -21,7 +21,6 @@ dependencies {
     api(libs.watchconnection.serialization)
 
     implementation(libs.kotlinx.serialization.protobuf)
-    implementation(libs.batterystats)
     implementation(libs.androidx.appcompat)
 
     testImplementation("junit:junit:4.13.2")

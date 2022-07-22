@@ -7,7 +7,7 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchTileService
@@ -34,7 +34,7 @@ class WatchBatteryTileService : WatchTileService() {
     private val batteryStats = watch
         .filterNotNull()
         .flatMapLatest {
-            batteryStatsRepository.batteryStatsFor(it.uid)
+            batteryStatsRepository.getBatteryStatsForWatch(it.uid)
         }
         .stateIn(
             coroutineScope,

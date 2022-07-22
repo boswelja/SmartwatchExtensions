@@ -3,7 +3,7 @@
     <application>
 
         <service
-            android:name=".PhoneBatteryComplicationProvider"
+            android:name=".platform.PhoneBatteryComplicationProvider"
             android:icon="@drawable/battery_full"
             android:label="@string/battery_sync_complication_label"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
@@ -22,7 +22,7 @@
         </service>
 
         <receiver
-            android:name=".PhoneBatteryUpdateReceiver"
+            android:name=".platform.PhoneBatteryUpdateReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

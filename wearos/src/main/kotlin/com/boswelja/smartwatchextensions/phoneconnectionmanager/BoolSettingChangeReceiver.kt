@@ -6,8 +6,8 @@ import androidx.core.content.ContextCompat
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
-import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
+import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
+import com.boswelja.smartwatchextensions.batterysync.platform.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
@@ -29,7 +29,7 @@ import org.koin.core.component.inject
  */
 class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer), KoinComponent {
 
-    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
+    private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
     private val dndSyncStateRepository: DnDSyncStateRepository by inject()
     private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
@@ -52,17 +52,17 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
                 }
             }
             BATTERY_SYNC_ENABLED_KEY -> {
-                batterySyncStateRepository.updateBatterySyncState {
+                batterySyncConfigRepository.updateBatterySyncState {
                     it.copy(batterySyncEnabled = value)
                 }
                 PhoneBatteryComplicationProvider.updateAll(context)
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY ->
-                batterySyncStateRepository.updateBatterySyncState {
+                batterySyncConfigRepository.updateBatterySyncState {
                     it.copy(phoneChargeNotificationEnabled = value)
                 }
             BATTERY_PHONE_LOW_NOTI_KEY ->
-                batterySyncStateRepository.updateBatterySyncState {
+                batterySyncConfigRepository.updateBatterySyncState {
                     it.copy(phoneLowNotificationEnabled = value)
                 }
             DND_SYNC_TO_PHONE_KEY -> {
