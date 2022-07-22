@@ -77,7 +77,7 @@ class WatchManager(
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
-            batteryStatsRepository.removeStatsFor(watch.uid)
+            batteryStatsRepository.deleteBatteryStatsForWatch(watch.uid)
             messageClient.sendMessage(watch.uid, Message(RequestResetApp, null))
             watchRepository.deregisterWatch(watch)
             AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
@@ -102,7 +102,7 @@ class WatchManager(
     suspend fun resetWatchPreferences(
         watch: Watch
     ) {
-        batteryStatsRepository.removeStatsFor(watch.uid)
+        batteryStatsRepository.deleteBatteryStatsForWatch(watch.uid)
         messageClient.sendMessage(watch.uid, Message(ResetSettings, null))
         settingsRepository.deleteForWatch(watch.uid)
     }

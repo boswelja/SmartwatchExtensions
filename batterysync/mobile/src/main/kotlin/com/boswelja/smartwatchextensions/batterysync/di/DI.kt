@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync.di
 
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
+import com.boswelja.smartwatchextensions.batterysync.data.local.PhoneBatteryStatsDataSource
 import com.boswelja.smartwatchextensions.batterysync.data.local.WatchBatteryStatsDbDataSource
 import com.boswelja.smartwatchextensions.batterysync.data.repository.BatteryStatsRepositoryImpl
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
@@ -10,6 +11,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryCh
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryNotificationState
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneLowNotificationEnabled
@@ -45,16 +47,18 @@ val batterySyncModule = module {
             get { parametersOf(BatteryStatsDatabase.Schema, "batterystats.db") }
         )
     }
+    single { PhoneBatteryStatsDataSource(androidContext()) }
     single { WatchBatteryStatsDbDataSource(get(), get(named("database"))) }
 
     // domain/repository
-    single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get()) }
+    single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get(), get()) }
 
     // domain/usecase
     single { GetBatteryChargeThreshold(get(), get()) }
     single { GetBatteryLowThreshold(get(), get()) }
     single { GetBatteryStats(get(), get(), get()) }
     single { GetBatterySyncEnabled(get(), get()) }
+    single { GetPhoneBatteryStats(get()) }
     single { GetPhoneBatteryNotificationState(get(), get(), get()) }
     single { GetPhoneChargeNotificationEnabled(get(), get()) }
     single { GetPhoneLowNotificationEnabled(get(), get()) }

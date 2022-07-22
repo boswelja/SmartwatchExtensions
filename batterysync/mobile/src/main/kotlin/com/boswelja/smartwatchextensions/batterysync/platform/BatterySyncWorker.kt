@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
 import androidx.work.workDataOf
-import com.boswelja.smartwatchextensions.batterysync.batteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendUpdatedBatteryStatsToWatch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,15 +24,23 @@ class BatterySyncWorker(
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
     private val sendUpdatedBatteryStatsToWatch: SendUpdatedBatteryStatsToWatch by inject()
+    private val getPhoneBatteryStats: GetPhoneBatteryStats by inject()
 
     override suspend fun doWork(): Result {
         val watchId = inputData.getString(EXTRA_WATCH_ID) ?: return Result.failure()
-        val batteryStats = applicationContext.batteryStats()!!
-        return if (sendUpdatedBatteryStatsToWatch(watchId, batteryStats)) {
-            Result.success()
-        } else {
-            Result.retry()
-        }
+        val batteryStatsResult = getPhoneBatteryStats()
+        return batteryStatsResult.fold(
+            onSuccess = { batteryStats ->
+                if (sendUpdatedBatteryStatsToWatch(watchId, batteryStats)) {
+                    Result.success()
+                } else {
+                    Result.retry()
+                }
+            },
+            onFailure = {
+                Result.retry()
+            }
+        )
     }
 
     companion object {

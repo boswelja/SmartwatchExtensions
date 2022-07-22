@@ -50,7 +50,7 @@ class WatchBatteryWidget : WatchWidgetProvider(), KoinComponent {
             .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
         if (isBatterySyncEnabled) {
             val batteryPercent = batteryStatsRepository
-                .batteryStatsFor(watch.uid).firstOrNull()?.percent ?: -1
+                .getBatteryStatsForWatch(watch.uid).firstOrNull()?.percent ?: -1
 
             // Set battery indicator image
             remoteViews.setImageViewResource(

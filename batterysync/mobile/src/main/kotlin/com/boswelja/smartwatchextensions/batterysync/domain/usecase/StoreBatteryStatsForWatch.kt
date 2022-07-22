@@ -9,7 +9,7 @@ class StoreBatteryStatsForWatch(
     private val batterySyncNotificationHandler: BatterySyncNotificationHandler
 ) {
     suspend operator fun invoke(watchId: String, batteryStats: BatteryStats) {
-        batteryStatsRepository.updateStatsFor(watchId, batteryStats)
+        batteryStatsRepository.putBatteryStatsForWatch(watchId, batteryStats)
         batterySyncNotificationHandler.handleNotificationsFor(watchId, batteryStats)
     }
 }

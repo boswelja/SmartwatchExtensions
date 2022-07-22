@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.Flow
 interface BatteryStatsRepository {
 
     /**
+     * Gets the [BatteryStats] for the local device.
+     * @return The [BatteryStats] for this device, or null if something went wrong.
+     */
+    fun getBatteryStatsForPhone(): BatteryStats?
+
+    /**
      * Flow the battery stats for a watch with a given ID.
      * @param watchId The ID of the watch to flow stats for.
      */

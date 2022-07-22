@@ -59,7 +59,7 @@ class DashboardViewModel(
      * Flow battery stats for the selected watch.
      */
     val batteryStats = mapStateForSelectedWatch(null) {
-        batteryStatsRepository.batteryStatsFor(it.uid)
+        batteryStatsRepository.getBatteryStatsForWatch(it.uid)
     }
 
     /**

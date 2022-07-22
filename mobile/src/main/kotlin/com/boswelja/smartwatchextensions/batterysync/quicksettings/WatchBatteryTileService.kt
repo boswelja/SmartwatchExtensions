@@ -34,7 +34,7 @@ class WatchBatteryTileService : WatchTileService() {
     private val batteryStats = watch
         .filterNotNull()
         .flatMapLatest {
-            batteryStatsRepository.batteryStatsFor(it.uid)
+            batteryStatsRepository.getBatteryStatsForWatch(it.uid)
         }
         .stateIn(
             coroutineScope,
