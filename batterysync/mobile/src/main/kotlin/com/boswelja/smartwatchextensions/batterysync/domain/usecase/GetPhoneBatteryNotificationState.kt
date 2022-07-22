@@ -25,8 +25,8 @@ class GetPhoneBatteryNotificationState(
             getPhoneLowNotificationEnabled(watchId)
         ) { phoneChargeNotiEnabled, phoneLowNotiEnabled ->
             DeviceBatteryNotificationState(
-                chargeNotificationsEnabled = phoneChargeNotiEnabled.getOrDefault(false),
-                lowNotificationsEnabled = phoneLowNotiEnabled.getOrDefault(false)
+                chargeNotificationsEnabled = phoneChargeNotiEnabled.getOrThrow(),
+                lowNotificationsEnabled = phoneLowNotiEnabled.getOrThrow()
             )
         }.runCatching()
     }
