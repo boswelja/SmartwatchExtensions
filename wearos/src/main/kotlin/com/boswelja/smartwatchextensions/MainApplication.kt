@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions
 
 import android.app.Application
-import com.boswelja.smartwatchextensions.batterysync.batterySyncModule
+import com.boswelja.smartwatchextensions.batterysync.di.batterySyncModule
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.extensions.extensionsModule
