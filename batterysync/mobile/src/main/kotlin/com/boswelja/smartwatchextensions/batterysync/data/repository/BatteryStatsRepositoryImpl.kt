@@ -18,7 +18,9 @@ class BatteryStatsRepositoryImpl(
         return phoneDataSource.getBatteryStats()
     }
 
-    override fun getBatteryStatsForWatch(watchId: String): Flow<BatteryStats?> = watchDbDataSource.batteryStatsFor(watchId)
+    override fun getBatteryStatsForWatch(
+        watchId: String
+    ): Flow<BatteryStats?> = watchDbDataSource.batteryStatsFor(watchId)
 
     override suspend fun deleteBatteryStatsForWatch(watchId: String) = watchDbDataSource.removeStatsFor(watchId)
 

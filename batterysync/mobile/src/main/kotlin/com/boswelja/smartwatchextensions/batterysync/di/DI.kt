@@ -80,7 +80,16 @@ val batterySyncModule = module {
 
     // platform
     single<BatterySyncNotificationHandler> {
-        MobileBatterySyncNotificationHandler(get(), get(), get(), get(), get(), get(), get(), androidContext().getSystemService()!!)
+        MobileBatterySyncNotificationHandler(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            androidContext().getSystemService()!!
+        )
     }
 
     // ui
