@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace = "com.boswelja.smartwatchextensions.core.common"
     compileSdk = 32
     defaultConfig {
         minSdk = 26

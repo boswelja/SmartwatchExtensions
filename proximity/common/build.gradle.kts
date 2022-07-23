@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace = "com.boswelja.smartwatchextensions.proximity.common"
     compileSdk = 32
     defaultConfig {
         minSdk = 26

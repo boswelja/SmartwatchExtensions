@@ -1,8 +1,6 @@
-<manifest
-    package="com.boswelja.smartwatchextensions.dndsync"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+
         <receiver
             android:name=".DnDStatusReceiver"
             android:exported="false">
@@ -14,5 +12,6 @@
         <service
             android:name=".LocalDnDAndTheaterCollectorService"
             android:exported="false" />
+
     </application>
 </manifest>

@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace = "com.boswelja.smartwatchextensions.batterysync.common"
     compileSdk = 32
     defaultConfig {
         minSdk = 26

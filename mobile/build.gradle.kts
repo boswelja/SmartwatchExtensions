@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+    namespace = "com.boswelja.smartwatchextensions"
     compileSdk = PackageInfo.targetSdk
 
     defaultConfig {
