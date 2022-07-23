@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions.core"
-    compileSdk = 32
+    compileSdk = PackageInfo.targetSdk
     defaultConfig {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

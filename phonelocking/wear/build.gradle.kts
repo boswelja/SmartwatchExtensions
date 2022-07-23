@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions.phonelocking"
-    compileSdk = 32
+    compileSdk = PackageInfo.targetSdk
     defaultConfig {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
