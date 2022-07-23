@@ -16,17 +16,18 @@ androidxWork = "2.8.0-alpha02"
 # Compose versions
 accompanist = "0.24.11-rc"
 compose = "1.2.0-rc01"
+composeCompiler = "1.3.0-beta01"
 material3 = "1.0.0-alpha13"
 navigationCompose = "2.5.0-rc02"
 wearCompose = "1.0.0-rc01"
 
 # KotlinX versions
-kotlinxCoroutines = "1.6.3"
-kotlinxSerialization = "1.3.3"
+kotlinxCoroutines = "1.6.4"
+kotlinxSerialization = "1.4.0-RC"
 
 # Misc versions
 androidGradlePlugin = "7.4.0-alpha08"
-kotlin = "1.6.21"
+kotlin = "1.7.10"
 detekt = "1.20.0"
 junit = "4.13.2"
 koin = "3.2.0"

@@ -3,7 +3,7 @@ plugins {
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
     id("com.squareup.sqldelight")
-    kotlin("plugin.serialization") version "1.6.20"
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
 android {
@@ -16,7 +16,7 @@ android {
 
     buildFeatures.compose = true
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 }
 
