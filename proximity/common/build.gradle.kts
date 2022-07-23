@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    namespace = "com.boswelja.smartwatchextensions.proximity.common"
+    compileSdk = PackageInfo.targetSdk
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }

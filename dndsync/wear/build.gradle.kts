@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    namespace = "com.boswelja.smartwatchextensions.dndsync"
+    compileSdk = PackageInfo.targetSdk
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
