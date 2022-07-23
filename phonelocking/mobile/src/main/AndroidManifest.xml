@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <service
-            android:name=".PhoneLockingAccessibilityService"
+            android:name=".platform.PhoneLockingAccessibilityService"
             android:label="@string/phone_locking_accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">

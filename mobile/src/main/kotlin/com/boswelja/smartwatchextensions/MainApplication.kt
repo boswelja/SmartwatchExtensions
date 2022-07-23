@@ -11,7 +11,7 @@ import com.boswelja.smartwatchextensions.dashboard.dashboardModule
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
-import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
+import com.boswelja.smartwatchextensions.phonelocking.di.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
