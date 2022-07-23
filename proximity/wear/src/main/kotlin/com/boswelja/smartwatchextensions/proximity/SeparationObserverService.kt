@@ -121,7 +121,7 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun tryStop() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
