@@ -99,7 +99,7 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
     /** Stops the service if it doesn't need to be running any more. */
     private fun stopIfUnneeded() {
         if (targetWatches.isEmpty()) {
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
     }

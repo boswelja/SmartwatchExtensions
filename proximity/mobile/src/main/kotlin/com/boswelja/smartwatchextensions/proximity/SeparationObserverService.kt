@@ -123,7 +123,7 @@ class SeparationObserverService : LifecycleService() {
 
     private fun tryStop() {
         statusCollectorJob?.cancel()
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

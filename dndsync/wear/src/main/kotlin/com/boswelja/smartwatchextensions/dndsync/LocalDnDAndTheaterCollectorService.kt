@@ -144,7 +144,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
      */
     private fun tryStop(): Boolean {
         if (!dndSyncToPhone && !dndSyncWithTheater) {
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
             return true
         }
