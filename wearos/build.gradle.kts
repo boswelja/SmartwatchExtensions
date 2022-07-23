@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("plugin.serialization") version "1.6.20"
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -49,7 +49,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     packagingOptions {
