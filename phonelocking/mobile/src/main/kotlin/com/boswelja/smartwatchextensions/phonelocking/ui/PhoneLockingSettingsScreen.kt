@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
-import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingAccessibilityService
+import com.boswelja.smartwatchextensions.phonelocking.platform.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
 import org.koin.androidx.compose.getViewModel
 
