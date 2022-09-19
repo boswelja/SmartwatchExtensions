@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +23,8 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarScrollState
+import androidx.compose.material3.TopAppBarDefaults.exitUntilCollapsedScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,14 +71,8 @@ fun BatteryWidgetConfigScreen(
     modifier: Modifier = Modifier
 ) {
     val (selectedWatch, onWatchSelected) = remember { mutableStateOf<Watch?>(null) }
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val topBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec = decayAnimationSpec,
-            state = topBarScrollState
-        )
-    }
+    val topBarScrollState = rememberTopAppBarState()
+    val scrollBehavior = exitUntilCollapsedScrollBehavior(state = topBarScrollState)
     HarmonizedTheme {
         Scaffold(
             modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -143,7 +136,6 @@ fun BatteryWidgetConfigScreen(
  * @param selectedWatch The currently selected watch.
  * @param onWatchSelected Called when a new watch is selected.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchPickerList(
     watches: List<Watch>,
