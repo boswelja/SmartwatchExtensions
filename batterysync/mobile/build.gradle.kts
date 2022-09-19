@@ -26,6 +26,8 @@ dependencies {
 
     implementation(libs.watchconnection.mobile.core)
 
+    implementation(libs.androidx.datastore.proto)
+
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.android)
