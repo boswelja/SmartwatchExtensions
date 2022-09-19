@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
+import com.boswelja.smartwatchextensions.batterysync.platform.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.core.settings.Settings
 import com.boswelja.watchconnection.common.Watch
