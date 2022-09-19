@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarVisuals
@@ -90,6 +91,7 @@ fun WatchManagerScreen(
 /**
  * Displays information about a watch that was registered.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisteredWatchItem(
     watchName: String,

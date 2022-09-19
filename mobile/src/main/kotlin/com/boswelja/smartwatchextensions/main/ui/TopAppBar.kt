@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -39,6 +40,7 @@ import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
  * An app bar with a navigate up action.
  * @param onNavigateUp Called when up navigation is requested.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
     title: @Composable () -> Unit,

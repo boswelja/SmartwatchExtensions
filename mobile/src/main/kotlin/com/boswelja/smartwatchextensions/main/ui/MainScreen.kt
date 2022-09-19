@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.main.ui
 
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,8 +9,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarScrollState
+import androidx.compose.material3.TopAppBarDefaults.exitUntilCollapsedScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -78,14 +77,8 @@ fun MainScreen() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val topBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec = decayAnimationSpec,
-            state = topBarScrollState
-        )
-    }
+    val topBarScrollState = rememberTopAppBarState()
+    val scrollBehavior = exitUntilCollapsedScrollBehavior(state = topBarScrollState)
 
     HarmonizedTheme {
         Scaffold(
