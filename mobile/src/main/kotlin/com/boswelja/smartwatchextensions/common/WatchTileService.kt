@@ -51,7 +51,7 @@ abstract class WatchTileService : TileService() {
         }
         .stateIn(
             coroutineScope,
-            SharingStarted.Eagerly,
+            SharingStarted.Lazily,
             null
         )
 
@@ -81,12 +81,4 @@ abstract class WatchTileService : TileService() {
         } catch(ignored: Exception) { }
     }
 
-    /**
-     * A convenience function for updating the tile's data.
-     */
-    fun updateTile(updates: Tile.() -> Unit) {
-        qsTile.apply {
-            updates()
-        }.also { it.updateTile() }
-    }
 }
