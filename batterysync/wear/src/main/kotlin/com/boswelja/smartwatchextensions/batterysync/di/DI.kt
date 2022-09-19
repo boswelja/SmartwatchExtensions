@@ -6,19 +6,36 @@ import com.boswelja.smartwatchextensions.batterysync.data.BatteryStatsDsReposito
 import com.boswelja.smartwatchextensions.batterysync.data.BatterySyncConfigDsRepository
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncConfig
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySyncEnabled
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetPhoneBatteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.RequestBatteryStatsUpdate
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendBatteryStats
+import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.platform.WearBatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsViewModel
 import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
  * A Koin module for providing Battery Sync classes.
  */
 val batterySyncModule = module {
+    // Repositories
     single<BatteryStatsRepository> { BatteryStatsDsRepository(get()) }
     single<BatterySyncConfigRepository> { BatterySyncConfigDsRepository(get()) }
+
+    // Use cases
+    singleOf(::GetBatterySyncConfig)
+    singleOf(::GetBatterySyncEnabled)
+    singleOf(::GetPhoneBatteryStats)
+    singleOf(::RequestBatteryStatsUpdate)
+    singleOf(::SendBatteryStats)
+    singleOf(::SetPhoneBatteryStats)
+
     single<BatterySyncNotificationHandler> {
         WearBatterySyncNotificationHandler(
             get(),
