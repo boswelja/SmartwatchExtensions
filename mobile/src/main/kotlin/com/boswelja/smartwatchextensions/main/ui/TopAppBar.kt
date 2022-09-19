@@ -21,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,8 +45,7 @@ fun TopAppBar(
     title: @Composable () -> Unit,
     canNavigateUp: Boolean,
     onNavigateUp: () -> Unit,
-    onNavigateTo: (String) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    onNavigateTo: (String) -> Unit
 ) {
     MediumTopAppBar(
         title = title,
@@ -81,8 +79,7 @@ fun TopAppBar(
                     ToolbarOverflowAction(onNavigateTo = onNavigateTo)
                 }
             }
-        },
-        scrollBehavior = scrollBehavior
+        }
     )
 }
 
