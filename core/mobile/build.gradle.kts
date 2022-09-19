@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.sqldelight.android)
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.bundles.compose.mobile)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.koin.android)
 

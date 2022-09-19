@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.work)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
 
     implementation(libs.kotlinx.serialization.protobuf)
