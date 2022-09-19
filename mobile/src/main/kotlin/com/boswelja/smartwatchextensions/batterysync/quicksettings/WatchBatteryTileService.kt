@@ -13,7 +13,7 @@ import com.boswelja.smartwatchextensions.common.WatchTileService
 import com.boswelja.smartwatchextensions.core.FeatureData
 import com.boswelja.smartwatchextensions.core.FlowTileService
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.settings.appSettingsStore
+import com.boswelja.smartwatchextensions.core.settings.appSettingsStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
