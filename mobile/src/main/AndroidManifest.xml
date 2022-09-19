@@ -88,19 +88,5 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".batterysync.quicksettings.WatchBatteryTileService"
-            android:label="@string/widget_watch_battery_title"
-            android:icon="@drawable/battery_full"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.service.quicksettings.ACTIVE_TILE"
-                android:value="true" />
-        </service>
-
     </application>
 </manifest>

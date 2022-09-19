@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.widget
+package com.boswelja.smartwatchextensions.core.settings
 
 import android.content.Context
 import androidx.datastore.core.DataStore

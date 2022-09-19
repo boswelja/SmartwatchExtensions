@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.settings
+package com.boswelja.smartwatchextensions.core.settings
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

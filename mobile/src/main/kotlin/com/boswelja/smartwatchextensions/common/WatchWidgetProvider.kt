@@ -15,7 +15,7 @@ import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.smartwatchextensions.widget.widgetIdStore
+import com.boswelja.smartwatchextensions.core.settings.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

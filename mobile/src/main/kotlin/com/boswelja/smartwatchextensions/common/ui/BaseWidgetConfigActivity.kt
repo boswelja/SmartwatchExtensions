@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
-import com.boswelja.smartwatchextensions.widget.widgetIdStore
+import com.boswelja.smartwatchextensions.core.settings.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
