@@ -68,7 +68,7 @@ class BatterySyncWorker(
                 .build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 workerId,
-                ExistingPeriodicWorkPolicy.REPLACE,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 request
             ).result.await()
             return true
