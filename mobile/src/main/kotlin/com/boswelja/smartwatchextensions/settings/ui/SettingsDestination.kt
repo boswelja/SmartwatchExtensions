@@ -52,7 +52,6 @@ fun NavGraphBuilder.appSettingsGraph(
     composable(route) {
         AppSettingsScreen(
             modifier = modifier,
-            contentPadding = contentPadding,
             onNavigateTo = { onNavigateTo(it.route) }
         )
     }
