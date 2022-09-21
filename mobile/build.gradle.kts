@@ -77,7 +77,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.protobuf)
 
-    implementation(libs.migration)
     implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.koin.android)
