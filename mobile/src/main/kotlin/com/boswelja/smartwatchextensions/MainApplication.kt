@@ -8,7 +8,6 @@ import com.boswelja.smartwatchextensions.batterysync.di.batterySyncModule
 import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
 import com.boswelja.smartwatchextensions.core.coreModule
 import com.boswelja.smartwatchextensions.dashboard.dashboardModule
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.di.phoneLockingModule
@@ -48,7 +47,6 @@ class MainApplication : Application() {
                 batterySyncModule,
                 dndSyncModule,
                 clientsModule,
-                watchManagerModule,
                 databaseModule,
                 proximityModule
             )
@@ -65,20 +63,6 @@ class MainApplication : Application() {
                 }
             )
         }
-    }
-}
-
-/**
- * A Koin module for providing [WatchManager].
- */
-val watchManagerModule = module {
-    single {
-        WatchManager(
-            get(),
-            get(),
-            get(),
-            get()
-        )
     }
 }
 
