@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.aboutapp.ui.aboutAppGraph
+import com.boswelja.smartwatchextensions.settings.ui.aboutAppGraph
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 
 /**

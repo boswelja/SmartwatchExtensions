@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions
 
 import android.app.Application
 import android.content.Context
-import com.boswelja.smartwatchextensions.aboutapp.aboutAppModule
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.di.batterySyncModule
 import com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigViewModel
@@ -52,7 +51,6 @@ class MainApplication : Application() {
             )
 
             modules(
-                aboutAppModule,
                 dashboardModule,
                 com.boswelja.smartwatchextensions.devicemanagement.watchManagerModule,
                 mainModule,
