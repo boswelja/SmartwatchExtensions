@@ -1,11 +1,13 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.activity
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.devicemanagement.ui.watchManagerGraph
 
 /**
  * All destinations reachable from withing App Settings.
@@ -14,7 +16,10 @@ import com.boswelja.smartwatchextensions.devicemanagement.ui.watchManagerGraph
 enum class SettingsDestination(
     val route: String
 ) {
-    WATCH_MANAGER("watch-manager")
+    WATCH_MANAGER("watch-manager"),
+    PRIVACY_POLICY("privacy"),
+    SOURCE("source"),
+    CHANGELOG("changelog")
 }
 
 /**
@@ -31,10 +36,21 @@ fun NavGraphBuilder.appSettingsGraph(
     route: String,
     onShowSnackbar: suspend (SnackbarVisuals) -> Unit
 ) {
+    activity(SettingsDestination.PRIVACY_POLICY.route) {
+        action = Intent.ACTION_VIEW
+        data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions/blob/main/PRIVACY.md")
+    }
+    activity(SettingsDestination.SOURCE.route) {
+        action = Intent.ACTION_VIEW
+        data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions")
+    }
+    activity(SettingsDestination.CHANGELOG.route) {
+        action = Intent.ACTION_VIEW
+        data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions/releases")
+    }
     composable(route) {
         AppSettingsScreen(
             modifier = modifier,
-            contentPadding = contentPadding,
             onNavigateTo = { onNavigateTo(it.route) }
         )
     }

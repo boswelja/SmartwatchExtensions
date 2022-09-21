@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
+import com.boswelja.smartwatchextensions.settings.ui.register.RegisterWatchScreen
 
 /**
  * A Composable screen to handle the onboarding flow.

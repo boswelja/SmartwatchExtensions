@@ -1,11 +1,11 @@
-package com.boswelja.smartwatchextensions.devicemanagement.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
+import com.boswelja.smartwatchextensions.settings.ui.register.RegisterWatchScreen
 
 /**
  * All navigation destinations for Watch Manager.
