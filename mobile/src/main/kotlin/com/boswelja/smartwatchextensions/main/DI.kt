@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * A Koin module for providing main classes.
  */
 val mainModule = module {
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
 }
