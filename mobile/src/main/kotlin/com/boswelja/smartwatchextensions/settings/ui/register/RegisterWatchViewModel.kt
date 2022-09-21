@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.devicemanagement.ui.register
+package com.boswelja.smartwatchextensions.settings.ui.register
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

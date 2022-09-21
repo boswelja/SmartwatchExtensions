@@ -52,7 +52,6 @@ class MainApplication : Application() {
 
             modules(
                 dashboardModule,
-                com.boswelja.smartwatchextensions.devicemanagement.watchManagerModule,
                 mainModule,
                 phoneLockingModule,
                 appSettingsModule,

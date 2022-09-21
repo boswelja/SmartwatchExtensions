@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.devicemanagement.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
