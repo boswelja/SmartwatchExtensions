@@ -12,10 +12,8 @@
     <!-- App Settings strings -->
     <string name="app_settings_title">App Settings</string>
     <string name="noti_settings_title">Notification Settings</string>
-    <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
-    <string name="category_qstiles">Quick Settings</string>
-    <string name="qstiles_selected_watch">Linked Watch</string>
+    <string name="qstiles_selected_watch">Quick Settings Watch</string>
 
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>
