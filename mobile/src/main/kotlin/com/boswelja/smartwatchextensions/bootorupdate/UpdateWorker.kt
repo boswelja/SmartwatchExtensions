@@ -5,7 +5,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
-import androidx.work.ListenableWorker.Result.failure
 import androidx.work.ListenableWorker.Result.success
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
@@ -26,20 +25,10 @@ class UpdateWorker(
     private val settingsRepository: WatchSettingsRepository by inject()
 
     override suspend fun doWork(): Result {
-        // Perform any pending updates
-        val updater = Updater(applicationContext)
-        val result = updater.migrate()
-
         // Restart services
         applicationContext.restartServices(settingsRepository)
 
-        return when (result) {
-            com.boswelja.migration.Result.SUCCESS,
-            com.boswelja.migration.Result.NOT_NEEDED -> {
-                success()
-            }
-            com.boswelja.migration.Result.FAILED -> failure()
-        }
+        return success()
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
