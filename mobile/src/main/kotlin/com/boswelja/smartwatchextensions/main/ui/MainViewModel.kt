@@ -2,7 +2,8 @@ package com.boswelja.smartwatchextensions.main.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -10,20 +11,21 @@ import kotlinx.coroutines.launch
  * A ViewModel for providing data to [MainActivity].
  */
 class MainViewModel(
-    private val watchManager: WatchManager
+    watchRepository: WatchRepository,
+    private val selectedWatchManager: SelectedWatchManager
 ) : ViewModel() {
 
     /**
      * Flow whether the app needs setup.
      */
-    val needsSetup = watchManager.registeredWatches.map { it.isEmpty() }
+    val needsSetup = watchRepository.registeredWatches.map { it.isEmpty() }
 
     /**
      * Select a watch by it's ID.
      */
     fun selectWatchById(watchId: String) {
         viewModelScope.launch {
-            watchManager.selectWatchById(watchId)
+            selectedWatchManager.selectWatch(watchId)
         }
     }
 }

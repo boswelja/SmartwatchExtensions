@@ -3,22 +3,22 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestAppVersion
+import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.devicemanagement.Version
 import com.boswelja.smartwatchextensions.core.devicemanagement.VersionSerializer
-import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for providing data to [AboutAppScreen].
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class AboutAppViewModel(
-    private val watchManager: WatchManager,
+    private val selectedWatchManager: SelectedWatchManager,
     messageClient: MessageClient
 ) : ViewModel() {
 
@@ -34,9 +34,9 @@ class AboutAppViewModel(
     init {
         // Send app version request to selected watches
         viewModelScope.launch {
-            watchManager.selectedWatch.collect { watch ->
+            selectedWatchManager.selectedWatch.collect { watch ->
                 if (watch?.uid != null) {
-                    watchManager.sendMessage(watch, RequestAppVersion, null)
+                    messageClient.sendMessage(watch.uid, Message(RequestAppVersion, null))
                     _watchAppVersion.emit(null)
                 } else {
                     _watchAppVersion.emit(null)
@@ -47,7 +47,7 @@ class AboutAppViewModel(
         // Listen for app version responses
         viewModelScope.launch {
             messageHandler.incomingMessages()
-                .collect { message -> _watchAppVersion.tryEmit(message.data) }
+                .collectLatest { message -> _watchAppVersion.tryEmit(message.data) }
         }
     }
 }
