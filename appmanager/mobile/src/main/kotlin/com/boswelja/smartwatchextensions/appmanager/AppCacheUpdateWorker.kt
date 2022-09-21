@@ -111,7 +111,7 @@ class AppCacheUpdateWorker(
             val workManager = WorkManager.getInstance(context)
             workManager.enqueueUniquePeriodicWork(
                 getWorkerNameFor(watchId),
-                ExistingPeriodicWorkPolicy.REPLACE,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 request
             )
 
