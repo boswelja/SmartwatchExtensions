@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.settings.ui.aboutAppGraph
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 
 /**
@@ -113,13 +112,6 @@ fun ToolbarOverflowAction(
                     dropdownVisible = false
                 }
             )
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.app_bar_about_label)) },
-                onClick = {
-                    onNavigateTo(TopAppBarDestinations.ABOUT.route)
-                    dropdownVisible = false
-                }
-            )
         }
     }
 }
@@ -147,12 +139,6 @@ fun NavGraphBuilder.appBarGraph(
         action = Intent.ACTION_VIEW
         data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions/wiki")
     }
-    aboutAppGraph(
-        graphRoute = TopAppBarDestinations.ABOUT.route,
-        onNavigateTo = onNavigateTo,
-        modifier = modifier,
-        contentPadding = contentPadding
-    )
 
     // Load settings
     appSettingsGraph(
