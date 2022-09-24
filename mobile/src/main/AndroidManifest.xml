@@ -67,27 +67,5 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".batterysync.widget.WatchBatteryWidget"
-            android:enabled="true"
-            android:exported="true"
-            android:label="@string/widget_watch_battery_title">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_watch_battery_metadata" />
-        </receiver>
-
-        <activity
-            android:name=".batterysync.widget.config.BatteryWidgetConfigActivity"
-            android:label="@string/widget_watch_battery_config_title"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-
     </application>
 </manifest>
