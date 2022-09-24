@@ -21,6 +21,10 @@ material3 = "1.0.0-beta03"
 navigationCompose = "2.6.0-alpha01"
 wearCompose = "1.1.0-alpha06"
 
+# Glance versions
+glance = "1.0.0-alpha04"
+appwidgetConfiguration = "0.2.2"
+
 # KotlinX versions
 kotlinxCoroutines = "1.6.4"
 kotlinxSerialization = "1.4.0"
@@ -81,6 +85,9 @@ compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose"}
 compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose"}
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+appwidget-configuration = { module = "com.google.android.glance.tools:appwidget-configuration", version.ref = "appwidgetConfiguration" }
 
 accompanist-sysui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
