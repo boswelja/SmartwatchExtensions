@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="120dp"
-    android:minHeight="80dp"
+    android:minWidth="100dp"
+    android:minHeight="40dp"
     android:resizeMode="horizontal|vertical"
     android:widgetFeatures="reconfigurable"
     android:configure="com.boswelja.smartwatchextensions.batterysync.ui.batterywidget.WatchBatteryWidgetConfigActivity"
