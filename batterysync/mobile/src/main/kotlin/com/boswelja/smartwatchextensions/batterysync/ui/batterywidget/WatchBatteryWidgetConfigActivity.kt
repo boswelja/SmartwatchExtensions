@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,6 +50,7 @@ fun ConfigurationScreen() {
     val scope = rememberCoroutineScope()
     val configurationState = rememberAppWidgetConfigurationState(configurationInstance = WatchBatteryWidget)
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // If we don't have a valid id, discard configuration and finish the activity.
     if (configurationState.glanceId == null) {
@@ -59,15 +62,23 @@ fun ConfigurationScreen() {
     val registeredWatches by watchRepository.registeredWatches.collectAsState(initial = emptyList())
     val watchId = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.watchIdKey)
     val watch = remember(watchId, registeredWatches) { registeredWatches.firstOrNull { it.uid == watchId }}
+    val showWatchName = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.showNameKey) ?: true
 
     AppWidgetConfigurationScaffold(
         appWidgetConfigurationState = configurationState,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     scope.launch {
                         if (!watchId.isNullOrEmpty()) {
                             configurationState.applyConfiguration()
+                        } else {
+                            snackbarHostState.showSnackbar(
+                                message = "Please select a watch for this widget"
+                            )
                         }
                     }
                 }
@@ -103,7 +114,7 @@ fun ConfigurationScreen() {
                 Text(it?.name ?: "No watch selected")
             }
             CheckboxSetting(
-                checked = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.showNameKey) ?: false,
+                checked = showWatchName,
                 onCheckedChange = { newValue ->
                     configurationState.updateCurrentState<Preferences> {
                         it.toMutablePreferences().apply {

@@ -1,11 +1,15 @@
 package com.boswelja.smartwatchextensions.batterysync.ui.batterywidget
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
@@ -17,9 +21,15 @@ import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.template.LocalTemplateColors
 import androidx.glance.text.Text
+import com.boswelja.smartwatchextensions.batterysync.R
+import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 
 object WatchBatteryWidget : GlanceAppWidget() {
 
@@ -34,17 +44,20 @@ object WatchBatteryWidget : GlanceAppWidget() {
     override fun Content() {
         val watchId = currentState(key = watchIdKey)
 
-        val colors = dynamicThemeColorProviders()
-        val contentModifier = GlanceModifier
-            .fillMaxSize()
-            .appWidgetBackground()
-            .background(colors.background)
-            .cornerRadius(16.dp)
-            .padding(8.dp)
-        if (watchId != null) {
-            BatteryStatsContent(contentModifier)
-        } else {
-            NoWatchContent(contentModifier)
+        CompositionLocalProvider(
+            LocalTemplateColors provides dynamicThemeColorProviders()
+        ) {
+            val contentModifier = GlanceModifier
+                .fillMaxSize()
+                .appWidgetBackground()
+                .background(LocalTemplateColors.current.surface)
+                .cornerRadius(16.dp)
+                .padding(8.dp)
+            if (watchId != null) {
+                BatteryStatsContent(contentModifier)
+            } else {
+                NoWatchContent(contentModifier)
+            }
         }
     }
 
@@ -59,13 +72,19 @@ object WatchBatteryWidget : GlanceAppWidget() {
             Text(text = "No watch selected")
         }
     }
-    
+
     @Composable
     fun BatteryStatsContent(
         modifier: GlanceModifier = GlanceModifier
     ) {
         val showName = currentState(key = showNameKey) ?: true
         val batteryPercent = currentState(key = batteryPercentKey) ?: -1
+
+        val batteryPercentText = if (batteryPercent > -1) {
+            LocalContext.current.getString(R.string.widget_battery_percent, batteryPercent.toString())
+        } else {
+            LocalContext.current.getString(R.string.widget_battery_unavailable)
+        }
         Column(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,8 +92,27 @@ object WatchBatteryWidget : GlanceAppWidget() {
         ) {
             if (showName) {
                 Text(currentState(key = watchNameKey) ?: "")
+                Spacer(GlanceModifier.height(8.dp))
             }
-            Text(batteryPercent.toString())
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .background(LocalTemplateColors.current.primaryContainer)
+                    .cornerRadius(16.dp)
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    provider = ImageProvider(getBatteryDrawableRes(batteryPercent)),
+                    contentDescription = null,
+                    modifier = GlanceModifier.defaultWeight()
+                )
+                Text(
+                    text = batteryPercentText,
+                    modifier = GlanceModifier.defaultWeight()
+                )
+            }
         }
     }
 }

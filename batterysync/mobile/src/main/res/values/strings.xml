@@ -31,4 +31,7 @@
     
     <string name="qs_tile_title">Watch Battery</string>
     <string name="qs_tile_unknown_error">Error</string>
+
+    <string name="widget_battery_percent">%s%%</string>
+    <string name="widget_battery_unavailable">N/A</string>
 </resources>
