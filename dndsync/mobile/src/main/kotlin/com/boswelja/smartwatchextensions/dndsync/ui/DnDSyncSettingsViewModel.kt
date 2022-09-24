@@ -7,9 +7,7 @@ import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchMana
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
-import com.boswelja.smartwatchextensions.dndsync.ReceiveDnDCapability
 import com.boswelja.smartwatchextensions.dndsync.SendDnDCapability
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,24 +39,10 @@ class DnDSyncSettingsViewModel(
     }
 
     /**
-     * Flow whether the selected watch can receive DnD status.
-     */
-    val canReceiveDnD = mapStateForSelectedWatch(false) {
-        watchRepository.watchHasCapability(it, ReceiveDnDCapability)
-    }
-
-    /**
      * Flow whether DnD Sync to Phone is enabled.
      */
     val syncToPhone = mapStateForSelectedWatch(false) {
         settingsRepository.getBoolean(it.uid, DND_SYNC_TO_PHONE_KEY)
-    }
-
-    /**
-     * Flow whether DnD Sync to Watch is enabled.
-     */
-    val syncToWatch = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, DND_SYNC_TO_WATCH_KEY)
     }
 
     /**
@@ -83,20 +67,6 @@ class DnDSyncSettingsViewModel(
             settingsRepository.putBoolean(
                 selectedWatch!!.uid,
                 DND_SYNC_TO_PHONE_KEY,
-                isEnabled
-            )
-        }
-    }
-
-    /**
-     * Set whether DnD Sync to Watch is enabled.
-     */
-    fun setSyncToWatch(isEnabled: Boolean) {
-        viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            settingsRepository.putBoolean(
-                selectedWatch!!.uid,
-                DND_SYNC_TO_WATCH_KEY,
                 isEnabled
             )
         }

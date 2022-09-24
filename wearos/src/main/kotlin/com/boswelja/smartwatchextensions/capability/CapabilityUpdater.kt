@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.appmanager.ManageAppsCapability
 import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
-import com.boswelja.smartwatchextensions.dndsync.ReceiveDnDCapability
 import com.boswelja.smartwatchextensions.dndsync.SendDnDCapability
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 
@@ -26,7 +25,6 @@ class CapabilityUpdater(
      */
     suspend fun updateCapabilities() {
         updateSendDnD()
-        updateReceiveDnD()
         updateSendBattery()
         updateManageApps()
     }
@@ -37,19 +35,6 @@ class CapabilityUpdater(
     internal suspend fun updateSendDnD() {
         // We can always read DnD state
         capabilityClient.addLocalCapability(SendDnDCapability)
-    }
-
-    /**
-     * Update [ReceiveDnDCapability].
-     */
-    internal suspend fun updateReceiveDnD() {
-        // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
-        // it's already granted.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
-            capabilityClient.addLocalCapability(ReceiveDnDCapability)
-        } else {
-            capabilityClient.removeLocalCapability(ReceiveDnDCapability)
-        }
     }
 
     /**
@@ -80,10 +65,5 @@ class CapabilityUpdater(
         } else {
             true
         }
-    }
-
-    internal fun hasNotiPolicyAccess(): Boolean {
-        return context.getSystemService<NotificationManager>()
-            ?.isNotificationPolicyAccessGranted == true
     }
 }

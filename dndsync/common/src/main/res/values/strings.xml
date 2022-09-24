@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="interrupt_filter_sync_active_noti_title">Do not Disturb Sync</string>
-    <string name="interrupt_filter_sync_to_phone_noti_desc">Syncing phone Do not Disturb state with watch DnD</string>
     <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
 </resources>
