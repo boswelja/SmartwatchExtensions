@@ -30,10 +30,8 @@ fun DnDSyncSettingsScreen(
     val viewModel: DnDSyncSettingsViewModel = getViewModel()
     var changingKey = rememberSaveable { "" }
 
-    val canReceiveDnD by viewModel.canReceiveDnD.collectAsState(false, Dispatchers.IO)
     val canSendDnD by viewModel.canSendDnD.collectAsState(false, Dispatchers.IO)
 
-    val syncToWatch by viewModel.syncToWatch.collectAsState(false, Dispatchers.IO)
     val syncToPhone by viewModel.syncToPhone.collectAsState(false, Dispatchers.IO)
     val syncWithTheater by viewModel.syncWithTheater.collectAsState(false, Dispatchers.IO)
 
@@ -54,11 +52,6 @@ fun DnDSyncSettingsScreen(
     }
 
     Column(modifier) {
-        SyncToWatchSetting(
-            enabled = canReceiveDnD,
-            checked = syncToWatch,
-            onCheckChanged = { viewModel.setSyncToWatch(it) }
-        )
         SyncToPhoneSetting(
             enabled = canSendDnD,
             checked = syncToPhone,
@@ -78,36 +71,6 @@ fun DnDSyncSettingsScreen(
             }
         )
     }
-}
-
-/**
- * A Composable for displaying DnD Sync to Watch setting.
- * @param modifier [Modifier].
- * @param checked Whether the setting is checked.
- * @param enabled Whether the setting is enabled.
- * @param onCheckChanged Called when the check state changes.
- */
-@Composable
-fun SyncToWatchSetting(
-    modifier: Modifier = Modifier,
-    checked: Boolean,
-    enabled: Boolean = true,
-    onCheckChanged: (Boolean) -> Unit
-) {
-    CheckboxSetting(
-        modifier = modifier,
-        text = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
-        summary = {
-            val text = if (enabled)
-                stringResource(R.string.pref_dnd_sync_to_watch_summary)
-            else
-                stringResource(R.string.capability_not_supported)
-            Text(text)
-        },
-        checked = checked,
-        enabled = enabled,
-        onCheckedChange = onCheckChanged
-    )
 }
 
 /**

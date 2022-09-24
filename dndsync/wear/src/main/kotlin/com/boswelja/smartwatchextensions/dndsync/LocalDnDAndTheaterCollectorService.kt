@@ -20,7 +20,7 @@ import org.koin.android.ext.android.inject
  * A [LifecycleService] that listens for changes in the appropriate settings, and sends DnD change
  * requests to the connected phone.
  */
-class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
+class LocalDnDAndTheaterCollectorService : LifecycleService() {
 
     private val phoneState by lazy { phoneStateStore }
     private val messageClient: MessageClient by inject()
@@ -32,14 +32,16 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
 
-    override suspend fun onDnDChanged(dndState: Boolean) {
-        if (dndSyncToPhone) {
-            updateDnDState(dndState)
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
+
+        lifecycleScope.launch {
+            dndState().collect { dndState ->
+                if (dndSyncToPhone) {
+                    updateDnDState(dndState)
+                }
+            }
+        }
 
         createNotificationChannel()
 
@@ -83,7 +85,7 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
                         setContentText(getString(R.string.dnd_sync_all_noti_desc))
                     dndSyncToPhone && !dndSyncWithTheater ->
                         setContentText(getString(R.string.dnd_sync_to_phone_noti_desc))
-                    dndSyncWithTheater && !dndSyncToPhone ->
+                    dndSyncWithTheater ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
                     else ->
                         setContentText(getString(R.string.dnd_sync_starting))
