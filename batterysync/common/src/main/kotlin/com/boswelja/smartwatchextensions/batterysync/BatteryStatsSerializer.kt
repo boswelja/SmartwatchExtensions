@@ -12,9 +12,9 @@ import kotlinx.serialization.protobuf.ProtoBuf
  */
 @OptIn(ExperimentalSerializationApi::class)
 object BatteryStatsSerializer {
-    fun deserialize(bytes: ByteArray?): BatteryStats {
+    fun deserialize(bytes: ByteArray): BatteryStats {
         try {
-            return ProtoBuf.decodeFromByteArray(bytes!!)
+            return ProtoBuf.decodeFromByteArray(bytes)
         } catch (e: SerializationException) {
             throw SerializationException("Failed to deserialize battery stats!", e)
         }
