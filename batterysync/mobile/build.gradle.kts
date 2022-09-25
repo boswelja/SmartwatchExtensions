@@ -36,8 +36,10 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.compose.mobile)
+    implementation(libs.glance.appwidget)
+    implementation(libs.appwidget.configuration)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.sqldelight.sqlitedriver)

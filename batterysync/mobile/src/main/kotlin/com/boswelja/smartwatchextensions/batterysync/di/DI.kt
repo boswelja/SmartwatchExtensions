@@ -76,7 +76,7 @@ val batterySyncModule = module {
     single { SetWatchChargeNotificationEnabled(get(), get()) }
     single { SetWatchLowNotificationEnabled(get(), get()) }
 
-    single { StoreBatteryStatsForWatch(get(), get()) }
+    single { StoreBatteryStatsForWatch(get(), get(), androidContext()) }
 
     // platform
     single<BatterySyncNotificationHandler> {

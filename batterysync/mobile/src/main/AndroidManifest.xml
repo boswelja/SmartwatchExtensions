@@ -29,5 +29,25 @@
                 android:value="true" />
         </service>
 
+        <receiver
+            android:name=".ui.batterywidget.WatchBatteryWidgetReceiver"
+            android:exported="false"
+            android:label="Watch Battery">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/watch_battery_widget" />
+        </receiver>
+
+        <activity
+            android:name=".ui.batterywidget.WatchBatteryWidgetConfigActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
