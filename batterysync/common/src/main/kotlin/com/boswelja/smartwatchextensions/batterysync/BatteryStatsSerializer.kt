@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.batterysync
 
-import com.boswelja.watchconnection.serialization.MessageSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
@@ -8,7 +7,7 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 
 /**
- * A [MessageSerializer] for handling [BatteryStats].
+ * A serializer for handling [BatteryStats].
  */
 @OptIn(ExperimentalSerializationApi::class)
 object BatteryStatsSerializer {
