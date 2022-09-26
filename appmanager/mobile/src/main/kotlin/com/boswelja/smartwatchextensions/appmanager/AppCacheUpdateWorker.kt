@@ -12,7 +12,6 @@ import androidx.work.workDataOf
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
@@ -53,12 +52,11 @@ class AppCacheUpdateWorker(
     }
 
     private suspend fun sendCacheState(targetUid: String, cacheHash: AppVersions): Boolean {
-        val handler = MessageHandler(CacheValidationSerializer, messageClient)
-        return handler.sendMessage(
+        return messageClient.sendMessage(
             targetUid,
             Message(
                 RequestValidateCache,
-                cacheHash
+                CacheValidationSerializer.serialize(cacheHash)
             )
         )
     }
