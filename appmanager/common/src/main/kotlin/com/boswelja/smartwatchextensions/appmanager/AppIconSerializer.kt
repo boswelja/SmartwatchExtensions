@@ -10,6 +10,6 @@ import kotlinx.serialization.protobuf.ProtoBuf
  */
 @OptIn(ExperimentalSerializationApi::class)
 object AppIconSerializer {
-    fun deserialize(bytes: ByteArray?): AppIcon = ProtoBuf.decodeFromByteArray(bytes!!)
+    fun deserialize(bytes: ByteArray): AppIcon = ProtoBuf.decodeFromByteArray(bytes)
     fun serialize(data: AppIcon): ByteArray = ProtoBuf.encodeToByteArray(data)
 }
