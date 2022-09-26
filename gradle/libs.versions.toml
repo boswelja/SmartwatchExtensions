@@ -100,7 +100,6 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 
 watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
 watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
-watchconnection-serialization = { module = "io.github.boswelja.watchconnection:serialization", version.ref = "watchconnection" }
 watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 watchconnection-wear = { module = "io.github.boswelja.watchconnection:wear", version.ref = "watchconnection" }
 
