@@ -1,19 +1,27 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageReceiver
 
 /**
  * A [MessageReceiver] to handle App Manager commands sent to the device.
  */
-class AppManagerCommandReceiver : MessageReceiver<String>(PackageNameSerializer) {
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<String>) {
+class AppManagerCommandReceiver : MessageReceiver() {
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+        if (message.data == null) return
+
         val intent = when (message.path) {
-            RequestUninstallPackage -> context.packageManager.requestUninstallIntent(message.data)
-            RequestOpenPackage -> context.packageManager.launchIntent(message.data)
+            RequestUninstallPackage -> {
+                val packageName = PackageNameSerializer.deserialize(message.data!!)
+                context.packageManager.requestUninstallIntent(packageName)
+            }
+            RequestOpenPackage -> {
+                val packageName = PackageNameSerializer.deserialize(message.data!!)
+                context.packageManager.launchIntent(packageName)
+            }
             else -> null
         }
-        context.startActivity(intent)
+        if (intent != null) context.startActivity(intent)
     }
 }
