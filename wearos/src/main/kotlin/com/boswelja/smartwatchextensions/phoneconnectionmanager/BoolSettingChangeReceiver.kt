@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySy
 import com.boswelja.smartwatchextensions.batterysync.platform.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
@@ -34,8 +35,10 @@ class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
     private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
-        val pref = message.data?.let { BoolSettingSerializer.deserialize(it) } ?: return
-        handleBoolPreferenceChange(context, pref.key, pref.value)
+        if (message.path == UpdateBoolSetting) {
+            val pref = message.data?.let { BoolSettingSerializer.deserialize(it) } ?: return
+            handleBoolPreferenceChange(context, pref.key, pref.value)
+        }
     }
 
     private suspend fun handleBoolPreferenceChange(

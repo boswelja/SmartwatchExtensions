@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.platform
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.batteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendBatteryStats
@@ -24,15 +25,17 @@ class PhoneBatteryUpdateReceiver :
     private val sendBatteryStats: SendBatteryStats by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
-        val batteryStats = message.data?.let { BatteryStatsSerializer.deserialize(it) } ?: return
-        setPhoneBatteryStats(batteryStats)
-        sendBatteryStatsUpdate(context)
-        PhoneBatteryComplicationProvider.updateAll(context)
+        if (message.path == BatteryStatus) {
+            val batteryStats = message.data?.let { BatteryStatsSerializer.deserialize(it) } ?: return
+            setPhoneBatteryStats(batteryStats)
+            sendBatteryStatsUpdate(context)
+            PhoneBatteryComplicationProvider.updateAll(context)
 
-        batterySyncNotificationHandler.handleNotificationsFor(
-            message.sourceUid,
-            batteryStats
-        )
+            batterySyncNotificationHandler.handleNotificationsFor(
+                message.sourceUid,
+                batteryStats
+            )
+        }
     }
 
     /**
