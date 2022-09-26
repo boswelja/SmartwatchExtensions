@@ -11,7 +11,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
 @OptIn(ExperimentalSerializationApi::class)
 object RemovedAppsSerializer {
 
-    fun deserialize(bytes: ByteArray?): RemovedApps = ProtoBuf.decodeFromByteArray(bytes!!)
+    fun deserialize(bytes: ByteArray): RemovedApps = ProtoBuf.decodeFromByteArray(bytes)
 
     fun serialize(data: RemovedApps): ByteArray = ProtoBuf.encodeToByteArray(data)
 }

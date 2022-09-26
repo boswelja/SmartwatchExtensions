@@ -16,7 +16,7 @@ class RemovedAppReceiver : MessageReceiver(), KoinComponent {
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         if (message.path == RemovedAppsList) {
-            val packages = RemovedAppsSerializer.deserialize(message.data)
+            val packages = message.data?.let { RemovedAppsSerializer.deserialize(it) } ?: return
             val watchId = message.sourceUid
             repository.delete(watchId, packages.packages)
 
