@@ -62,22 +62,21 @@ class AppManagerCacheValidatorReceiver :
         val hasRemovedApps = removedApps.isNotEmpty()
 
         if (hasAddedApps || hasUpdatedApps) {
-            val addedOrUpdatedMessageHandler = MessageHandler(AddedOrUpdatedAppsSerializer, messageClient)
             if (hasAddedApps) {
-                addedOrUpdatedMessageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         AddedAppsList,
-                        addedApps
+                        AddedOrUpdatedAppsSerializer.serialize(addedApps)
                     )
                 )
             }
             if (hasUpdatedApps) {
-                addedOrUpdatedMessageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         UpdatedAppsList,
-                        updatedApps
+                        AddedOrUpdatedAppsSerializer.serialize(addedApps)
                     )
                 )
             }
