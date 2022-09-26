@@ -10,12 +10,9 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * A [MessageSerializer] to handle serialization for a cache hash.
  */
 @OptIn(ExperimentalSerializationApi::class)
-object CacheValidationSerializer : MessageSerializer<AppVersions> {
+object CacheValidationSerializer {
 
-    override val messagePaths: Set<String> = setOf(RequestValidateCache)
+    fun deserialize(bytes: ByteArray): AppVersions = ProtoBuf.decodeFromByteArray(bytes)
 
-    override suspend fun deserialize(bytes: ByteArray?): AppVersions =
-        ProtoBuf.decodeFromByteArray(bytes!!)
-
-    override suspend fun serialize(data: AppVersions): ByteArray = ProtoBuf.encodeToByteArray(data)
+    fun serialize(data: AppVersions): ByteArray = ProtoBuf.encodeToByteArray(data)
 }

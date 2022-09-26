@@ -17,7 +17,6 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,8 +39,6 @@ class AppManagerViewModel(
     private val selectedWatchManager: SelectedWatchManager,
     private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
-
-    private val cacheMessageHandler by lazy { MessageHandler(CacheValidationSerializer, messageClient) }
 
     @OptIn(FlowPreview::class)
     private val allApps = selectedWatchManager.selectedWatch
@@ -158,11 +155,11 @@ class AppManagerViewModel(
             val appVersionList = appRepository.getAppVersionsFor(watch.uid)
                 .map { apps -> apps.map { AppVersion(it.packageName, it.versionCode) } }
                 .first()
-            cacheMessageHandler.sendMessage(
+            messageClient.sendMessage(
                 watch.uid,
                 Message(
                     RequestValidateCache,
-                    AppVersions(appVersionList),
+                    CacheValidationSerializer.serialize(AppVersions(appVersionList)),
                     Message.Priority.HIGH
                 )
             )
