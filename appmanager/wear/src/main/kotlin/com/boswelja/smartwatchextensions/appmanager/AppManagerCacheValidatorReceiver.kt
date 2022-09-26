@@ -3,9 +3,8 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.content.Context
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageHandler
-import com.boswelja.watchconnection.serialization.MessageReceiver
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -14,32 +13,33 @@ import org.koin.core.component.inject
  * A [MessageReceiver] for receiving app cache validation requests.
  */
 class AppManagerCacheValidatorReceiver :
-    MessageReceiver<AppVersions>(CacheValidationSerializer),
+    MessageReceiver(),
     KoinComponent {
 
     private val messageClient: MessageClient by inject()
 
-    override suspend fun onMessageReceived(
-        context: Context,
-        message: ReceivedMessage<AppVersions>
-    ) {
-        // Get a list of apps installed on this device, and format for cache validation.
-        val currentPackages = context.packageManager.getAllApps()
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+        if (message.path == RequestValidateCache) {
+            val appVersions = message.data?.let { CacheValidationSerializer.deserialize(it) } ?: return
 
-        val addedApps = getAddedPackages(currentPackages, message.data.versions)
-        val updatedApps = getUpdatedPackages(currentPackages, message.data.versions)
-        val removedApps = getRemovedPackages(currentPackages, message.data.versions)
-        sendAppChanges(
-            message.sourceUid,
-            addedApps,
-            updatedApps,
-            removedApps
-        )
-        sendAllIcons(
-            context,
-            message.sourceUid,
-            addedApps.apps + updatedApps.apps
-        )
+            // Get a list of apps installed on this device, and format for cache validation.
+            val currentPackages = context.packageManager.getAllApps()
+
+            val addedApps = getAddedPackages(currentPackages, appVersions.versions)
+            val updatedApps = getUpdatedPackages(currentPackages, appVersions.versions)
+            val removedApps = getRemovedPackages(currentPackages, appVersions.versions)
+            sendAppChanges(
+                message.sourceUid,
+                addedApps,
+                updatedApps,
+                removedApps
+            )
+            sendAllIcons(
+                context,
+                message.sourceUid,
+                addedApps.apps + updatedApps.apps
+            )
+        }
     }
 
     /**
@@ -62,33 +62,31 @@ class AppManagerCacheValidatorReceiver :
         val hasRemovedApps = removedApps.isNotEmpty()
 
         if (hasAddedApps || hasUpdatedApps) {
-            val addedOrUpdatedMessageHandler = MessageHandler(AddedOrUpdatedAppsSerializer, messageClient)
             if (hasAddedApps) {
-                addedOrUpdatedMessageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         AddedAppsList,
-                        addedApps
+                        AddedOrUpdatedAppsSerializer.serialize(addedApps)
                     )
                 )
             }
             if (hasUpdatedApps) {
-                addedOrUpdatedMessageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         UpdatedAppsList,
-                        updatedApps
+                        AddedOrUpdatedAppsSerializer.serialize(addedApps)
                     )
                 )
             }
         }
         if (hasRemovedApps) {
-            val removedAppMessageHandler = MessageHandler(RemovedAppsSerializer, messageClient)
-            removedAppMessageHandler.sendMessage(
+            messageClient.sendMessage(
                 targetUid,
                 Message(
                     RemovedAppsList,
-                    removedApps
+                    RemovedAppsSerializer.serialize(removedApps)
                 )
             )
         }
@@ -105,21 +103,17 @@ class AppManagerCacheValidatorReceiver :
         targetUid: String,
         allApps: List<App>
     ) {
-        val messageHandler = MessageHandler(AppIconSerializer, messageClient)
         allApps.forEach { app ->
             try {
                 // Load icon
                 val drawable = context.packageManager.getApplicationIcon(app.packageName)
                 val bitmap = drawable.toBitmap()
                 val bytes = bitmap.toByteArray()
-                messageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         RawAppIcon,
-                        AppIcon(
-                            app.packageName,
-                            bytes
-                        )
+                        AppIconSerializer.serialize(AppIcon(app.packageName, bytes))
                     )
                 )
             } catch (_: Exception) { }

@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySy
 import com.boswelja.smartwatchextensions.batterysync.platform.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
@@ -19,25 +20,25 @@ import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PH
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.proximity.common.ProximitySettingKeys.PHONE_SEPARATION_NOTI_KEY
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageReceiver
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
  * A [MessageReceiver] for receiving [BoolSetting].
  */
-class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer), KoinComponent {
+class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
 
     private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
     private val dndSyncStateRepository: DnDSyncStateRepository by inject()
     private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
-    override suspend fun onMessageReceived(
-        context: Context,
-        message: ReceivedMessage<BoolSetting>
-    ) {
-        handleBoolPreferenceChange(context, message.data.key, message.data.value)
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+        if (message.path == UpdateBoolSetting) {
+            val pref = message.data?.let { BoolSettingSerializer.deserialize(it) } ?: return
+            handleBoolPreferenceChange(context, pref.key, pref.value)
+        }
     }
 
     private suspend fun handleBoolPreferenceChange(

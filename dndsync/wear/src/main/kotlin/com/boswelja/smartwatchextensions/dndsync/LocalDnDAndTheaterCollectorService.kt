@@ -9,7 +9,6 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -25,9 +24,6 @@ class LocalDnDAndTheaterCollectorService : LifecycleService() {
     private val phoneState by lazy { phoneStateStore }
     private val messageClient: MessageClient by inject()
     private val dnDSyncStateRepository: DnDSyncStateRepository by inject()
-    private val messageHandler: MessageHandler<Boolean> by lazy {
-        MessageHandler(DnDStatusSerializer, messageClient)
-    }
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -116,9 +112,12 @@ class LocalDnDAndTheaterCollectorService : LifecycleService() {
      */
     private suspend fun updateDnDState(dndSyncEnabled: Boolean) {
         val phoneId = phoneState.data.map { it.id }.first()
-        messageHandler.sendMessage(
+        messageClient.sendMessage(
             phoneId,
-            Message(DnDStatusPath, dndSyncEnabled)
+            Message(
+                DnDStatusPath,
+                DnDStatusSerializer.serialize(dndSyncEnabled)
+            )
         )
     }
 

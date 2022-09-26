@@ -5,14 +5,12 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.appmanager.PackageNameSerializer
 import com.boswelja.smartwatchextensions.appmanager.RequestOpenPackage
-import com.boswelja.smartwatchextensions.appmanager.RequestUninstallPackage
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.flow.first
 
 /**
@@ -25,8 +23,6 @@ class AppInfoViewModel(
     private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
 
-    private val packageMessageHandler by lazy { MessageHandler(PackageNameSerializer, messageClient) }
-
     /**
      * Requests the selected watch launch a given [WatchAppDetailsWithIcon].
      * @param app The [WatchAppDetailsWithIcon] to try launch.
@@ -34,11 +30,11 @@ class AppInfoViewModel(
      */
     suspend fun sendOpenRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchManager.selectedWatch.first()?.let { watch ->
-            packageMessageHandler.sendMessage(
+            messageClient.sendMessage(
                 watch.uid,
                 Message(
                     RequestOpenPackage,
-                    app.packageName,
+                    PackageNameSerializer.serialize(app.packageName),
                     Message.Priority.HIGH
                 )
             )
@@ -53,11 +49,11 @@ class AppInfoViewModel(
     suspend fun sendUninstallRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchManager.selectedWatch.first()?.let { watch ->
             appRepository.delete(app.watchId, app.packageName)
-            packageMessageHandler.sendMessage(
+            messageClient.sendMessage(
                 watch.uid,
                 Message(
-                    RequestUninstallPackage,
-                    app.packageName,
+                    RequestOpenPackage,
+                    PackageNameSerializer.serialize(app.packageName),
                     Message.Priority.HIGH
                 )
             )

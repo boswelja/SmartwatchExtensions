@@ -16,7 +16,6 @@ import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent
@@ -35,11 +34,13 @@ class MessageReceiver :
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         when (message.path) {
             RequestAppVersion -> {
-                val handler = MessageHandler(VersionSerializer, messageClient)
                 val version = Version(BuildConfig.VERSION_CODE.toLong(), BuildConfig.VERSION_NAME)
-                handler.sendMessage(
+                messageClient.sendMessage(
                     discoveryClient.pairedPhone()!!.uid,
-                    Message(RequestAppVersion, version)
+                    Message(
+                        RequestAppVersion,
+                        VersionSerializer.serialize(version)
+                    )
                 )
             }
             RequestResetApp -> {

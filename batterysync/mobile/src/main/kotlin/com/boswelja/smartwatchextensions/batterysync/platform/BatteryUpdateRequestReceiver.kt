@@ -9,7 +9,6 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.MessageHandler
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -25,8 +24,13 @@ class BatteryUpdateRequestReceiver : MessageReceiver(), KoinComponent {
         if (message.path == RequestBatteryStatus) {
             val batteryStats = getPhoneBatteryStats().getOrNull()
             if (batteryStats != null) {
-                val handler = MessageHandler(BatteryStatsSerializer, messageClient)
-                handler.sendMessage(message.sourceUid, Message(BatteryStatus, batteryStats))
+                messageClient.sendMessage(
+                    message.sourceUid,
+                    Message(
+                        BatteryStatus,
+                        BatteryStatsSerializer.serialize(batteryStats)
+                    )
+                )
             }
         }
     }

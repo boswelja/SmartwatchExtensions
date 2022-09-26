@@ -2,16 +2,19 @@ package com.boswelja.smartwatchextensions.dndsync
 
 import android.app.NotificationManager
 import android.content.Context
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageReceiver
 
 /**
  * A [MessageReceiver] that receives DnD status changes and tries to apply the new value.
  */
-class DnDStatusReceiver : MessageReceiver<Boolean>(DnDStatusSerializer) {
+class DnDStatusReceiver : MessageReceiver() {
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Boolean>) {
-        context.getSystemService(NotificationManager::class.java).setDnD(message.data)
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+        if (message.path == DnDStatusPath) {
+            val dndState = DnDStatusSerializer.deserialize(message.data)
+            context.getSystemService(NotificationManager::class.java).setDnD(dndState)
+        }
     }
 
     /**

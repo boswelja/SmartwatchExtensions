@@ -18,12 +18,11 @@ dependencies {
     implementation(projects.core.common)
 
     api(libs.watchconnection.common)
-    api(libs.watchconnection.serialization)
 
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.appcompat)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk.core)
 
