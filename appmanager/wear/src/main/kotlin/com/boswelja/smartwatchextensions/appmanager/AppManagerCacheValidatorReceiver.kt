@@ -5,7 +5,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -83,12 +82,11 @@ class AppManagerCacheValidatorReceiver :
             }
         }
         if (hasRemovedApps) {
-            val removedAppMessageHandler = MessageHandler(RemovedAppsSerializer, messageClient)
-            removedAppMessageHandler.sendMessage(
+            messageClient.sendMessage(
                 targetUid,
                 Message(
                     RemovedAppsList,
-                    removedApps
+                    RemovedAppsSerializer.serialize(removedApps)
                 )
             )
         }
