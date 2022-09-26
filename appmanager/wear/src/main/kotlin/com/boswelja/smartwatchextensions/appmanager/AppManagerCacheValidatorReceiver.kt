@@ -104,21 +104,17 @@ class AppManagerCacheValidatorReceiver :
         targetUid: String,
         allApps: List<App>
     ) {
-        val messageHandler = MessageHandler(AppIconSerializer, messageClient)
         allApps.forEach { app ->
             try {
                 // Load icon
                 val drawable = context.packageManager.getApplicationIcon(app.packageName)
                 val bitmap = drawable.toBitmap()
                 val bytes = bitmap.toByteArray()
-                messageHandler.sendMessage(
+                messageClient.sendMessage(
                     targetUid,
                     Message(
                         RawAppIcon,
-                        AppIcon(
-                            app.packageName,
-                            bytes
-                        )
+                        AppIconSerializer.serialize(AppIcon(app.packageName, bytes))
                     )
                 )
             } catch (_: Exception) { }
