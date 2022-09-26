@@ -6,20 +6,21 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BAT
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serialization.MessageReceiver
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
  * A [MessageReceiver] for receiving [IntSetting].
  */
-class IntSettingChangeReceiver : MessageReceiver<IntSetting>(IntSettingSerializer), KoinComponent {
+class IntSettingChangeReceiver : MessageReceiver(), KoinComponent {
 
     private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<IntSetting>) {
-        handleIntPreferenceChange(message.data.key, message.data.value)
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+        val pref = message.data?.let { IntSettingSerializer.deserialize(it) } ?: return
+        handleIntPreferenceChange(pref.key, pref.value)
     }
 
     private suspend fun handleIntPreferenceChange(key: String, value: Int) {
