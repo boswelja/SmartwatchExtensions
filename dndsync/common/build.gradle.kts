@@ -15,7 +15,6 @@ android {
 
 dependencies {
     api(libs.watchconnection.common)
-    api(libs.watchconnection.serialization)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.service)
