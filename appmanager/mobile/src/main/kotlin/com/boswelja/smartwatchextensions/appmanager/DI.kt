@@ -4,6 +4,7 @@ import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.ui.AppInfoViewModel
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -15,6 +16,6 @@ val appManagerModule = module {
 
     single<WatchAppIconRepository> { WatchAppIconFsRepository(get<Context>().filesDir) }
 
-    viewModel { AppManagerViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AppInfoViewModel(get(), get(), get(), get()) }
+    viewModelOf(::AppManagerViewModel)
+    viewModelOf(::AppInfoViewModel)
 }
