@@ -18,6 +18,7 @@ include(
     ":proximity:mobile",
     ":proximity:wear",
     ":mobile",
+    ":watchmanager:mobile",
     ":wearos"
 )
 pluginManagement {
