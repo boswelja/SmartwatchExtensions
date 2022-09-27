@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.batterysync.di
 
-import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHandler
 import com.boswelja.smartwatchextensions.batterysync.data.local.PhoneBatteryStatsDataSource
 import com.boswelja.smartwatchextensions.batterysync.data.local.WatchBatteryStatsDbDataSource
@@ -31,10 +30,11 @@ import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncN
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti.WatchBatteryNotiSettingsViewModel
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 /**
@@ -47,55 +47,42 @@ val batterySyncModule = module {
             get { parametersOf(BatteryStatsDatabase.Schema, "batterystats.db") }
         )
     }
-    single { PhoneBatteryStatsDataSource(androidContext()) }
+    singleOf(::PhoneBatteryStatsDataSource)
     single { WatchBatteryStatsDbDataSource(get(), get(named("database"))) }
 
     // domain/repository
-    single<BatteryStatsRepository> { BatteryStatsRepositoryImpl(get(), get()) }
+    singleOf(::BatteryStatsRepositoryImpl) bind BatteryStatsRepository::class
 
     // domain/usecase
-    single { GetBatteryChargeThreshold(get(), get()) }
-    single { GetBatteryLowThreshold(get(), get()) }
-    single { GetBatteryStats(get(), get(), get()) }
-    single { GetBatterySyncEnabled(get(), get()) }
-    single { GetPhoneBatteryStats(get()) }
-    single { GetPhoneBatteryNotificationState(get(), get(), get()) }
-    single { GetPhoneChargeNotificationEnabled(get(), get()) }
-    single { GetPhoneLowNotificationEnabled(get(), get()) }
-    single { GetWatchBatteryNotificationState(get(), get(), get()) }
-    single { GetWatchChargeNotificationEnabled(get(), get()) }
-    single { GetWatchLowNotificationEnabled(get(), get()) }
+    singleOf(::GetBatteryChargeThreshold)
+    singleOf(::GetBatteryLowThreshold)
+    singleOf(::GetBatteryStats)
+    singleOf(::GetBatterySyncEnabled)
+    singleOf(::GetPhoneBatteryStats)
+    singleOf(::GetPhoneBatteryNotificationState)
+    singleOf(::GetPhoneChargeNotificationEnabled)
+    singleOf(::GetPhoneLowNotificationEnabled)
+    singleOf(::GetWatchBatteryNotificationState)
+    singleOf(::GetWatchChargeNotificationEnabled)
+    singleOf(::GetWatchLowNotificationEnabled)
 
-    single { SendUpdatedBatteryStatsToWatch(get()) }
+    singleOf(::SendUpdatedBatteryStatsToWatch)
 
-    single { SetBatteryChargeThreshold(get(), get(), get()) }
-    single { SetBatteryLowThreshold(get(), get(), get()) }
-    single { SetBatterySyncEnabled(get(), get(), get(), get()) }
-    single { SetPhoneChargeNotificationEnabled(get(), get(), get()) }
-    single { SetPhoneLowNotificationEnabled(get(), get(), get()) }
-    single { SetWatchChargeNotificationEnabled(get(), get()) }
-    single { SetWatchLowNotificationEnabled(get(), get()) }
+    singleOf(::SetBatteryChargeThreshold)
+    singleOf(::SetBatteryLowThreshold)
+    singleOf(::SetBatterySyncEnabled)
+    singleOf(::SetPhoneChargeNotificationEnabled)
+    singleOf(::SetPhoneLowNotificationEnabled)
+    singleOf(::SetWatchChargeNotificationEnabled)
+    singleOf(::SetWatchLowNotificationEnabled)
 
-    single { StoreBatteryStatsForWatch(get(), get(), androidContext()) }
+    singleOf(::StoreBatteryStatsForWatch)
 
     // platform
-    single<BatterySyncNotificationHandler> {
-        MobileBatterySyncNotificationHandler(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            androidContext().getSystemService()!!
-        )
-    }
+    singleOf(::MobileBatterySyncNotificationHandler) bind BatterySyncNotificationHandler::class
 
     // ui
-    viewModel {
-        BatterySyncViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get())
-    }
-    viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { WatchBatteryNotiSettingsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModelOf(::BatterySyncViewModel)
+    viewModelOf(::PhoneBatteryNotiSettingsViewModel)
+    viewModelOf(::WatchBatteryNotiSettingsViewModel)
 }

@@ -16,8 +16,9 @@ import com.boswelja.smartwatchextensions.batterysync.platform.WearBatterySyncNot
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsViewModel
 import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 /**
@@ -25,8 +26,8 @@ import org.koin.dsl.module
  */
 val batterySyncModule = module {
     // Repositories
-    single<BatteryStatsRepository> { BatteryStatsDsRepository(get()) }
-    single<BatterySyncConfigRepository> { BatterySyncConfigDsRepository(get()) }
+    singleOf(::BatteryStatsDsRepository) bind BatteryStatsRepository::class
+    singleOf(::BatterySyncConfigDsRepository) bind BatterySyncConfigRepository::class
 
     // Use cases
     singleOf(::GetBatterySyncConfig)
@@ -44,5 +45,5 @@ val batterySyncModule = module {
             androidContext().getSystemService()!!
         )
     }
-    viewModel { BatteryStatsViewModel(get(), get()) }
+    viewModelOf(::BatteryStatsViewModel)
 }
