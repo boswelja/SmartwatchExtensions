@@ -18,6 +18,7 @@ include(
     ":proximity:mobile",
     ":proximity:wear",
     ":mobile",
+    ":watchmanager:common",
     ":watchmanager:mobile",
     ":wearos"
 )

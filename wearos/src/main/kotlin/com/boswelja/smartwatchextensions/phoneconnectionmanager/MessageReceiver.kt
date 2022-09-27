@@ -8,8 +8,8 @@ import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestAppVersion
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestResetApp
-import com.boswelja.smartwatchextensions.core.devicemanagement.Version
-import com.boswelja.smartwatchextensions.core.devicemanagement.VersionSerializer
+import com.boswelja.smartwatchextensions.common.Version
+import com.boswelja.smartwatchextensions.common.VersionSerializer
 import com.boswelja.smartwatchextensions.core.settings.ResetSettings
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
