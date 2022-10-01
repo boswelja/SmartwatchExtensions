@@ -1,9 +1,9 @@
-package com.boswelja.smartwatchextensions
+package com.boswelja.smartwatchextensions.bootorupdate
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.smartwatchextensions.bootorupdate.BootUpdateNotiChannelId
+import com.boswelja.smartwatchextensions.R
 
 /**
  * A helper class for managing notification channels.
