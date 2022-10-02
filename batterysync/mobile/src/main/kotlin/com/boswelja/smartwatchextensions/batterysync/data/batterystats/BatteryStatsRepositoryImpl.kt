@@ -7,9 +7,9 @@ import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDataba
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * An implementation of [BatteryStatsRepository] combining potentially multiple data sources.
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 class BatteryStatsRepositoryImpl(
     private val context: Context,
     private val database: BatteryStatsDatabase,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineContext
 ) : BatteryStatsRepository {
 
     override fun getBatteryStatsForPhone(): BatteryStats? {
