@@ -24,7 +24,12 @@ fun NavGraphBuilder.watchManagerGraph(
         )
     }
     composable(WatchManagerDestination.AddNewWatch.name) {
-        // TODO
+        RegisterWatchScreen(
+            onRegistrationFinished = {
+                // TODO
+            },
+            modifier = modifier
+        )
     }
 }
 
