@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import androidx.navigation.compose.composable
+import com.boswelja.smartwatchextensions.watchmanager.ui.watchManagerGraph
 
 /**
  * All destinations reachable from withing App Settings.
@@ -56,9 +57,7 @@ fun NavGraphBuilder.appSettingsGraph(
     }
     watchManagerGraph(
         modifier = modifier,
-        contentPadding = contentPadding,
         onNavigateTo = onNavigateTo,
-        route = SettingsDestination.WATCH_MANAGER.route,
-        onShowSnackbar = onShowSnackbar
+        route = SettingsDestination.WATCH_MANAGER.route
     )
 }
