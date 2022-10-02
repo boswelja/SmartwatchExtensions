@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.core.ui.list.ListItem
 import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,6 +45,7 @@ import org.koin.androidx.compose.getViewModel
  * @param onShowSnackbar Called when a snackbar should be shown.
  * @param onNavigateTo Called when navigation is requested.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchManagerScreen(
     onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
@@ -77,9 +78,8 @@ fun WatchManagerScreen(
             )
         }
         item {
-            ListItem(
-                text = { Text(stringResource(R.string.watch_manager_add_watch_title)) },
-                icon = { Icon(Icons.Default.Add, null) },
+            ListItem(headlineText = { Text(stringResource(R.string.watch_manager_add_watch_title)) },
+                leadingContent = { Icon(Icons.Default.Add, null) },
                 modifier = Modifier.clickable {
                     onNavigateTo(WatchManagerDestination.REGISTER_WATCHES)
                 }
@@ -103,9 +103,9 @@ fun RegisteredWatchItem(
     var forgetDialogVisible by remember { mutableStateOf(false) }
     var renameDialogVisible by remember { mutableStateOf(false) }
     ListItem(
-        text = { Text(watchName) },
-        icon = { Icon(Icons.Outlined.Watch, null) },
-        trailing = {
+        headlineText = { Text(watchName) },
+        leadingContent = { Icon(Icons.Outlined.Watch, null) },
+        trailingContent = {
             var menuVisible by remember { mutableStateOf(false) }
             Box(Modifier.wrapContentSize()) {
                 IconButton(onClick = { menuVisible = true }) { Icon(Icons.Default.MoreVert, null) }
