@@ -24,6 +24,7 @@ dependencies {
 
     implementation(libs.bundles.compose.mobile)
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 
     testImplementation(libs.junit)
     testImplementation(libs.turbine)
