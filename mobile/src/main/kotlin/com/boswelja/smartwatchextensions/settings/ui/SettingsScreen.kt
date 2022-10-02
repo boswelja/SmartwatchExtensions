@@ -15,7 +15,9 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.core.ui.list.ListItem
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
@@ -37,6 +38,7 @@ import org.koin.androidx.compose.getViewModel
  * @param onNavigateTo Called when navigation is requested.
  * @param modifier [Modifier].
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSettingsScreen(
     onNavigateTo: (SettingsDestination) -> Unit,
@@ -71,7 +73,7 @@ fun AppSettingsScreen(
         }
         item {
             ListItem(
-                text = { Text(stringResource(R.string.manage_watches_title)) },
+                headlineText = { Text(stringResource(R.string.manage_watches_title)) },
                 modifier = Modifier
                     .clickable {
                         onNavigateTo(SettingsDestination.WATCH_MANAGER)
@@ -107,6 +109,7 @@ fun AboutAppHeader(
 /**
  * Displays a list of shortcuts to app-related information
  */
+@OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.aboutAppListShortcuts(
     onNavigateTo: (SettingsDestination) -> Unit,
     modifier: Modifier = Modifier
@@ -114,8 +117,8 @@ fun LazyListScope.aboutAppListShortcuts(
     item {
         val context = LocalContext.current
         ListItem(
-            icon = { Icon(Icons.Default.Notifications, null) },
-            text = { Text(stringResource(R.string.noti_settings_title)) },
+            headlineText = { Text(stringResource(R.string.noti_settings_title)) },
+            leadingContent = { Icon(Icons.Default.Notifications, null) },
             modifier = Modifier.clickable {
                 context.startActivity {
                     it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -127,22 +130,22 @@ fun LazyListScope.aboutAppListShortcuts(
     }
     item {
         ListItem(
-            icon = { Icon(Icons.Default.Code, null) },
-            text = { Text(stringResource(R.string.about_github)) },
+            headlineText = { Text(stringResource(R.string.about_github)) },
+            leadingContent = { Icon(Icons.Default.Code, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.SOURCE) }.then(modifier)
         )
     }
     item {
         ListItem(
-            icon = { Icon(Icons.Default.ChangeHistory, null) },
-            text = { Text(stringResource(R.string.about_changelog)) },
+            headlineText = { Text(stringResource(R.string.about_changelog)) },
+            leadingContent = { Icon(Icons.Default.ChangeHistory, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.CHANGELOG) }.then(modifier)
         )
     }
     item {
         ListItem(
-            icon = { Icon(Icons.Default.Security, null) },
-            text = { Text(stringResource(R.string.about_priv_policy_title)) },
+            headlineText = { Text(stringResource(R.string.about_priv_policy_title)) },
+            leadingContent = { Icon(Icons.Default.Security, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.PRIVACY_POLICY) }.then(modifier)
         )
     }
