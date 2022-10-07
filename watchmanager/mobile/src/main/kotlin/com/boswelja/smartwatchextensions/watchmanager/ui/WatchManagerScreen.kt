@@ -64,7 +64,7 @@ fun WatchManagerScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {  }
+                            .clickable { onNavigateTo(WatchManagerDestination.ManageRegisteredWatch) }
                     )
                 }
                 item {

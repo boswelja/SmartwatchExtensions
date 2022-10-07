@@ -31,8 +31,12 @@ fun NavGraphBuilder.watchManagerGraph(
             modifier = modifier
         )
     }
+    composable(WatchManagerDestination.ManageRegisteredWatch.name) {
+
+    }
 }
 
 enum class WatchManagerDestination {
-    AddNewWatch
+    AddNewWatch,
+    ManageRegisteredWatch
 }
