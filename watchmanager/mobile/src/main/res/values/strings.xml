@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="register_watch_confirm">Confirm</string>
+    <string name="register_watch_cancel">Cancel</string>
+    <string name="register_watch_title">Register Watch</string>
+    <string name="register_watch_description">This will register your %s with Smartwatch Extensions</string>
+</resources>
