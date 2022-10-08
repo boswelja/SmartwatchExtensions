@@ -2,7 +2,10 @@ package com.boswelja.smartwatchextensions.watchmanager.ui
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered.ManageRegisteredWatchScreen
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 
 /**
@@ -18,8 +21,11 @@ fun NavGraphBuilder.watchManagerGraph(
 ) {
     composable(route) {
         WatchManagerScreen(
-            onNavigateTo = {
-                onNavigateTo(it.toString())
+            onWatchClick = {
+                onNavigateTo("${WatchManagerDestination.ManageRegisteredWatch.name}/${it.uid}")
+            },
+            onAddWatchClick = {
+                onNavigateTo(WatchManagerDestination.AddNewWatch.name)
             },
             modifier = modifier
         )
@@ -32,8 +38,20 @@ fun NavGraphBuilder.watchManagerGraph(
             modifier = modifier
         )
     }
-    composable(WatchManagerDestination.ManageRegisteredWatch.name) {
-
+    composable(
+        route = "${WatchManagerDestination.ManageRegisteredWatch.name}/{watch-uid}",
+        arguments = listOf(
+            navArgument("watch-uid") {
+                type = NavType.StringType
+                nullable = false
+            }
+        )
+    ) {
+        val watchUid = it.arguments!!.getString("watch-uid")!!
+        ManageRegisteredWatchScreen(
+            watchUid = watchUid,
+            modifier = modifier
+        )
     }
 }
 

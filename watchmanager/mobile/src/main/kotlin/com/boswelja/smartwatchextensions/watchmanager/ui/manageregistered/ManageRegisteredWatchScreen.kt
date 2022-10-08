@@ -6,6 +6,7 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ManageRegisteredWatchScreen(
+    watchUid: String,
     modifier: Modifier = Modifier,
     viewModel: ManageRegisteredWatchViewModel = getViewModel()
 ) {

@@ -21,12 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
+import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun WatchManagerScreen(
-    onNavigateTo: (WatchManagerDestination) -> Unit,
+    onWatchClick: (Watch) -> Unit,
+    onAddWatchClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: WatchManagerViewModel = getViewModel()
 ) {
@@ -64,7 +66,7 @@ fun WatchManagerScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onNavigateTo(WatchManagerDestination.ManageRegisteredWatch) }
+                            .clickable { onWatchClick(watch) }
                     )
                 }
                 item {
@@ -77,7 +79,7 @@ fun WatchManagerScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onNavigateTo(WatchManagerDestination.AddNewWatch) }
+                            .clickable(onClick = onAddWatchClick)
                     )
                 }
             }
