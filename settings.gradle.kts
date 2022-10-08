@@ -20,6 +20,7 @@ include(
     ":mobile",
     ":watchmanager:common",
     ":watchmanager:mobile",
+    ":watchmanager:wear",
     ":wearos"
 )
 pluginManagement {
