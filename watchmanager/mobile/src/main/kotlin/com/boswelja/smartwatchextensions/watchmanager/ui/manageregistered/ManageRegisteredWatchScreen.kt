@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

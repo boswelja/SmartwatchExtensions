@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.watchmanager.ui
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 
 /**
  * Adds all destinations used by [WatchManagerScreen] to the [NavGraphBuilder]. The entry point is

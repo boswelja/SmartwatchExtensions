@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.watchmanager.ui.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

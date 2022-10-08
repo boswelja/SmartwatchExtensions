@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered
 
 import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
