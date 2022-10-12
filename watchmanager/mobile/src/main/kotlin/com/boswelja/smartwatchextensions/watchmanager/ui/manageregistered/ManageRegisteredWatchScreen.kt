@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Save
@@ -64,7 +66,8 @@ fun ManageRegisteredWatchScreen(
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .then(modifier)
+                    .then(modifier),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 WatchOverview(
                     watchStatus = watchStatus,
@@ -75,11 +78,19 @@ fun ManageRegisteredWatchScreen(
                     onUpdateWatchName = viewModel::renameWatch,
                     modifier = Modifier.fillMaxWidth()
                 )
-                RemoveWatch(
-                    watchName = it.name,
-                    onWatchRemoved = viewModel::removeWatch,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                ) {
+                    ResetWatchSettings(
+                        watchName = it.name,
+                        onResetSettings = viewModel::resetWatchSettings
+                    )
+                    RemoveWatch(
+                        watchName = it.name,
+                        onWatchRemoved = viewModel::removeWatch
+                    )
+                }
             }
         }
     }
@@ -163,17 +174,13 @@ internal fun RemoveWatch(
     modifier: Modifier = Modifier
 ) {
     var confirmDeleteVisible by remember { mutableStateOf(false) }
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
+    FilledTonalButton(
+        onClick = { confirmDeleteVisible = true },
+        colors = ButtonDefaults.filledTonalButtonColors(),
+        modifier = modifier
     ) {
-        FilledTonalButton(
-            onClick = { confirmDeleteVisible = true },
-            colors = ButtonDefaults.filledTonalButtonColors()
-        ) {
-            Icon(Icons.Default.Delete, contentDescription = null)
-            Text("Delete")
-        }
+        Icon(Icons.Default.Delete, contentDescription = null)
+        Text("Delete")
     }
     if (confirmDeleteVisible) {
         AlertDialog(
@@ -203,6 +210,54 @@ internal fun RemoveWatch(
             },
             icon = {
                 Icon(Icons.Default.Delete, null)
+            }
+        )
+    }
+}
+
+@Composable
+internal fun ResetWatchSettings(
+    watchName: String,
+    onResetSettings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var confirmDeleteVisible by remember { mutableStateOf(false) }
+    FilledTonalButton(
+        onClick = { confirmDeleteVisible = true },
+        colors = ButtonDefaults.filledTonalButtonColors(),
+        modifier = modifier
+    ) {
+        Icon(Icons.Default.ClearAll, contentDescription = null)
+        Text("Reset Settings")
+    }
+    if (confirmDeleteVisible) {
+        AlertDialog(
+            onDismissRequest = { confirmDeleteVisible = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onResetSettings()
+                        confirmDeleteVisible = false
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { confirmDeleteVisible = false }
+                ) {
+                    Text("Cancel")
+                }
+            },
+            title = {
+                Text("Reset $watchName Settings?")
+            },
+            text = {
+                Text("This will delete all settings related to $watchName.")
+            },
+            icon = {
+                Icon(Icons.Default.ClearAll, null)
             }
         )
     }

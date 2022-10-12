@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class ManageRegisteredWatchViewModel(
     savedStateHandle: SavedStateHandle,
-    private val watchRepository: WatchRepository
+    private val watchRepository: WatchRepository,
+    private val watchSettingsRepository: WatchSettingsRepository
 ) : ViewModel() {
 
     private val watchId: String = checkNotNull(savedStateHandle["watchUid"])
@@ -46,6 +48,12 @@ class ManageRegisteredWatchViewModel(
     fun removeWatch() {
         viewModelScope.launch {
             watchRepository.deregisterWatch(watch.first()!!)
+        }
+    }
+
+    fun resetWatchSettings() {
+        viewModelScope.launch {
+            watchSettingsRepository.deleteForWatch(watchId)
         }
     }
 }

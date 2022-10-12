@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
 class WatchManagerViewModel(
-    private val watchRepository: WatchRepository,
+    watchRepository: WatchRepository,
     private val watchVersionRepository: WatchVersionRepository
 ) : ViewModel() {
 
@@ -24,18 +24,6 @@ class WatchManagerViewModel(
     suspend fun loadWatchVersion(watchId: String): Result<String> {
         return runCatching {
             watchVersionRepository.getWatchVersion(watchId).versionName
-        }
-    }
-
-    suspend fun renameWatch(watch: Watch, newName: String): Result<Unit> {
-        return runCatching {
-            watchRepository.renameWatch(watch, newName)
-        }
-    }
-
-    suspend fun forgetWatch(watch: Watch): Result<Unit> {
-        return runCatching {
-            watchRepository.deregisterWatch(watch)
         }
     }
 }
