@@ -11,17 +11,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -58,7 +61,11 @@ fun ManageRegisteredWatchScreen(
             LoadingScreen(modifier = modifier)
         } else {
             val watchStatus by viewModel.watchStatus.collectAsState()
-            Column(modifier = modifier) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .then(modifier)
+            ) {
                 WatchOverview(
                     watchStatus = watchStatus,
                     modifier = Modifier.fillMaxWidth()
@@ -110,7 +117,10 @@ internal fun RenameWatch(
     val canSaveName by remember(watchName, updatedName, isUpdatedNameValid) {
         derivedStateOf { isUpdatedNameValid && watchName != updatedName }
     }
-    Row(modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         OutlinedTextField(
             value = updatedName,
             onValueChange = { updatedName = it },
@@ -123,7 +133,7 @@ internal fun RenameWatch(
                     exit = fadeOut()
                 ) {
                     IconButton(onClick = { updatedName = watchName }) {
-                        Icon(Icons.Default.Restore, null)
+                        Icon(Icons.Default.Restore, "Restore name")
                     }
                 }
             },
@@ -133,14 +143,15 @@ internal fun RenameWatch(
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Done
-            )
+            ),
+            modifier = Modifier.weight(1f)
         )
-        Spacer(Modifier.width(16.dp))
-        FilledTonalButton(
+        Spacer(Modifier.width(8.dp))
+        FilledTonalIconButton(
             onClick = { onUpdateWatchName(updatedName) },
             enabled = canSaveName
         ) {
-            Text("Save")
+            Icon(Icons.Default.Save, "Save")
         }
     }
 }
