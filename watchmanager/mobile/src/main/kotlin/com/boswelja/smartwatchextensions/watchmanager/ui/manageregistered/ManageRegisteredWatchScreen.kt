@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,8 +9,21 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,7 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.boswelja.watchconnection.common.Watch
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -40,11 +57,23 @@ fun ManageRegisteredWatchScreen(
         if (it == null) {
             LoadingScreen(modifier = modifier)
         } else {
-            ManageRegisteredWatch(
-                watch = it,
-                onUpdateWatchName = viewModel::renameWatch,
-                modifier = modifier
-            )
+            val watchStatus by viewModel.watchStatus.collectAsState()
+            Column(modifier = modifier) {
+                WatchOverview(
+                    watchStatus = watchStatus,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                RenameWatch(
+                    watchName = it.name,
+                    onUpdateWatchName = viewModel::renameWatch,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                RemoveWatch(
+                    watchName = it.name,
+                    onWatchRemoved = viewModel::removeWatch,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -59,33 +88,111 @@ internal fun LoadingScreen(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+internal fun WatchOverview(
+    watchStatus: ConnectionMode?,
+    modifier: Modifier = Modifier
+) {
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ManageRegisteredWatch(
-    watch: Watch,
+internal fun RenameWatch(
+    watchName: String,
     onUpdateWatchName: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var updatedName by remember(watch) { mutableStateOf(watch.name) }
+    var updatedName by remember(watchName) { mutableStateOf(watchName) }
     val isUpdatedNameValid by remember(updatedName) {
         derivedStateOf { updatedName.isNotBlank() }
     }
-    val canSaveName by remember(watch, updatedName, isUpdatedNameValid) {
-        derivedStateOf { isUpdatedNameValid && watch.name != updatedName }
+    val canSaveName by remember(watchName, updatedName, isUpdatedNameValid) {
+        derivedStateOf { isUpdatedNameValid && watchName != updatedName }
     }
-    Column(modifier) {
-        Row {
-            OutlinedTextField(
-                value = updatedName,
-                onValueChange = { updatedName = it },
-                isError = !isUpdatedNameValid
+    Row(modifier) {
+        OutlinedTextField(
+            value = updatedName,
+            onValueChange = { updatedName = it },
+            isError = !isUpdatedNameValid,
+            label = { Text("Watch Name") },
+            trailingIcon = {
+                AnimatedVisibility(
+                    visible = updatedName != watchName,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(onClick = { updatedName = watchName }) {
+                        Icon(Icons.Default.Restore, null)
+                    }
+                }
+            },
+            keyboardActions = KeyboardActions(
+                onDone = { onUpdateWatchName(updatedName) }
+            ),
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Done
             )
-            TextButton(
-                onClick = { onUpdateWatchName(updatedName) },
-                enabled = canSaveName
-            ) {
-                Text("Save")
-            }
+        )
+        Spacer(Modifier.width(16.dp))
+        FilledTonalButton(
+            onClick = { onUpdateWatchName(updatedName) },
+            enabled = canSaveName
+        ) {
+            Text("Save")
         }
+    }
+}
+
+@Composable
+internal fun RemoveWatch(
+    watchName: String,
+    onWatchRemoved: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var confirmDeleteVisible by remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        FilledTonalButton(
+            onClick = { confirmDeleteVisible = true },
+            colors = ButtonDefaults.filledTonalButtonColors()
+        ) {
+            Icon(Icons.Default.Delete, contentDescription = null)
+            Text("Delete")
+        }
+    }
+    if (confirmDeleteVisible) {
+        AlertDialog(
+            onDismissRequest = { confirmDeleteVisible = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onWatchRemoved()
+                        confirmDeleteVisible = false
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { confirmDeleteVisible = false }
+                ) {
+                    Text("Cancel")
+                }
+            },
+            title = {
+                Text("Delete ${watchName}?")
+            },
+            text = {
+                Text("This will delete all settings and data related to $watchName.")
+            },
+            icon = {
+                Icon(Icons.Default.Delete, null)
+            }
+        )
     }
 }

@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -25,9 +27,25 @@ class ManageRegisteredWatchViewModel(
             null
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val watchStatus = watch
+        .filterNotNull()
+        .flatMapLatest { watchRepository.getStatusFor(it) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            null
+        )
+
     fun renameWatch(newName: String) {
         viewModelScope.launch {
             watchRepository.renameWatch(watch.first()!!, newName)
+        }
+    }
+
+    fun removeWatch() {
+        viewModelScope.launch {
+            watchRepository.deregisterWatch(watch.first()!!)
         }
     }
 }
