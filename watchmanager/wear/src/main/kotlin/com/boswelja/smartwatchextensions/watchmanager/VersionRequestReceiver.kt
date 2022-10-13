@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.watchmanager
 
 import android.content.Context
+import android.content.pm.PackageManager
 import com.boswelja.smartwatchextensions.common.RequestAppVersion
 import com.boswelja.smartwatchextensions.common.Version
 import com.boswelja.smartwatchextensions.common.VersionSerializer
@@ -16,8 +17,11 @@ class VersionRequestReceiver : MessageReceiver(), KoinComponent {
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         if (message.path == RequestAppVersion) {
-            // TODO
-            val version = Version(100, "1.0.0")
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.PackageInfoFlags.of(0)
+            )
+            val version = Version(packageInfo.longVersionCode, packageInfo.versionName)
             messageClient.sendMessage(
                 message.sourceUid,
                 Message(

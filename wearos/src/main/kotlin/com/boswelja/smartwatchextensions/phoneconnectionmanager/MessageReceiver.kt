@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -23,7 +22,6 @@ class MessageReceiver :
     MessageReceiver(),
     KoinComponent {
 
-    private val messageClient: MessageClient by inject()
     private val discoveryClient: DiscoveryClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
