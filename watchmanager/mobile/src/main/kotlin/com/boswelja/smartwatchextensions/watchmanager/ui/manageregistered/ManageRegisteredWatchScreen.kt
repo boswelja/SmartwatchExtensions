@@ -59,7 +59,6 @@ import com.boswelja.smartwatchextensions.watchmanager.R
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ManageRegisteredWatchScreen(
     modifier: Modifier = Modifier,
@@ -67,47 +66,40 @@ fun ManageRegisteredWatchScreen(
 ) {
     val watch by viewModel.watch.collectAsState()
 
-    AnimatedContent(
-        targetState = watch,
-        transitionSpec = { fadeIn() with fadeOut() }
-    ) {
-        if (it == null) {
-            LoadingScreen(modifier = modifier)
-        } else {
-            val watchStatus by viewModel.watchStatus.collectAsState()
+    watch?.let {
+        val watchStatus by viewModel.watchStatus.collectAsState()
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .then(modifier),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            WatchOverview(
+                watchStatus = watchStatus,
+                modifier = Modifier.fillMaxWidth()
+            )
+            RenameWatch(
+                watchName = it.name,
+                onUpdateWatchName = viewModel::renameWatch,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.weight(1f))
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .then(modifier),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                WatchOverview(
-                    watchStatus = watchStatus,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                RenameWatch(
+                ResetWatchSettings(
                     watchName = it.name,
-                    onUpdateWatchName = viewModel::renameWatch,
+                    onResetSettings = viewModel::resetWatchSettings,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(Modifier.weight(1f))
-                Column(
+                RemoveWatch(
+                    watchName = it.name,
+                    onWatchRemoved = viewModel::removeWatch,
                     modifier = Modifier.fillMaxWidth()
-                ) {
-                    ResetWatchSettings(
-                        watchName = it.name,
-                        onResetSettings = viewModel::resetWatchSettings,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    RemoveWatch(
-                        watchName = it.name,
-                        onWatchRemoved = viewModel::removeWatch,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                )
             }
         }
-    }
+    } ?: LoadingScreen(modifier = modifier)
 }
 
 @Composable
