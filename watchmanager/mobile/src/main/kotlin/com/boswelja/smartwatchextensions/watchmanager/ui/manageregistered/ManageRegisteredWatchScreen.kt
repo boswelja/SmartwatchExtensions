@@ -152,7 +152,7 @@ internal fun WatchOverview(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 internal fun RenameWatch(
     watchName: String,
@@ -196,11 +196,16 @@ internal fun RenameWatch(
             modifier = Modifier.weight(1f)
         )
         Spacer(Modifier.width(8.dp))
-        FilledTonalIconButton(
-            onClick = { onUpdateWatchName(updatedName) },
-            enabled = canSaveName
+        AnimatedContent(
+            targetState = canSaveName,
+            transitionSpec = { fadeIn() with fadeOut() }
         ) {
-            Icon(Icons.Default.Save, stringResource(R.string.watch_rename_save))
+            FilledTonalIconButton(
+                onClick = { onUpdateWatchName(updatedName) },
+                enabled = it
+            ) {
+                Icon(Icons.Default.Save, stringResource(R.string.watch_rename_save))
+            }
         }
     }
 }
