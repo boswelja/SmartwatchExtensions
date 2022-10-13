@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.watchmanager.data
 
+import com.boswelja.smartwatchextensions.common.RequestAppVersion
 import com.boswelja.smartwatchextensions.common.Version
 import com.boswelja.smartwatchextensions.common.VersionSerializer
-import com.boswelja.smartwatchextensions.core.devicemanagement.RequestAppVersion
 import com.boswelja.smartwatchextensions.watchmanager.domain.WatchVersionRepository
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageClient

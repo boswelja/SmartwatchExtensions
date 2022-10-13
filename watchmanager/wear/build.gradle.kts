@@ -15,6 +15,9 @@ android {
 
 dependencies {
     implementation(projects.watchmanager.common)
+
+    implementation(libs.watchconnection.wear)
+    implementation(libs.koin.android)
 }
 
 detekt {

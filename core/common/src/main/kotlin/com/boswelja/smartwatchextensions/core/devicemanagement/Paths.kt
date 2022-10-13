@@ -24,8 +24,3 @@ const val CheckWatchRegistered = "/check_watch_registered"
  * Notify the target device it is registered with the source device.
  */
 const val ConfirmWatchRegistered = "/watch_registered"
-
-/**
- * Request the target device app version.
- */
-const val RequestAppVersion = "/request_app_version"

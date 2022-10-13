@@ -64,7 +64,7 @@ dependencies {
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking.wear)
     implementation(projects.proximity.wear)
-    implementation(projects.watchmanager.common)
+    implementation(projects.watchmanager.wear)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
