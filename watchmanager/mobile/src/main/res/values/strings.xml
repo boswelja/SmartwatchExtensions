@@ -4,4 +4,23 @@
     <string name="register_watch_cancel">Cancel</string>
     <string name="register_watch_title">Register Watch</string>
     <string name="register_watch_description">This will register your %s with Smartwatch Extensions</string>
+
+    <string name="watch_status_connected">Connected</string>
+    <string name="watch_status_disconnected">Disconnected</string>
+
+    <string name="watch_rename_hint">Watch Name</string>
+    <string name="watch_rename_restore">Restore name</string>
+    <string name="watch_rename_save">Save new name</string>
+
+    <string name="watch_delete_btn">Remove</string>
+    <string name="watch_delete_positive">Confirm</string>
+    <string name="watch_delete_negative">Cancel</string>
+    <string name="watch_delete_title">Remove \"%s\"?</string>
+    <string name="watch_delete_text">This will delete all settings and data related to \"%s\", and remove it from Smartwatch Extensions.</string>
+
+    <string name="watch_reset_btn">Reset Settings</string>
+    <string name="watch_reset_positive">Confirm</string>
+    <string name="watch_reset_negative">Cancel</string>
+    <string name="watch_reset_title">Reset \"%s\" Settings?</string>
+    <string name="watch_reset_text">This will reset all settings related to \"%s\".</string>
 </resources>

@@ -37,6 +37,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,9 +51,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.boswelja.smartwatchextensions.watchmanager.R
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import org.koin.androidx.compose.getViewModel
 
@@ -134,7 +137,7 @@ internal fun WatchOverview(
                 .fillMaxWidth()
                 .aspectRatio(2f)
         )
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
         AnimatedContent(targetState = watchStatus) {
             if (it != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -171,7 +174,7 @@ internal fun RenameWatch(
             value = updatedName,
             onValueChange = { updatedName = it },
             isError = !isUpdatedNameValid,
-            label = { Text("Watch Name") },
+            label = { Text(stringResource(R.string.watch_rename_hint)) },
             trailingIcon = {
                 AnimatedVisibility(
                     visible = updatedName != watchName,
@@ -179,7 +182,7 @@ internal fun RenameWatch(
                     exit = fadeOut()
                 ) {
                     IconButton(onClick = { updatedName = watchName }) {
-                        Icon(Icons.Default.Restore, "Restore name")
+                        Icon(Icons.Default.Restore, stringResource(R.string.watch_rename_restore))
                     }
                 }
             },
@@ -197,7 +200,7 @@ internal fun RenameWatch(
             onClick = { onUpdateWatchName(updatedName) },
             enabled = canSaveName
         ) {
-            Icon(Icons.Default.Save, "Save")
+            Icon(Icons.Default.Save, stringResource(R.string.watch_rename_save))
         }
     }
 }
@@ -211,12 +214,15 @@ internal fun RemoveWatch(
     var confirmDeleteVisible by remember { mutableStateOf(false) }
     FilledTonalButton(
         onClick = { confirmDeleteVisible = true },
-        colors = ButtonDefaults.filledTonalButtonColors(),
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        ),
         modifier = modifier
     ) {
         Icon(Icons.Default.Delete, contentDescription = null)
         Spacer(Modifier.width(4.dp))
-        Text("Delete")
+        Text(stringResource(R.string.watch_delete_btn))
     }
     if (confirmDeleteVisible) {
         AlertDialog(
@@ -227,15 +233,15 @@ internal fun RemoveWatch(
                         onWatchRemoved()
                         confirmDeleteVisible = false
                     }
-                ) { Text("Confirm") }
+                ) { Text(stringResource(R.string.watch_delete_positive)) }
             },
             dismissButton = {
                 TextButton(
                     onClick = { confirmDeleteVisible = false }
-                ) { Text("Cancel") }
+                ) { Text(stringResource(R.string.watch_delete_negative)) }
             },
-            title = { Text("Delete ${watchName}?") },
-            text = { Text("This will delete all settings and data related to $watchName, and remove it from Smartwatch Extensions.") },
+            title = { Text(stringResource(R.string.watch_delete_title, watchName)) },
+            text = { Text(stringResource(R.string.watch_delete_text, watchName)) },
             icon = { Icon(Icons.Default.Delete, null) }
         )
     }
@@ -255,7 +261,7 @@ internal fun ResetWatchSettings(
     ) {
         Icon(Icons.Default.ClearAll, contentDescription = null)
         Spacer(Modifier.width(4.dp))
-        Text("Reset Settings")
+        Text(stringResource(R.string.watch_reset_btn))
     }
     if (confirmDeleteVisible) {
         AlertDialog(
@@ -266,15 +272,15 @@ internal fun ResetWatchSettings(
                         onResetSettings()
                         confirmDeleteVisible = false
                     }
-                ) { Text("Confirm") }
+                ) { Text(stringResource(R.string.watch_reset_positive)) }
             },
             dismissButton = {
                 TextButton(
                     onClick = { confirmDeleteVisible = false }
-                ) { Text("Cancel") }
+                ) { Text(stringResource(R.string.watch_reset_negative)) }
             },
-            title = { Text("Reset $watchName Settings?") },
-            text = { Text("This will reset all settings related to $watchName.") },
+            title = { Text(stringResource(R.string.watch_reset_title, watchName)) },
+            text = { Text(stringResource(R.string.watch_reset_text, watchName)) },
             icon = { Icon(Icons.Default.ClearAll, null) }
         )
     }
@@ -288,10 +294,11 @@ private fun ConnectionMode.getIcon(): ImageVector {
     }
 }
 
+@Composable
 private fun ConnectionMode.getText(): String {
     return when (this) {
-        ConnectionMode.Disconnected -> "Disconnected"
+        ConnectionMode.Disconnected -> stringResource(R.string.watch_status_disconnected)
         ConnectionMode.Internet,
-        ConnectionMode.Bluetooth -> "Connected"
+        ConnectionMode.Bluetooth -> stringResource(R.string.watch_status_connected)
     }
 }
