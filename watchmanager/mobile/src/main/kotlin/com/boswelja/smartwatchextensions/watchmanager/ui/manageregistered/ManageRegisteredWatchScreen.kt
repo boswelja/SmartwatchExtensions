@@ -6,21 +6,28 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothConnected
 import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +36,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -67,7 +76,7 @@ fun ManageRegisteredWatchScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .then(modifier),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 WatchOverview(
                     watchStatus = watchStatus,
@@ -78,17 +87,19 @@ fun ManageRegisteredWatchScreen(
                     onUpdateWatchName = viewModel::renameWatch,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                Spacer(Modifier.weight(1f))
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     ResetWatchSettings(
                         watchName = it.name,
-                        onResetSettings = viewModel::resetWatchSettings
+                        onResetSettings = viewModel::resetWatchSettings,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     RemoveWatch(
                         watchName = it.name,
-                        onWatchRemoved = viewModel::removeWatch
+                        onWatchRemoved = viewModel::removeWatch,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -106,12 +117,36 @@ internal fun LoadingScreen(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun WatchOverview(
     watchStatus: ConnectionMode?,
     modifier: Modifier = Modifier
 ) {
-
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            Icons.Default.Watch,
+            null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f)
+        )
+        Spacer(Modifier.height(4.dp))
+        AnimatedContent(targetState = watchStatus) {
+            if (it != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(it.getIcon(), null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(it.getText())
+                }
+            } else {
+                LinearProgressIndicator()
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -180,6 +215,7 @@ internal fun RemoveWatch(
         modifier = modifier
     ) {
         Icon(Icons.Default.Delete, contentDescription = null)
+        Spacer(Modifier.width(4.dp))
         Text("Delete")
     }
     if (confirmDeleteVisible) {
@@ -191,26 +227,16 @@ internal fun RemoveWatch(
                         onWatchRemoved()
                         confirmDeleteVisible = false
                     }
-                ) {
-                    Text("Confirm")
-                }
+                ) { Text("Confirm") }
             },
             dismissButton = {
                 TextButton(
                     onClick = { confirmDeleteVisible = false }
-                ) {
-                    Text("Cancel")
-                }
+                ) { Text("Cancel") }
             },
-            title = {
-                Text("Delete ${watchName}?")
-            },
-            text = {
-                Text("This will delete all settings and data related to $watchName.")
-            },
-            icon = {
-                Icon(Icons.Default.Delete, null)
-            }
+            title = { Text("Delete ${watchName}?") },
+            text = { Text("This will delete all settings and data related to $watchName, and remove it from Smartwatch Extensions.") },
+            icon = { Icon(Icons.Default.Delete, null) }
         )
     }
 }
@@ -228,6 +254,7 @@ internal fun ResetWatchSettings(
         modifier = modifier
     ) {
         Icon(Icons.Default.ClearAll, contentDescription = null)
+        Spacer(Modifier.width(4.dp))
         Text("Reset Settings")
     }
     if (confirmDeleteVisible) {
@@ -239,26 +266,32 @@ internal fun ResetWatchSettings(
                         onResetSettings()
                         confirmDeleteVisible = false
                     }
-                ) {
-                    Text("Confirm")
-                }
+                ) { Text("Confirm") }
             },
             dismissButton = {
                 TextButton(
                     onClick = { confirmDeleteVisible = false }
-                ) {
-                    Text("Cancel")
-                }
+                ) { Text("Cancel") }
             },
-            title = {
-                Text("Reset $watchName Settings?")
-            },
-            text = {
-                Text("This will delete all settings related to $watchName.")
-            },
-            icon = {
-                Icon(Icons.Default.ClearAll, null)
-            }
+            title = { Text("Reset $watchName Settings?") },
+            text = { Text("This will reset all settings related to $watchName.") },
+            icon = { Icon(Icons.Default.ClearAll, null) }
         )
+    }
+}
+
+private fun ConnectionMode.getIcon(): ImageVector {
+    return when (this) {
+        ConnectionMode.Disconnected -> Icons.Default.CloudOff
+        ConnectionMode.Internet -> Icons.Default.CloudDone
+        ConnectionMode.Bluetooth -> Icons.Default.BluetoothConnected
+    }
+}
+
+private fun ConnectionMode.getText(): String {
+    return when (this) {
+        ConnectionMode.Disconnected -> "Disconnected"
+        ConnectionMode.Internet,
+        ConnectionMode.Bluetooth -> "Connected"
     }
 }
