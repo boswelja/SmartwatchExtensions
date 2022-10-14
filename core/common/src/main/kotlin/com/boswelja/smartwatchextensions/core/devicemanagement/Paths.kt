@@ -6,11 +6,6 @@ package com.boswelja.smartwatchextensions.core.devicemanagement
 const val RequestLaunchApp = "/launch_app"
 
 /**
- * Request an app reset for the target device.
- */
-const val RequestResetApp = "/reset_app"
-
-/**
  * Request the target device update it's capabilities.
  */
 const val RequestUpdateCapabilities = "/update_capabilities"

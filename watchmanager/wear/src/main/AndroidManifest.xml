@@ -7,5 +7,12 @@
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".ResetRequestReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -1,11 +1,8 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
-import android.app.ActivityManager
 import android.content.Context
-import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
-import com.boswelja.smartwatchextensions.core.devicemanagement.RequestResetApp
 import com.boswelja.smartwatchextensions.core.settings.ResetSettings
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
@@ -26,10 +23,6 @@ class MessageReceiver :
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         when (message.path) {
-            RequestResetApp -> {
-                val activityManager = context.getSystemService<ActivityManager>()
-                activityManager?.clearApplicationUserData()
-            }
             ResetSettings -> {
                 // TODO Add separate feature states
                 context.extensionSettingsStore.updateData {
