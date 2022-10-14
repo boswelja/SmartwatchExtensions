@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -130,10 +128,8 @@ enum class TopAppBarDestinations(val route: String) {
  * Adds the App Bar navigation graph to the calling [NavGraphBuilder].
  */
 fun NavGraphBuilder.appBarGraph(
-    onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
     onNavigateTo: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues()
+    modifier: Modifier = Modifier
 ) {
     activity(TopAppBarDestinations.WIKI.route) {
         action = Intent.ACTION_VIEW
@@ -143,9 +139,7 @@ fun NavGraphBuilder.appBarGraph(
     // Load settings
     appSettingsGraph(
         modifier = modifier,
-        contentPadding = contentPadding,
         onNavigateTo = onNavigateTo,
-        route = TopAppBarDestinations.SETTINGS.route,
-        onShowSnackbar = onShowSnackbar
+        route = TopAppBarDestinations.SETTINGS.route
     )
 }

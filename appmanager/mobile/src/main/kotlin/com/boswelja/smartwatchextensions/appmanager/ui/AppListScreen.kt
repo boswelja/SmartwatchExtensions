@@ -1,19 +1,16 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
+import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -49,25 +46,5 @@ fun AppListScreen(
             systemApps = systemApps,
             onAppClick = onAppClicked
         )
-    }
-}
-
-/**
- * A Composable for displaying a horizontal loading indicator.
- * @param modifier [Modifier].
- * @param isLoading Whether the loading indicator is visible.
- */
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun LoadingIndicator(
-    modifier: Modifier = Modifier,
-    isLoading: Boolean
-) {
-    AnimatedVisibility(
-        visible = isLoading,
-        enter = expandVertically(),
-        exit = shrinkVertically()
-    ) {
-        LinearProgressIndicator(modifier)
     }
 }

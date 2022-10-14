@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.main.ui
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,14 +52,12 @@ fun MainNavHost(
         )
 
         appBarGraph(
-            onShowSnackbar = onShowSnackbar,
             onNavigateTo = {
                 navController.navigate(it) {
                     launchSingleTop = true
                 }
             },
-            modifier = modifier,
-            contentPadding = PaddingValues(contentPadding)
+            modifier = modifier
         )
     }
 }

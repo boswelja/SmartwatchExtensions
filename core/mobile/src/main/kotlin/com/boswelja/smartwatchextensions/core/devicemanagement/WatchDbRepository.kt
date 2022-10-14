@@ -52,7 +52,7 @@ class WatchDbRepository(
 
     override suspend fun renameWatch(watch: Watch, newName: String) {
         withContext(dispatcher) {
-            database.registeredWatchQueries.rename(watch.uid, newName)
+            database.registeredWatchQueries.rename(newName, watch.uid)
         }
     }
 

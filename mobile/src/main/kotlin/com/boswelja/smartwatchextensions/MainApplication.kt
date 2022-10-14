@@ -11,6 +11,7 @@ import com.boswelja.smartwatchextensions.main.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.di.phoneLockingModule
 import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
+import com.boswelja.smartwatchextensions.watchmanager.di.watchManagerModule
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
@@ -22,6 +23,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
+import org.koin.dsl.binds
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
@@ -45,7 +47,8 @@ class MainApplication : Application() {
                 dndSyncModule,
                 clientsModule,
                 databaseModule,
-                proximityModule
+                proximityModule,
+                watchManagerModule
             )
 
             modules(
@@ -68,7 +71,7 @@ val clientsModule = module {
                 WearOSMessagePlatform(get<Context>())
             )
         )
-    }
+    } binds arrayOf(MessageClient::class, com.boswelja.watchconnection.common.message.MessageClient::class)
     single {
         DiscoveryClient(
             platforms = listOf(
