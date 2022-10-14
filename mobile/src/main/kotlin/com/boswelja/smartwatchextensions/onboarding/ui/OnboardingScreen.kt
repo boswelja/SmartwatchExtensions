@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -28,7 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.settings.ui.register.RegisterWatchScreen
+import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 
 /**
  * A Composable screen to handle the onboarding flow.
@@ -63,8 +62,7 @@ fun OnboardingScreen(
                 }
                 RegisterWatchScreen(
                     modifier = modifier.padding(bottom = 64.dp),
-                    contentPadding = PaddingValues(contentPadding),
-                    onWatchRegistered = {
+                    onRegistrationFinished = {
                         finishVisible = true
                     }
                 )
