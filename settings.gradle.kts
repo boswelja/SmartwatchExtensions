@@ -3,8 +3,7 @@ include(
     ":core:common",
     ":core:mobile",
     ":core:wear",
-    ":wearableinterface:mobile",
-    ":wearableinterface:wear"
+    ":play-services-wearable-ext"
 )
 
 // Feature modules

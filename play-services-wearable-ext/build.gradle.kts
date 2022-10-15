@@ -19,12 +19,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-
-    implementation(libs.play.services.wearable)
-    implementation(libs.kotlinx.coroutines.playservices)
-
-    implementation(libs.koin.android)
+    api(libs.play.services.wearable)
+    api(libs.kotlinx.coroutines.playservices)
 }
 
 detekt {
