@@ -16,8 +16,7 @@ android {
 dependencies {
     api(projects.appmanager.common)
 
-    api(libs.watchconnection.common)
-    implementation(libs.watchconnection.wear)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.koin.android)
     implementation(libs.androidx.core)
