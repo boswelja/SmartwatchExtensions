@@ -19,14 +19,13 @@
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
                 android:value="RANGED_VALUE,SHORT_TEXT" />
         </service>
-
-        <receiver
+        <service
             android:name=".platform.PhoneBatteryUpdateReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/battery_status" />
             </intent-filter>
-        </receiver>
-
+        </service>
     </application>
 </manifest>

@@ -20,11 +20,9 @@ android {
 }
 
 dependencies {
-    api(projects.batterysync.common)
-
     implementation(projects.core.wear)
-
-    implementation(libs.watchconnection.wear)
+    implementation(projects.batterysync.common)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.datastore.proto)
