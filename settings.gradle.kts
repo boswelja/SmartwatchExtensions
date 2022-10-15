@@ -3,7 +3,8 @@ include(
     ":core:common",
     ":core:mobile",
     ":core:wear",
-    ":wearableinterface:mobile"
+    ":wearableinterface:mobile",
+    ":wearableinterface:wear"
 )
 
 // Feature modules
@@ -33,6 +34,7 @@ include(
     ":mobile",
     ":wearos"
 )
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
