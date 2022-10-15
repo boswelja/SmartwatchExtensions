@@ -4,8 +4,6 @@ import android.content.Context
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
 import com.boswelja.smartwatchextensions.core.settings.ResetSettings
-import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
@@ -25,12 +23,6 @@ class MessageReceiver :
         when (message.path) {
             ResetSettings -> {
                 // TODO Add separate feature states
-                context.extensionSettingsStore.updateData {
-                    // Recreate the DataStore with default values
-                    ExtensionSettings(
-                        phoneSeparationNotis = false
-                    )
-                }
             }
             RequestUpdateCapabilities -> {
                 CapabilityUpdater(context, discoveryClient).updateCapabilities()

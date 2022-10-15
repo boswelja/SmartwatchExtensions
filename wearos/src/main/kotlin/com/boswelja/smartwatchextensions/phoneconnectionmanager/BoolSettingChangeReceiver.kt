@@ -15,11 +15,8 @@ import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
-import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
-import com.boswelja.smartwatchextensions.proximity.common.ProximitySettingKeys.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import org.koin.core.component.KoinComponent
@@ -80,16 +77,6 @@ class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
                 }
                 if (value) {
                     startDnDListenerService(context)
-                }
-            }
-            PHONE_SEPARATION_NOTI_KEY -> {
-                context.extensionSettingsStore.updateData {
-                    it.copy(
-                        phoneSeparationNotis = value
-                    )
-                }
-                if (value) {
-                    SeparationObserverService.start(context)
                 }
             }
         }
