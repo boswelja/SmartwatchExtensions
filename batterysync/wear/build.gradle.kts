@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation(projects.core.wear)
-    implementation(projects.batterysync.common)
+    api(projects.batterysync.common)
     implementation(projects.playServicesWearableExt)
 
     implementation(libs.kotlinx.serialization.protobuf)
