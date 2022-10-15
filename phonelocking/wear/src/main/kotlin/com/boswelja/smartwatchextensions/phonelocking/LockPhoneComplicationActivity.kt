@@ -11,11 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wear.message.MessageClient
+import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.koin.android.ext.android.inject
 
 /**
@@ -24,9 +26,6 @@ import org.koin.android.ext.android.inject
  * as a complication click action.
  */
 class LockPhoneComplicationActivity : ComponentActivity() {
-
-    private val discoveryClient: DiscoveryClient by inject()
-    private val messageClient: MessageClient by inject()
 
     private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
@@ -84,22 +83,21 @@ class LockPhoneComplicationActivity : ComponentActivity() {
         successMessage: CharSequence,
         failMessage: CharSequence
     ) {
-        val phone = discoveryClient.pairedPhone()
-        if (phone == null) {
-            showConfirmationOverlay(
-                ConfirmationOverlay.FAILURE_ANIMATION,
-                failMessage
-            )
-            return
-        }
+        val messageClient = Wearable.getMessageClient(this)
 
-        val success = messageClient.sendMessage(
-            phone.uid,
-            Message(
+        val targetId = phoneStateStore.data.map { it.id }.first()
+
+        val success = try {
+            messageClient.sendMessage(
+                targetId,
                 action,
                 null
-            )
-        )
+            ).await()
+            true
+        } catch (_: ApiException) {
+            false
+        }
+
         if (success) {
             showConfirmationOverlay(
                 ConfirmationOverlay.SUCCESS_ANIMATION,
