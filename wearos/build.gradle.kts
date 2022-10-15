@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.protobuf)
 
-    implementation(libs.watchconnection.wear)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.koin.android)
     implementation(libs.koin.compose)

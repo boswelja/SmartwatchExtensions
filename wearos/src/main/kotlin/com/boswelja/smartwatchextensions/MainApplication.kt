@@ -7,8 +7,7 @@ import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.extensions.extensionsModule
 import com.boswelja.smartwatchextensions.main.ui.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wear.message.MessageClient
+import com.google.android.gms.wearable.Wearable
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -48,10 +47,6 @@ val miscModule = module {
  * A Koin module for providing clients.
  */
 val clientsModule = module {
-    single {
-        MessageClient(get())
-    }
-    single {
-        DiscoveryClient(get())
-    }
+    single { Wearable.getMessageClient(androidContext()) }
+    single { Wearable.getNodeClient(androidContext()) }
 }
