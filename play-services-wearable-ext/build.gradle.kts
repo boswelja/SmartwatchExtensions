@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.boswelja.smartwatchextensions.watchmanager"
+    namespace = "com.boswelja.smartwatchextensions.wearableinterface"
     compileSdk = PackageInfo.targetSdk
     defaultConfig {
         minSdk = 26
@@ -14,10 +14,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.watchmanager.common)
-    implementation(projects.playServicesWearableExt)
-
-    implementation(libs.androidx.core)
+    api(libs.play.services.wearable)
+    api(libs.kotlinx.coroutines.playservices)
 }
 
 detekt {

@@ -1,3 +1,12 @@
+// Foundational modules
+include(
+    ":core:common",
+    ":core:mobile",
+    ":core:wear",
+    ":play-services-wearable-ext"
+)
+
+// Feature modules
 include(
     ":appmanager:common",
     ":appmanager:mobile",
@@ -5,9 +14,6 @@ include(
     ":batterysync:common",
     ":batterysync:mobile",
     ":batterysync:wear",
-    ":core:common",
-    ":core:mobile",
-    ":core:wear",
     ":dndsync:common",
     ":dndsync:mobile",
     ":dndsync:wear",
@@ -17,12 +23,17 @@ include(
     ":proximity:common",
     ":proximity:mobile",
     ":proximity:wear",
-    ":mobile",
     ":watchmanager:common",
     ":watchmanager:mobile",
     ":watchmanager:wear",
+)
+
+// App modules
+include(
+    ":mobile",
     ":wearos"
 )
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
