@@ -20,7 +20,7 @@ data class Version(
 /**
  * Request the target device app version.
  */
-const val RequestAppVersion = "/request_app_version"
+const val RequestAppVersion = "/watchmanager_request_app_version"
 
 /**
  * A serializer for handling [Version].
