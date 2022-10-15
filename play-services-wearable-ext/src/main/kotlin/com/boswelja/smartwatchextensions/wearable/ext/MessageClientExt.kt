@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.wearable.ext
 
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageClient.OnMessageReceivedListener
 import com.google.android.gms.wearable.MessageEvent
@@ -26,21 +25,16 @@ suspend fun MessageClient.sendMessage(
     path: String,
     data: ByteArray? = null,
     priority: MessagePriority = MessagePriority.Low
-): Boolean {
-    return try {
-        sendMessage(
-            targetId,
-            path,
-            data,
-            when (priority) {
-                MessagePriority.High -> MessageOptions(MessageOptions.MESSAGE_PRIORITY_HIGH)
-                MessagePriority.Low -> MessageOptions(MessageOptions.MESSAGE_PRIORITY_LOW)
-            }
-        ).await()
-        true
-    } catch (_: ApiException) {
-        false
-    }
+) {
+    sendMessage(
+        targetId,
+        path,
+        data,
+        when (priority) {
+            MessagePriority.High -> MessageOptions(MessageOptions.MESSAGE_PRIORITY_HIGH)
+            MessagePriority.Low -> MessageOptions(MessageOptions.MESSAGE_PRIORITY_LOW)
+        }
+    ).await()
 }
 
 enum class MessagePriority {
