@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation(projects.core.wear)
-    implementation(projects.phonelocking.common)
+    api(projects.phonelocking.common)
 
     implementation(projects.playServicesWearableExt)
 
