@@ -18,8 +18,7 @@ dependencies {
     api(projects.dndsync.common)
 
     implementation(projects.core.wear)
-
-    implementation(libs.watchconnection.wear)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.bundles.lifecycle)

@@ -8,11 +8,11 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.phoneStateStore
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.wear.message.MessageClient
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.koin.android.ext.android.inject
 
 /**
@@ -22,8 +22,9 @@ import org.koin.android.ext.android.inject
 class LocalDnDAndTheaterCollectorService : LifecycleService() {
 
     private val phoneState by lazy { phoneStateStore }
-    private val messageClient: MessageClient by inject()
     private val dnDSyncStateRepository: DnDSyncStateRepository by inject()
+
+    private val messageClient = Wearable.getMessageClient(this)
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -114,11 +115,9 @@ class LocalDnDAndTheaterCollectorService : LifecycleService() {
         val phoneId = phoneState.data.map { it.id }.first()
         messageClient.sendMessage(
             phoneId,
-            Message(
-                DnDStatusPath,
-                DnDStatusSerializer.serialize(dndSyncEnabled)
-            )
-        )
+            DnDStatusPath,
+            DnDStatusSerializer.serialize(dndSyncEnabled)
+        ).await()
     }
 
     /**
