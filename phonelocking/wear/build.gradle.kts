@@ -20,9 +20,10 @@ android {
 }
 
 dependencies {
-    api(projects.phonelocking.common)
+    implementation(projects.core.wear)
+    implementation(projects.phonelocking.common)
 
-    implementation(libs.watchconnection.wear)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.kotlinx.coroutines.core)
