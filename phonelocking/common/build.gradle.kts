@@ -14,7 +14,6 @@ android {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
 }
 
 detekt {

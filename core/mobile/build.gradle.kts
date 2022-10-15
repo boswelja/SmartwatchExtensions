@@ -23,6 +23,7 @@ android {
 dependencies {
     api(projects.core.common)
 
+    api(libs.watchconnection.common)
     implementation(libs.watchconnection.mobile.core)
 
     implementation(libs.sqldelight.runtime)
@@ -34,7 +35,7 @@ dependencies {
     implementation(libs.androidx.datastore.proto)
     implementation(libs.koin.android)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.sqldelight.sqlitedriver)
@@ -53,11 +54,5 @@ sqldelight {
     database("RegisteredWatchDatabase") {
         packageName = "com.boswelja.smartwatchextensions.core.devicemanagement.database"
         sourceFolders = listOf("database-watches")
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }

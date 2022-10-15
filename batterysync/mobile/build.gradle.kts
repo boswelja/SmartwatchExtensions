@@ -62,9 +62,3 @@ sqldelight {
         packageName = "com.boswelja.smartwatchextensions.batterysync.database"
     }
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
-}

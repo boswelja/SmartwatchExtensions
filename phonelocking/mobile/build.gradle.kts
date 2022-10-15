@@ -23,6 +23,7 @@ dependencies {
 
     implementation(projects.core.mobile)
 
+    api(libs.watchconnection.common)
     implementation(libs.watchconnection.mobile.core)
 
     implementation(libs.kotlinx.coroutines.core)
@@ -34,10 +35,4 @@ dependencies {
 detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
 }

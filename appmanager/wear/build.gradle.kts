@@ -21,7 +21,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.androidx.core)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.koin.test)

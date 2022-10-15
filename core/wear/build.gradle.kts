@@ -26,9 +26,3 @@ detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
-}

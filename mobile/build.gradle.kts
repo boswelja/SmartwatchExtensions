@@ -112,9 +112,3 @@ detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
-}
