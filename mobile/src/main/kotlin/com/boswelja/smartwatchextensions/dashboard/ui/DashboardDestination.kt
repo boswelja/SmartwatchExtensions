@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.batterysync.ui.batterySyncNavigation
 import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
 import com.boswelja.smartwatchextensions.dndsync.ui.dndSyncNavigation
 import com.boswelja.smartwatchextensions.phonelocking.ui.phoneLockingNavigation
-import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 
 /**
  * All dashboard navigation destinations.
@@ -25,7 +24,6 @@ enum class DashboardDestination(
     BATTERY_SYNC_SETTINGS("battery-sync-settings"),
     DND_SYNC_SETTINGS("dnd-sync-settings"),
     PHONE_LOCKING_SETTINGS("phone-locking-settings"),
-    PROXIMITY_SETTINGS("proximity-settings")
 }
 
 /**
@@ -71,9 +69,4 @@ fun NavGraphBuilder.dashboardGraph(
         DashboardDestination.DND_SYNC_SETTINGS.route,
         screenModifier = modifier
     )
-    composable(DashboardDestination.PROXIMITY_SETTINGS.route) {
-        ProximitySettingsScreen(
-            modifier = modifier
-        )
-    }
 }

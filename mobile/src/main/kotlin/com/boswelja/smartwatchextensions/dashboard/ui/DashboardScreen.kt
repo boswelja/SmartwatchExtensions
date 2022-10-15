@@ -83,11 +83,5 @@ fun DashboardScreen(
                 contentModifier = itemContentModifier
             )
         }
-        item {
-            ProximitySummary(
-                onClick = { onNavigateTo(DashboardDestination.PROXIMITY_SETTINGS) },
-                contentModifier = itemContentModifier
-            )
-        }
     }
 }

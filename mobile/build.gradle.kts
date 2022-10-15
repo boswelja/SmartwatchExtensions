@@ -70,7 +70,6 @@ dependencies {
     implementation(projects.batterysync.mobile)
     implementation(projects.dndsync.mobile)
     implementation(projects.phonelocking.mobile)
-    implementation(projects.proximity.mobile)
     implementation(projects.watchmanager.mobile)
 
     implementation(libs.androidx.appcompat)
