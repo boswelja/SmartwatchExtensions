@@ -19,16 +19,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.protobuf)
 
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
 }
 
 detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
 }

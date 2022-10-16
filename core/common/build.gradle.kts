@@ -15,21 +15,14 @@ android {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
-
     implementation(libs.kotlinx.serialization.protobuf)
+    implementation(libs.kotlinx.coroutines.core)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 }
 
 detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
 }

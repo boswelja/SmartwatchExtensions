@@ -33,7 +33,8 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.androidx.wear.core)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
+
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.core)
@@ -46,10 +47,4 @@ dependencies {
 detekt {
     config = files("$rootDir/config/detekt/detekt.yml")
     parallel = true
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
 }

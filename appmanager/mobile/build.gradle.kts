@@ -41,8 +41,7 @@ dependencies {
     testImplementation(libs.sqldelight.sqlitedriver)
     testImplementation(libs.mockk.core)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("junit:junit:4.13.2")
-
+    testImplementation(libs.junit)
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.kotlinx.coroutines.test)
@@ -60,11 +59,5 @@ detekt {
 sqldelight {
     database("WatchAppDatabase") {
         packageName = "com.boswelja.smartwatchextensions.appmanager.database"
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }
