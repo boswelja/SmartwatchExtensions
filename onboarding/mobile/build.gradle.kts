@@ -24,11 +24,6 @@ dependencies {
 
     implementation(libs.bundles.compose.mobile)
     implementation(libs.koin.android)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.turbine)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.sqldelight.sqlitedriver)
 }
 
 detekt {

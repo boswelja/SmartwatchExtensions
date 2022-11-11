@@ -11,12 +11,18 @@ android {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {
     implementation(projects.onboarding.common)
     implementation(projects.playServicesWearableExt)
 
+    implementation(libs.bundles.compose.wear)
     implementation(libs.koin.android)
 }
 
