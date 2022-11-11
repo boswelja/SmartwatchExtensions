@@ -1,15 +1,13 @@
 package com.boswelja.smartwatchextensions.capability
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.appmanager.ManageAppsCapability
 import com.boswelja.smartwatchextensions.batterysync.SyncBatteryStatus
 import com.boswelja.smartwatchextensions.dndsync.SendDnDCapability
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.google.android.gms.wearable.CapabilityClient
 
 /**
  * A class for handling adding and removing local capabilities based on what permissions the watch
@@ -17,13 +15,13 @@ import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
  */
 class CapabilityUpdater(
     private val context: Context,
-    private val capabilityClient: DiscoveryClient
+    private val capabilityClient: CapabilityClient
 ) {
 
     /**
      * Update all capabilities.
      */
-    suspend fun updateCapabilities() {
+    fun updateCapabilities() {
         updateSendDnD()
         updateSendBattery()
         updateManageApps()
@@ -32,7 +30,7 @@ class CapabilityUpdater(
     /**
      * Update [SendDnDCapability].
      */
-    internal suspend fun updateSendDnD() {
+    internal fun updateSendDnD() {
         // We can always read DnD state
         capabilityClient.addLocalCapability(SendDnDCapability)
     }
@@ -40,7 +38,7 @@ class CapabilityUpdater(
     /**
      * Update [SyncBatteryStatus].
      */
-    internal suspend fun updateSendBattery() {
+    internal fun updateSendBattery() {
         // We can always get battery stats
         capabilityClient.addLocalCapability(SyncBatteryStatus)
     }
@@ -48,7 +46,7 @@ class CapabilityUpdater(
     /**
      * Update [ManageAppsCapability].
      */
-    internal suspend fun updateManageApps() {
+    internal fun updateManageApps() {
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
         if (canQueryAllPackages()) {

@@ -22,7 +22,7 @@ jobs:
           cache: 'gradle'
 
       - name: Build
-        run: bash ./gradlew assemble
+        run: bash ./gradlew assembleDebug
 
   test:
     name: Unit Tests
@@ -38,7 +38,7 @@ jobs:
           cache: 'gradle'
 
       - name: Unit tests
-        run: bash ./gradlew test
+        run: bash ./gradlew testDebugUnitTest
 
       - uses: actions/upload-artifact@v3
         if: failure()

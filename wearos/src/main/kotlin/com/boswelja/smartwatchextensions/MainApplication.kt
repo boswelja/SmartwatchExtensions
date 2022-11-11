@@ -3,12 +3,12 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import com.boswelja.smartwatchextensions.batterysync.di.batterySyncModule
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
+import com.boswelja.smartwatchextensions.core.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.extensions.extensionsModule
 import com.boswelja.smartwatchextensions.main.ui.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wear.message.MessageClient
+import com.google.android.gms.wearable.Wearable
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -30,6 +30,7 @@ class MainApplication : Application() {
             )
             modules(
                 batterySyncModule,
+                deviceManagementModule,
                 dndSyncModule,
                 phoneLockingModule
             )
@@ -48,10 +49,7 @@ val miscModule = module {
  * A Koin module for providing clients.
  */
 val clientsModule = module {
-    single {
-        MessageClient(get())
-    }
-    single {
-        DiscoveryClient(get())
-    }
+    single { Wearable.getMessageClient(androidContext()) }
+    single { Wearable.getNodeClient(androidContext()) }
+    single { Wearable.getCapabilityClient(androidContext()) }
 }

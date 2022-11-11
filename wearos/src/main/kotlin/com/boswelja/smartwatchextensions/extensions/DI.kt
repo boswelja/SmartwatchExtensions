@@ -10,5 +10,5 @@ import org.koin.dsl.module
  * A Koin module to provide extension-related classes.
  */
 val extensionsModule = module {
-    viewModel { ExtensionsViewModel(get(), get(), get(), androidContext().phoneStateStore) }
+    viewModel { ExtensionsViewModel(get(), androidContext().phoneStateStore, get()) }
 }

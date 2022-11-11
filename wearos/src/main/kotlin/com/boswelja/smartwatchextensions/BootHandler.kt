@@ -18,7 +18,7 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.google.android.gms.wearable.CapabilityClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -54,7 +54,7 @@ class BootWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    private val discoveryClient: DiscoveryClient by inject()
+    private val discoveryClient: CapabilityClient by inject()
     private val dndSyncStateRepository: DnDSyncStateRepository by inject()
 
     override suspend fun doWork(): Result {
