@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding strings -->
+    <string name="get_started">Get Started</string>
+    <string name="welcome_to_text">Welcome to</string>
+</resources>
