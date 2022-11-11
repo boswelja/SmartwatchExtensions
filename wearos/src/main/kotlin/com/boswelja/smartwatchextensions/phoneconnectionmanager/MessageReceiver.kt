@@ -1,31 +1,28 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
-import android.content.Context
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.core.devicemanagement.RequestUpdateCapabilities
 import com.boswelja.smartwatchextensions.core.settings.ResetSettings
 import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import org.koin.android.ext.android.inject
 
 /**
  * A [MessageReceiver] for receiving empty messages.
  */
-class MessageReceiver :
-    MessageReceiver(),
-    KoinComponent {
+class MessageReceiver : WearableListenerService() {
 
-    private val discoveryClient: DiscoveryClient by inject()
+    private val capabilityClient: CapabilityClient by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         when (message.path) {
             ResetSettings -> {
                 // TODO Add separate feature states
             }
             RequestUpdateCapabilities -> {
-                CapabilityUpdater(context, discoveryClient).updateCapabilities()
+                CapabilityUpdater(this, capabilityClient).updateCapabilities()
             }
         }
     }

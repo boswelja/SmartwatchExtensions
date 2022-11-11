@@ -59,14 +59,6 @@
         </receiver>
 
         <receiver
-            android:name=".phoneconnectionmanager.MessageReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".BootHandler"
             android:exported="false">
             <intent-filter>
