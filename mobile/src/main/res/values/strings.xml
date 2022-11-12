@@ -68,10 +68,6 @@
     <string name="update_completed_title">Update Complete</string>
     <string name="update_complete_text">Successfully updated to version %s.</string>
 
-    <!-- Onboarding strings -->
-    <string name="get_started">Get Started</string>
-    <string name="welcome_to_text">Welcome to</string>
-
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
     <string name="update_available_text">A new version of Smartwatch Extensions is available</string>

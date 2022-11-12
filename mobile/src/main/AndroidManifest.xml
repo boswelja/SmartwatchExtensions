@@ -46,10 +46,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".onboarding.ui.OnboardingActivity"
-            android:exported="false" />
-
         <receiver
             android:name=".devicemanagement.connection.WatchMessageReceiver"
             android:exported="false">

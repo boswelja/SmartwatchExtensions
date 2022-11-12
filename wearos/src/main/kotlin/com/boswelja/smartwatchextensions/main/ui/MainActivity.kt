@@ -42,10 +42,7 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
 import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import com.boswelja.smartwatchextensions.extensions.ui.Extensions
-import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingScreen
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * The main entry point of the app.
@@ -55,21 +52,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val viewModel: MainViewModel = getViewModel()
-            val isRegistered by viewModel.isRegistered.collectAsState(true, Dispatchers.IO)
-
             AppTheme {
-                Crossfade(targetState = isRegistered) {
-                    if (it) {
-                        MainScreen(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .roundScreenPadding()
-                        )
-                    } else {
-                        OnboardingScreen()
-                    }
-                }
+                MainScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .roundScreenPadding()
+                )
             }
         }
     }
