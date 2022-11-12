@@ -91,7 +91,7 @@ fun NoWatches(
         onClick = onClick
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.padding(WatchPickerDefaults.ContentPadding),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(Icons.Default.Add, null)
@@ -110,7 +110,11 @@ fun WatchList(
     contentPadding: PaddingValues = PaddingValues()
 ) {
     LazyRow(
-        modifier = modifier.height(172.dp + contentPadding.calculateBottomPadding() + contentPadding.calculateTopPadding()),
+        modifier = modifier.height(
+            WatchPickerDefaults.FocusedCardHeight +
+                    contentPadding.calculateBottomPadding() +
+                    contentPadding.calculateTopPadding()
+        ),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.Bottom
@@ -120,7 +124,11 @@ fun WatchList(
             key = { it.uid }
         ) {
             val height by animateDpAsState(
-                targetValue = if (it == selectedWatch) 172.dp else 156.dp
+                targetValue = if (it == selectedWatch) {
+                    WatchPickerDefaults.FocusedCardHeight
+                } else {
+                    WatchPickerDefaults.CardHeight
+                }
             )
             val color by animateColorAsState(
                 targetValue = if (it == selectedWatch) {
@@ -148,7 +156,7 @@ fun WatchList(
                 containerColor = color,
                 modifier = Modifier
                     .height(height)
-                    .aspectRatio(0.7f)
+                    .aspectRatio(WatchPickerDefaults.CardAspectRatio)
             )
         }
         item {
@@ -166,8 +174,8 @@ fun WatchList(
                 onClick = onNewWatchClick,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 modifier = Modifier
-                    .height(156.dp)
-                    .aspectRatio(0.7f)
+                    .height(WatchPickerDefaults.CardHeight)
+                    .aspectRatio(WatchPickerDefaults.CardAspectRatio)
             )
         }
     }
@@ -191,14 +199,25 @@ fun WatchPickerCard(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .weight(1f)) {
+                    .weight(1f)
+            ) {
                 image()
             }
-            Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Box(Modifier.padding(WatchPickerDefaults.ContentPadding)) {
                 ProvideTextStyle(MaterialTheme.typography.titleMedium) {
                     text()
                 }
             }
         }
     }
+}
+
+object WatchPickerDefaults {
+    val FocusedCardHeight = 172.dp
+
+    val CardHeight = 156.dp
+
+    val ContentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+
+    const val CardAspectRatio = 0.7f
 }
