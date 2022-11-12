@@ -5,6 +5,7 @@ import com.boswelja.smartwatchextensions.watchmanager.domain.WatchVersionReposit
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerViewModel
 import com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered.ManageRegisteredWatchViewModel
+import com.boswelja.smartwatchextensions.watchmanager.ui.pick.WatchPickerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -16,4 +17,5 @@ val watchManagerModule = module {
     viewModelOf(::WatchManagerViewModel)
     viewModelOf(::RegisterWatchViewModel)
     viewModelOf(::ManageRegisteredWatchViewModel)
+    viewModelOf(::WatchPickerViewModel)
 }
