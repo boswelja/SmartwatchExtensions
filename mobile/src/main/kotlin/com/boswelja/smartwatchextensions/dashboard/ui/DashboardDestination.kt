@@ -44,7 +44,6 @@ fun NavGraphBuilder.dashboardGraph(
     composable(route) {
         DashboardScreen(
             modifier = modifier,
-            contentPadding = contentPadding,
             onNavigateTo = { navController.navigate(it.route) }
         )
     }
