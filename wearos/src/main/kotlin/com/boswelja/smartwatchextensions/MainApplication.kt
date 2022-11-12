@@ -6,7 +6,6 @@ import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.core.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.dndsync.dndSyncModule
 import com.boswelja.smartwatchextensions.extensions.extensionsModule
-import com.boswelja.smartwatchextensions.main.ui.mainModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
 import com.google.android.gms.wearable.Wearable
 import org.koin.android.ext.koin.androidContext
@@ -25,7 +24,6 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
             modules(clientsModule, miscModule)
             modules(
-                mainModule,
                 extensionsModule
             )
             modules(

@@ -1,13 +1,9 @@
 package com.boswelja.smartwatchextensions.main.ui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -27,15 +23,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen()
-        }
-
-        lifecycleScope.launch {
-            viewModel.needsSetup.collect {
-                if (it) {
-                    startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
-                    finish()
-                }
-            }
         }
     }
 
