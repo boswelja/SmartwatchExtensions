@@ -28,14 +28,12 @@ private const val StartDestination = "dashboard"
 /**
  * A Composable screen for displaying the main content.
  * @param modifier [Modifier].
- * @param contentPadding The padding around the screen.
  * @param onShowSnackbar Called when a snackbar should be displayed.
  * @param navController [NavHostController].
  */
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     onShowSnackbar: suspend (SnackbarVisuals) -> Unit,
     navController: NavHostController
 ) {
@@ -45,7 +43,6 @@ fun MainNavHost(
     ) {
         dashboardGraph(
             modifier = modifier,
-            contentPadding = contentPadding,
             navController = navController,
             route = StartDestination,
             onShowSnackbar = onShowSnackbar

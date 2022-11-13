@@ -37,7 +37,9 @@ fun DashboardScreen(
     ) {
         item {
             WatchPicker(
-                onRegisterNewWatch = { /*TODO*/ },
+                onRegisterNewWatch = {
+                    onNavigateTo(DashboardDestination.REGISTER_WATCH)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             )
