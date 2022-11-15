@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.platform.WatchBatteryTileService
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.Settings
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,14 +18,14 @@ import kotlinx.coroutines.launch
  */
 class AppSettingsViewModel(
     application: Application,
-    private val watchRepository: WatchRepository,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application) {
 
     /**
      * Flow the currently registered watches.
      */
-    val registeredWatches = watchRepository.registeredWatches
+    val registeredWatches = registeredWatchRepository.registeredWatches
 
     /**
      * Flow the currently selected watch for QS Tile data.
@@ -35,9 +35,9 @@ class AppSettingsViewModel(
         it.qsTileWatchId
     }.flatMapLatest { idString ->
         if (idString.isNotEmpty()) {
-            watchRepository.getWatchById(idString)
+            registeredWatchRepository.getWatchById(idString)
         } else {
-            watchRepository.registeredWatches.map { it.firstOrNull() }
+            registeredWatchRepository.registeredWatches.map { it.firstOrNull() }
         }
     }
 

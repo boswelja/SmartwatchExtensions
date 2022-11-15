@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.watchmanager.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.watchmanager.domain.WatchVersionRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.Flow
@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
 class WatchManagerViewModel(
-    watchRepository: WatchRepository,
+    registeredWatchRepository: RegisteredWatchRepository,
     private val watchVersionRepository: WatchVersionRepository
 ) : ViewModel() {
 
-    val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
+    val registeredWatches: Flow<List<Watch>> = registeredWatchRepository.registeredWatches
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 
 class ManageRegisteredWatchViewModel(
     savedStateHandle: SavedStateHandle,
-    private val watchRepository: WatchRepository,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val watchSettingsRepository: WatchSettingsRepository
 ) : ViewModel() {
 
     private val watchId: String = checkNotNull(savedStateHandle["watchUid"])
 
-    val watch = watchRepository.getWatchById(watchId)
+    val watch = registeredWatchRepository.getWatchById(watchId)
         .filterNotNull()
         .stateIn(
             viewModelScope,
@@ -32,7 +32,7 @@ class ManageRegisteredWatchViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val watchStatus = watch
         .filterNotNull()
-        .flatMapLatest { watchRepository.getStatusFor(it) }
+        .flatMapLatest { registeredWatchRepository.getStatusFor(it) }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -41,13 +41,13 @@ class ManageRegisteredWatchViewModel(
 
     fun renameWatch(newName: String) {
         viewModelScope.launch {
-            watchRepository.renameWatch(watch.first()!!, newName)
+            registeredWatchRepository.renameWatch(watch.first()!!, newName)
         }
     }
 
     fun removeWatch() {
         viewModelScope.launch {
-            watchRepository.deregisterWatch(watch.first()!!)
+            registeredWatchRepository.deregisterWatch(watch.first()!!)
         }
     }
 

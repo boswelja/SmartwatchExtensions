@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * A repository for managing registered watches, and discovering available watches.
  */
-interface WatchRepository {
+interface RegisteredWatchRepository {
 
     /**
      * Flows the list of registered watches.

@@ -13,13 +13,13 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [WatchRepository] implementation backed by a SQLDelight database.
+ * A [RegisteredWatchRepository] implementation backed by a SQLDelight database.
  */
-class WatchDbRepository(
+class RegisteredWatchDbRepository(
     private val discoveryClient: DiscoveryClient,
     private val database: RegisteredWatchDatabase,
     private val dispatcher: CoroutineContext
-) : WatchRepository {
+) : RegisteredWatchRepository {
 
     override val registeredWatches: Flow<List<Watch>>
         get() = database.registeredWatchQueries

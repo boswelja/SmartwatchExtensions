@@ -10,7 +10,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySt
 import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.core.FeatureData
 import com.boswelja.smartwatchextensions.core.FlowTileService
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.appSettingsStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +29,7 @@ import org.koin.android.ext.android.inject
 class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
 
     private val getBatteryStats: GetBatteryStats by inject()
-    private val watchRepository: WatchRepository by inject()
+    private val registeredWatchRepository: RegisteredWatchRepository by inject()
     private lateinit var watch: Watch
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -37,9 +37,9 @@ class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
         return appSettingsStore.data
             .map {
                 if (it.qsTileWatchId.isNotBlank()) {
-                    watchRepository.getWatchById(it.qsTileWatchId).firstOrNull()
+                    registeredWatchRepository.getWatchById(it.qsTileWatchId).firstOrNull()
                 } else {
-                    val watch = watchRepository
+                    val watch = registeredWatchRepository
                         .registeredWatches
                         .first()
                         .firstOrNull()

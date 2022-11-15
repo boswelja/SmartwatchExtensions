@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.map
  */
 class SelectedWatchStoreManager(
     private val dataStore: DataStore<SelectedWatchState>,
-    private val watchRepository: WatchRepository
+    private val registeredWatchRepository: RegisteredWatchRepository
 ) : SelectedWatchManager {
 
     private val selectedWatchId = dataStore.data.map { it.selectedWatchId }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val selectedWatch: Flow<Watch?>
-        get() = selectedWatchId.flatMapLatest { id -> watchRepository.getWatchById(id) }
+        get() = selectedWatchId.flatMapLatest { id -> registeredWatchRepository.getWatchById(id) }
 
     override suspend fun selectWatch(watch: Watch) {
         selectWatch(watch.uid)

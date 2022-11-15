@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.core
 
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchDbRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchDbRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
@@ -32,7 +32,7 @@ val coreCommonModule = module {
             }
         )
     }
-    single<WatchRepository> {
-        WatchDbRepository(get(), get(), get(named("database")))
+    single<RegisteredWatchRepository> {
+        RegisteredWatchDbRepository(get(), get(), get(named("database")))
     }
 }

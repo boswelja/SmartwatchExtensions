@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class DnDSyncSettingsViewModel(
     private val notificationManager: NotificationManager,
     private val selectedWatchManager: SelectedWatchManager,
-    private val watchRepository: WatchRepository,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val settingsRepository: WatchSettingsRepository
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class DnDSyncSettingsViewModel(
      * Flow whether the selected watch can send DnD status.
      */
     val canSendDnD = mapStateForSelectedWatch(false) {
-        watchRepository.watchHasCapability(it, SendDnDCapability)
+        registeredWatchRepository.watchHasCapability(it, SendDnDCapability)
     }
 
     /**
