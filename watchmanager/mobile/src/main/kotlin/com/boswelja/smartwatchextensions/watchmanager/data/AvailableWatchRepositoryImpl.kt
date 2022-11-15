@@ -43,6 +43,6 @@ class AvailableWatchRepositoryImpl(
     }
 
     companion object {
-        private const val WATCH_CAPABILITY = "smartwatch_extensions_watch"
+        private const val WATCH_CAPABILITY = "extensions_wear_app"
     }
 }
