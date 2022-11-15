@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.watchmanager.R
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.watchmanager.domain.AvailableWatch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -34,14 +34,14 @@ fun RegisterWatchScreen(
     viewModel: RegisterWatchViewModel = getViewModel()
 ) {
     val availableWatches by viewModel.availableWatches.collectAsState()
-    var registeringWatch by remember { mutableStateOf<Watch?>(null) }
+    var registeringWatch by remember { mutableStateOf<AvailableWatch?>(null) }
 
     Column(modifier) {
         LinearProgressIndicator(Modifier.fillMaxWidth())
         LazyColumn(Modifier.fillMaxSize()) {
             items(
                 items = availableWatches,
-                key = { it.uid }
+                key = { it.id }
             ) { watch ->
                 WatchItem(
                     watch = watch,
@@ -104,7 +104,7 @@ fun ConfirmRegisterDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchItem(
-    watch: Watch,
+    watch: AvailableWatch,
     modifier: Modifier = Modifier
 ) {
     ListItem(

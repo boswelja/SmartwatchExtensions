@@ -15,11 +15,6 @@ interface WatchRepository {
     val registeredWatches: Flow<List<Watch>>
 
     /**
-     * Flows the list of available watches. Note this includes previously registered watches
-     */
-    val availableWatches: Flow<List<Watch>>
-
-    /**
      * Register a new [Watch].
      */
     suspend fun registerWatch(watch: Watch)

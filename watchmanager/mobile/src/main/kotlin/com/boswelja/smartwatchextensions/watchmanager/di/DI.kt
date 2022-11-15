@@ -1,6 +1,8 @@
 package com.boswelja.smartwatchextensions.watchmanager.di
 
+import com.boswelja.smartwatchextensions.watchmanager.data.AvailableWatchRepositoryImpl
 import com.boswelja.smartwatchextensions.watchmanager.data.WatchVersionRepositoryImpl
+import com.boswelja.smartwatchextensions.watchmanager.domain.AvailableWatchRepository
 import com.boswelja.smartwatchextensions.watchmanager.domain.WatchVersionRepository
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerViewModel
@@ -13,6 +15,7 @@ import org.koin.dsl.module
 
 val watchManagerModule = module {
     singleOf(::WatchVersionRepositoryImpl) bind WatchVersionRepository::class
+    singleOf(::AvailableWatchRepositoryImpl) bind AvailableWatchRepository::class
 
     viewModelOf(::WatchManagerViewModel)
     viewModelOf(::RegisterWatchViewModel)

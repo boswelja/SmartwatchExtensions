@@ -29,9 +29,6 @@ class WatchDbRepository(
             .asFlow()
             .mapToList()
 
-    override val availableWatches: Flow<List<Watch>>
-        get() = discoveryClient.allWatches()
-
     override suspend fun registerWatch(watch: Watch) {
         withContext(dispatcher) {
             database.registeredWatchQueries.insert(

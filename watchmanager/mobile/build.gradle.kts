@@ -21,6 +21,7 @@ android {
 dependencies {
     implementation(projects.core.mobile)
     implementation(projects.watchmanager.common)
+    implementation(projects.playServicesWearableExt)
 
     implementation(libs.bundles.compose.mobile)
     implementation(libs.koin.android)
