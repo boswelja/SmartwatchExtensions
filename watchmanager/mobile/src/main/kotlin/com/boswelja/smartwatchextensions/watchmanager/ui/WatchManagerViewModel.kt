@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.watchmanager.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.watchmanager.domain.WatchVersionRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.Flow

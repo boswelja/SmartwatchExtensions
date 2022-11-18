@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.core.devicemanagement
+package com.boswelja.smartwatchextensions.core.watches.registered
 
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode

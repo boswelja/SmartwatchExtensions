@@ -1,7 +1,5 @@
-package com.boswelja.smartwatchextensions.watchmanager.data
+package com.boswelja.smartwatchextensions.core.watches.available
 
-import com.boswelja.smartwatchextensions.watchmanager.domain.AvailableWatch
-import com.boswelja.smartwatchextensions.watchmanager.domain.AvailableWatchRepository
 import com.google.android.gms.wearable.CapabilityClient
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

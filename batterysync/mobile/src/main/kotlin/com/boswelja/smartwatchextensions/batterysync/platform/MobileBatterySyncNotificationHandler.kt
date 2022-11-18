@@ -9,7 +9,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryCh
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
-import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
 

@@ -11,7 +11,7 @@ import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppVersion
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.ReceivedMessage

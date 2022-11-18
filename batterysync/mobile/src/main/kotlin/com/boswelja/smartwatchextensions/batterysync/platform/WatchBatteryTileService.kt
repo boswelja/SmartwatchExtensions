@@ -10,7 +10,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatterySt
 import com.boswelja.smartwatchextensions.batterysync.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.core.FeatureData
 import com.boswelja.smartwatchextensions.core.FlowTileService
-import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.appSettingsStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi

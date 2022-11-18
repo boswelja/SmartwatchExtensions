@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.watchmanager.R
-import com.boswelja.smartwatchextensions.watchmanager.domain.AvailableWatch
+import com.boswelja.smartwatchextensions.core.watches.available.AvailableWatch
 import org.koin.androidx.compose.getViewModel
 
 @Composable

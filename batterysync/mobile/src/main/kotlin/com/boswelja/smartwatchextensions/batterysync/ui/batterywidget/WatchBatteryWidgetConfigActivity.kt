@@ -27,7 +27,7 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.RegisteredWatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme

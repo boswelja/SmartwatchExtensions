@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting

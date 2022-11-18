@@ -22,6 +22,7 @@ android {
 
 dependencies {
     api(projects.core.common)
+    api(projects.playServicesWearableExt)
 
     api(libs.watchconnection.common)
     implementation(libs.watchconnection.mobile.core)

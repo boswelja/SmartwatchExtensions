@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting

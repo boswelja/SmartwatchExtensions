@@ -8,7 +8,7 @@ import com.boswelja.smartwatchextensions.appmanager.RequestOpenPackage
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.flow.first

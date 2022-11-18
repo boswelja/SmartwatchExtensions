@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.core
 
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchStoreManager
-import com.boswelja.smartwatchextensions.core.devicemanagement.selectedWatchStateStore
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchStoreManager
+import com.boswelja.smartwatchextensions.core.watches.selected.selectedWatchStateStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module

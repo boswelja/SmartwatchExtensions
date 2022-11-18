@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.core.devicemanagement
+package com.boswelja.smartwatchextensions.core.watches.selected
 
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.Flow
