@@ -30,11 +30,6 @@ interface RegisteredWatchRepository {
     suspend fun renameWatch(watch: Watch, newName: String)
 
     /**
-     * Get a list of all capabilities declared by a given [Watch].
-     */
-    suspend fun getCapabilitiesFor(watch: Watch): Set<String>
-
-    /**
      * Flow the [ConnectionMode] for a given [Watch].
      */
     fun getStatusFor(watch: Watch): Flow<ConnectionMode>

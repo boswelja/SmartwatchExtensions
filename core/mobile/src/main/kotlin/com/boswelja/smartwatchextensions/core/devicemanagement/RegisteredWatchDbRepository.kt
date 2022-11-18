@@ -53,9 +53,6 @@ class RegisteredWatchDbRepository(
         }
     }
 
-    override suspend fun getCapabilitiesFor(watch: Watch): Set<String> =
-        discoveryClient.getCapabilitiesFor(watch.uid)
-
     override fun getStatusFor(watch: Watch): Flow<ConnectionMode> =
         discoveryClient.connectionModeFor(watch.uid)
 
