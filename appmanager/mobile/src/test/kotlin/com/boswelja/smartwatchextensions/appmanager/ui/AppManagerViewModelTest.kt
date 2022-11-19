@@ -11,7 +11,7 @@ import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppVersion
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.ReceivedMessage
@@ -45,7 +45,7 @@ class AppManagerViewModelTest {
     private lateinit var appRepository: WatchAppRepository
     private lateinit var messageClient: MessageClient
     private lateinit var discoveryClient: DiscoveryClient
-    private lateinit var selectedWatchManager: SelectedWatchManager
+    private lateinit var selectedWatchController: SelectedWatchController
     private lateinit var appIconRepository: WatchAppIconRepository
 
     private val selectedWatch = MutableStateFlow<Watch?>(null)
@@ -64,12 +64,12 @@ class AppManagerViewModelTest {
         appRepository = mockk()
         messageClient = mockk()
         discoveryClient = mockk()
-        selectedWatchManager = mockk()
+        selectedWatchController = mockk()
         appIconRepository = mockk()
 
         selectedWatch.value = null
         incomingMessages.value = ReceivedMessage("", "", null)
-        every { selectedWatchManager.selectedWatch } returns selectedWatch
+        every { selectedWatchController.selectedWatch } returns selectedWatch
         every { messageClient.incomingMessages() } returns incomingMessages
 
         // Mocks to stub validateCache
@@ -251,7 +251,7 @@ class AppManagerViewModelTest {
             appRepository,
             messageClient,
             discoveryClient,
-            selectedWatchManager,
+            selectedWatchController,
             appIconRepository
         )
 

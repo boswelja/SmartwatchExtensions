@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 class DashboardViewModel(
     private val batteryStatsRepository: BatteryStatsRepository,
     private val appRepository: WatchAppRepository,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) : ViewModel() {
 
     /**
@@ -42,7 +42,7 @@ class DashboardViewModel(
         defaultValue: T,
         block: (Watch) -> Flow<T>
     ): StateFlow<T> =
-        selectedWatchManager.selectedWatch
+        selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest(block)
             .stateIn(

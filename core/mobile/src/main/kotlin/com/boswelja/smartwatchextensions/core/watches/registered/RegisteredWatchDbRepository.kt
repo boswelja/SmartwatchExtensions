@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.core.devicemanagement
+package com.boswelja.smartwatchextensions.core.watches.registered
 
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
@@ -13,13 +13,13 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [WatchRepository] implementation backed by a SQLDelight database.
+ * A [RegisteredWatchRepository] implementation backed by a SQLDelight database.
  */
-class WatchDbRepository(
+class RegisteredWatchDbRepository(
     private val discoveryClient: DiscoveryClient,
     private val database: RegisteredWatchDatabase,
     private val dispatcher: CoroutineContext
-) : WatchRepository {
+) : RegisteredWatchRepository {
 
     override val registeredWatches: Flow<List<Watch>>
         get() = database.registeredWatchQueries
@@ -28,9 +28,6 @@ class WatchDbRepository(
             }
             .asFlow()
             .mapToList()
-
-    override val availableWatches: Flow<List<Watch>>
-        get() = discoveryClient.allWatches()
 
     override suspend fun registerWatch(watch: Watch) {
         withContext(dispatcher) {
@@ -55,9 +52,6 @@ class WatchDbRepository(
             database.registeredWatchQueries.rename(newName, watch.uid)
         }
     }
-
-    override suspend fun getCapabilitiesFor(watch: Watch): Set<String> =
-        discoveryClient.getCapabilitiesFor(watch.uid)
 
     override fun getStatusFor(watch: Watch): Flow<ConnectionMode> =
         discoveryClient.connectionModeFor(watch.uid)

@@ -2,14 +2,14 @@ package com.boswelja.smartwatchextensions.main.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for providing data to [MainActivity].
  */
 class MainViewModel(
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) : ViewModel() {
 
     /**
@@ -17,7 +17,7 @@ class MainViewModel(
      */
     fun selectWatchById(watchId: String) {
         viewModelScope.launch {
-            selectedWatchManager.selectWatch(watchId)
+            selectedWatchController.selectWatch(watchId)
         }
     }
 }

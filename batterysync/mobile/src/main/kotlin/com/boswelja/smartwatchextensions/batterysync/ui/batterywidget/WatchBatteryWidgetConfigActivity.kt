@@ -27,7 +27,7 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import com.boswelja.smartwatchextensions.core.ui.theme.HarmonizedTheme
@@ -62,9 +62,9 @@ fun ConfigurationScreen() {
         return
     }
 
-    val watchRepository: WatchRepository by inject()
+    val registeredWatchRepository: RegisteredWatchRepository by inject()
     val batteryStatsRepository: BatteryStatsRepository by inject()
-    val registeredWatches by watchRepository.registeredWatches.collectAsState(initial = emptyList())
+    val registeredWatches by registeredWatchRepository.registeredWatches.collectAsState(initial = emptyList())
     val watchId = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.watchIdKey)
     val watch = remember(watchId, registeredWatches) { registeredWatches.firstOrNull { it.uid == watchId }}
     val showWatchName = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.showNameKey) ?: true

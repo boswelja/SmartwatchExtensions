@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 class SetPhoneChargeNotificationEnabled(
     private val settingsRepository: WatchSettingsRepository,
     private val messageClient: MessageClient,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) {
     suspend operator fun invoke(
         watchId: String,
@@ -38,7 +38,7 @@ class SetPhoneChargeNotificationEnabled(
     }
 
     suspend operator fun invoke(phoneChargeNotificationEnabled: Boolean): Boolean {
-        val watchId = selectedWatchManager.selectedWatch
+        val watchId = selectedWatchController.selectedWatch
             .map { it?.uid }
             .first()
         if (watchId.isNullOrBlank()) return false

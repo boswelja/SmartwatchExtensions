@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.core.devicemanagement
+package com.boswelja.smartwatchextensions.core.watches.registered
 
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -7,17 +7,12 @@ import kotlinx.coroutines.flow.Flow
 /**
  * A repository for managing registered watches, and discovering available watches.
  */
-interface WatchRepository {
+interface RegisteredWatchRepository {
 
     /**
      * Flows the list of registered watches.
      */
     val registeredWatches: Flow<List<Watch>>
-
-    /**
-     * Flows the list of available watches. Note this includes previously registered watches
-     */
-    val availableWatches: Flow<List<Watch>>
 
     /**
      * Register a new [Watch].
@@ -33,11 +28,6 @@ interface WatchRepository {
      * Rename an existing [Watch].
      */
     suspend fun renameWatch(watch: Watch, newName: String)
-
-    /**
-     * Get a list of all capabilities declared by a given [Watch].
-     */
-    suspend fun getCapabilitiesFor(watch: Watch): Set<String>
 
     /**
      * Flow the [ConnectionMode] for a given [Watch].

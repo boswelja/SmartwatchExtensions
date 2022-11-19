@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.phonelocking.domain.usecase
 
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.runCatching
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 
 class GetPhoneLockingEnabled(
     private val settingsRepository: WatchSettingsRepository,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) {
     operator fun invoke(watchId: String): Flow<Result<Boolean>> {
         return settingsRepository.getBoolean(watchId, PHONE_LOCKING_ENABLED_KEY)
@@ -20,7 +20,7 @@ class GetPhoneLockingEnabled(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Result<Boolean>> {
-        return selectedWatchManager.selectedWatch
+        return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest { invoke(it.uid) }
     }

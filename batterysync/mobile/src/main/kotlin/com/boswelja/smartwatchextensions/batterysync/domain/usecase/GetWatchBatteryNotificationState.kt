@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryNotificationState
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.runCatching
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 class GetWatchBatteryNotificationState(
     private val getWatchLowNotificationEnabled: GetWatchLowNotificationEnabled,
     private val getWatchChargeNotificationEnabled: GetWatchChargeNotificationEnabled,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) {
 
     operator fun invoke(watchId: String): Flow<Result<DeviceBatteryNotificationState>> {
@@ -33,7 +33,7 @@ class GetWatchBatteryNotificationState(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Result<DeviceBatteryNotificationState>> {
-        return selectedWatchManager.selectedWatch
+        return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest {
                 invoke(it.uid)

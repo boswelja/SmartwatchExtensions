@@ -9,7 +9,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryCh
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetBatteryLowThreshold
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchChargeNotificationEnabled
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.GetWatchLowNotificationEnabled
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
 
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.first
  */
 class MobileBatterySyncNotificationHandler(
     private val settingsRepository: WatchSettingsRepository,
-    private val watchRepository: WatchRepository,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val getWatchLowNotificationEnabled: GetWatchLowNotificationEnabled,
     private val getWatchChargeNotificationEnabled: GetWatchChargeNotificationEnabled,
     private val getBatteryChargeThreshold: GetBatteryChargeThreshold,
@@ -36,7 +36,7 @@ class MobileBatterySyncNotificationHandler(
     }
 
     override suspend fun getDeviceName(targetUid: String): String =
-        watchRepository.getWatchById(targetUid).first()?.name ?: targetUid
+        registeredWatchRepository.getWatchById(targetUid).first()?.name ?: targetUid
 
     override suspend fun getNotificationAlreadySent(targetUid: String): Boolean =
         settingsRepository.getBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, false).first()

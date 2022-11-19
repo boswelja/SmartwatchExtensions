@@ -1,10 +1,11 @@
-package com.boswelja.smartwatchextensions.core.devicemanagement
+package com.boswelja.smartwatchextensions.core.watches.selected
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -38,3 +39,12 @@ private class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
     override suspend fun writeTo(t: SelectedWatchState, output: OutputStream) =
         output.write(ProtoBuf.encodeToByteArray(t))
 }
+
+/**
+ * Contains information about the currently selected watch.
+ * @param selectedWatchId The UID of the selected watch.
+ */
+@Serializable
+data class SelectedWatchState(
+    val selectedWatchId: String
+)

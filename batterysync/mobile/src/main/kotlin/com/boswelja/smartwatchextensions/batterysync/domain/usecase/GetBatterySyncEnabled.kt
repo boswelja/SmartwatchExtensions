@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.runCatching
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flatMapLatest
  */
 class GetBatterySyncEnabled(
     private val settingsRepository: WatchSettingsRepository,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) {
     operator fun invoke(watchId: String): Flow<Result<Boolean>> {
         return settingsRepository.getBoolean(watchId, BATTERY_SYNC_ENABLED_KEY)
@@ -23,7 +23,7 @@ class GetBatterySyncEnabled(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Result<Boolean>> {
-        return selectedWatchManager.selectedWatch
+        return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest { watch ->
                 invoke(watch.uid)

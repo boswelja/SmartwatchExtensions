@@ -3,8 +3,8 @@ package com.boswelja.smartwatchextensions.dndsync.ui
 import android.app.NotificationManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.devicemanagement.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
+import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
@@ -26,8 +26,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class DnDSyncSettingsViewModel(
     private val notificationManager: NotificationManager,
-    private val selectedWatchManager: SelectedWatchManager,
-    private val watchRepository: WatchRepository,
+    private val selectedWatchController: SelectedWatchController,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val settingsRepository: WatchSettingsRepository
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class DnDSyncSettingsViewModel(
      * Flow whether the selected watch can send DnD status.
      */
     val canSendDnD = mapStateForSelectedWatch(false) {
-        watchRepository.watchHasCapability(it, SendDnDCapability)
+        registeredWatchRepository.watchHasCapability(it, SendDnDCapability)
     }
 
     /**
@@ -63,7 +63,7 @@ class DnDSyncSettingsViewModel(
      */
     fun setSyncToPhone(isEnabled: Boolean) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
+            val selectedWatch = selectedWatchController.selectedWatch.first()
             settingsRepository.putBoolean(
                 selectedWatch!!.uid,
                 DND_SYNC_TO_PHONE_KEY,
@@ -77,7 +77,7 @@ class DnDSyncSettingsViewModel(
      */
     fun setSyncWithTheater(isEnabled: Boolean) {
         viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
+            val selectedWatch = selectedWatchController.selectedWatch.first()
             settingsRepository.putBoolean(
                 selectedWatch!!.uid,
                 DND_SYNC_WITH_THEATER_KEY,
@@ -90,7 +90,7 @@ class DnDSyncSettingsViewModel(
         defaultValue: T,
         block: (Watch) -> Flow<T>
     ): StateFlow<T> =
-        selectedWatchManager.selectedWatch
+        selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest(block)
             .stateIn(
