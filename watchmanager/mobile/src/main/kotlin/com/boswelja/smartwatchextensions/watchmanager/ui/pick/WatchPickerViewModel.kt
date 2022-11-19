@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.pick
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class WatchPickerViewModel(
     registeredWatchRepository: RegisteredWatchRepository,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) : ViewModel() {
 
     val watches = registeredWatchRepository.registeredWatches
@@ -21,7 +21,7 @@ class WatchPickerViewModel(
             null
         )
 
-    val selectedWatch = selectedWatchManager.selectedWatch
+    val selectedWatch = selectedWatchController.selectedWatch
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -30,7 +30,7 @@ class WatchPickerViewModel(
 
     fun selectWatch(watch: Watch) {
         viewModelScope.launch {
-            selectedWatchManager.selectWatch(watch)
+            selectedWatchController.selectWatch(watch)
         }
     }
 }

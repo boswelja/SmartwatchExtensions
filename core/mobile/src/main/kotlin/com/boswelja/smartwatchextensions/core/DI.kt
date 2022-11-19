@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.core
 
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchStoreManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchControllerImpl
 import com.boswelja.smartwatchextensions.core.watches.selected.selectedWatchStateStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
@@ -12,7 +12,7 @@ import org.koin.dsl.module
  */
 val coreModule = module {
     loadKoinModules(coreCommonModule)
-    single<SelectedWatchManager> {
-        SelectedWatchStoreManager(androidContext().selectedWatchStateStore, get())
+    single<SelectedWatchController> {
+        SelectedWatchControllerImpl(androidContext().selectedWatchStateStore, get())
     }
 }

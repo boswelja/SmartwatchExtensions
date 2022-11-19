@@ -12,7 +12,7 @@ import com.boswelja.smartwatchextensions.appmanager.RequestValidateCache
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
@@ -36,12 +36,12 @@ class AppManagerViewModel(
     private val appRepository: WatchAppRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
-    private val selectedWatchManager: SelectedWatchManager,
+    private val selectedWatchController: SelectedWatchController,
     private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
 
     @OptIn(FlowPreview::class)
-    private val allApps = selectedWatchManager.selectedWatch
+    private val allApps = selectedWatchController.selectedWatch
         .filterNotNull()
         .flatMapLatest { watch ->
             appRepository.getAppsFor(watch.uid)
@@ -123,7 +123,7 @@ class AppManagerViewModel(
      * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch
      * is connected.
      */
-    val isWatchConnected = selectedWatchManager.selectedWatch
+    val isWatchConnected = selectedWatchController.selectedWatch
         .filterNotNull()
         .flatMapLatest { watch ->
             discoveryClient.connectionModeFor(watch.uid)
@@ -138,7 +138,7 @@ class AppManagerViewModel(
 
     init {
         viewModelScope.launch {
-            selectedWatchManager.selectedWatch
+            selectedWatchController.selectedWatch
                 .filterNotNull()
                 .collect {
                     validateCache()
@@ -150,7 +150,7 @@ class AppManagerViewModel(
      * Requests cache validation for the selected watch.
      */
     private suspend fun validateCache() {
-        selectedWatchManager.selectedWatch.first()?.let { watch ->
+        selectedWatchController.selectedWatch.first()?.let { watch ->
             // Get a list of packages we have for the given watch
             val appVersionList = appRepository.getAppVersionsFor(watch.uid)
                 .map { apps -> apps.map { AppVersion(it.packageName, it.versionCode) } }

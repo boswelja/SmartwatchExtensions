@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.phonelocking.domain.usecase
 
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.first
 
 class SetPhoneLockingEnabled(
     private val settingsRepository: WatchSettingsRepository,
-    private val selectedWatchManager: SelectedWatchManager,
+    private val selectedWatchController: SelectedWatchController,
     private val messageClient: MessageClient
 ) {
     suspend operator fun invoke(watchId: String, phoneLockingEnabled: Boolean): Boolean {
@@ -32,7 +32,7 @@ class SetPhoneLockingEnabled(
     }
 
     suspend operator fun invoke(phoneLockingEnabled: Boolean): Boolean {
-        val selectedWatch = selectedWatchManager.selectedWatch.first() ?: return false
+        val selectedWatch = selectedWatchController.selectedWatch.first() ?: return false
         return invoke(selectedWatch.uid, phoneLockingEnabled)
     }
 }

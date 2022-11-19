@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 /**
- * A [SelectedWatchManager] backed by a [DataStore].
+ * A [SelectedWatchController] backed by a [DataStore].
  */
-class SelectedWatchStoreManager(
+class SelectedWatchControllerImpl(
     private val dataStore: DataStore<SelectedWatchState>,
     private val registeredWatchRepository: RegisteredWatchRepository
-) : SelectedWatchManager {
+) : SelectedWatchController {
 
     private val selectedWatchId = dataStore.data.map { it.selectedWatchId }
 

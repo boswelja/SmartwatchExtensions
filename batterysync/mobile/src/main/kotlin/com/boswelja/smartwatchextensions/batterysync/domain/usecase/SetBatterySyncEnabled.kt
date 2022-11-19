@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.domain.usecase
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.batterysync.platform.BatterySyncWorker
-import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchManager
+import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
@@ -17,7 +17,7 @@ class SetBatterySyncEnabled(
     private val context: Context,
     private val settingsRepository: WatchSettingsRepository,
     private val messageClient: MessageClient,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchController: SelectedWatchController
 ) {
     suspend operator fun invoke(watchId: String, batterySyncEnabled: Boolean): Boolean {
         // We can only enable sync if the sync worker was started successfully
@@ -42,7 +42,7 @@ class SetBatterySyncEnabled(
     }
 
     suspend operator fun invoke(batterySyncEnabled: Boolean): Boolean {
-        val watchId = selectedWatchManager.selectedWatch
+        val watchId = selectedWatchController.selectedWatch
             .map { it?.uid }
             .first()
         if (watchId.isNullOrBlank()) return false
