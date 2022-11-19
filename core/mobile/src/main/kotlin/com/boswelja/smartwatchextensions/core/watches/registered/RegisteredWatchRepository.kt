@@ -30,11 +30,6 @@ interface RegisteredWatchRepository {
     suspend fun renameWatch(watch: Watch, newName: String)
 
     /**
-     * Flow the [ConnectionMode] for a given [Watch].
-     */
-    fun getStatusFor(watch: Watch): Flow<ConnectionMode>
-
-    /**
      * Flow a given [Watch] by it's [Watch.uid].
      */
     fun getWatchById(id: String): Flow<Watch?>

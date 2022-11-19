@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.core.watches.registered
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
 import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -52,9 +51,6 @@ class RegisteredWatchDbRepository(
             database.registeredWatchQueries.rename(newName, watch.uid)
         }
     }
-
-    override fun getStatusFor(watch: Watch): Flow<ConnectionMode> =
-        discoveryClient.connectionModeFor(watch.uid)
 
     override fun getWatchById(id: String): Flow<Watch?> = database.registeredWatchQueries
         .get(id) { uid, name, _ ->
