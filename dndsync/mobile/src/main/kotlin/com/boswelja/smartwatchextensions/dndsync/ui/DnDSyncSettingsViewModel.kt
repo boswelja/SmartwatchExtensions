@@ -35,7 +35,7 @@ class DnDSyncSettingsViewModel(
      * Flow whether the selected watch can send DnD status.
      */
     val canSendDnD = mapStateForSelectedWatch(false) {
-        watchCapabilityRepository.hasCapability(it, SendDnDCapability)
+        watchCapabilityRepository.hasCapability(it.uid, SendDnDCapability)
     }
 
     /**
