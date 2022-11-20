@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.core.watches.status.WatchStatusRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 class ManageRegisteredWatchViewModel(
     savedStateHandle: SavedStateHandle,
     private val registeredWatchRepository: RegisteredWatchRepository,
-    private val watchSettingsRepository: WatchSettingsRepository
+    private val watchSettingsRepository: WatchSettingsRepository,
+    private val watchStatusRepository: WatchStatusRepository
 ) : ViewModel() {
 
     private val watchId: String = checkNotNull(savedStateHandle["watchUid"])
@@ -32,7 +34,7 @@ class ManageRegisteredWatchViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val watchStatus = watch
         .filterNotNull()
-        .flatMapLatest { registeredWatchRepository.getStatusFor(it) }
+        .flatMapLatest { watchStatusRepository.getStatusFor(it.uid) }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

@@ -55,8 +55,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.boswelja.smartwatchextensions.core.watches.status.ConnectionMode
 import com.boswelja.smartwatchextensions.watchmanager.R
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import org.koin.androidx.compose.getViewModel
 
 @Composable
