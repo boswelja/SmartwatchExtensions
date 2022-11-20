@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.core.watches.selected
 
-import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -9,17 +8,12 @@ import kotlinx.coroutines.flow.Flow
 interface SelectedWatchController {
 
     /**
-     * Flow the currently selected [Watch], or null if no watch is selected.
+     * Flow the currently selected watches ID, or null if no watch is selected.
      */
-    val selectedWatch: Flow<Watch?>
+    val selectedWatch: Flow<String?>
 
     /**
-     * Select a different [Watch].
-     */
-    suspend fun selectWatch(watch: Watch)
-
-    /**
-     * Select a different [Watch] by it's UID.
+     * Select a different watch by its ID.
      */
     suspend fun selectWatch(watchId: String)
 }

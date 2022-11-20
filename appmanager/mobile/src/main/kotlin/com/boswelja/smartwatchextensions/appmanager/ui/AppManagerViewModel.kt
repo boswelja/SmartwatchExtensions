@@ -44,11 +44,11 @@ class AppManagerViewModel(
     private val allApps = selectedWatchController.selectedWatch
         .filterNotNull()
         .flatMapLatest { watch ->
-            appRepository.getAppsFor(watch.uid)
+            appRepository.getAppsFor(watch)
                 .map { apps ->
                     apps.map { app ->
                         val icon = appIconRepository.retrieveIconFor(
-                            watch.uid,
+                            watch,
                             app.packageName
                         )?.let {
                             BitmapFactory.decodeByteArray(it, 0, it.size)
@@ -126,7 +126,7 @@ class AppManagerViewModel(
     val isWatchConnected = selectedWatchController.selectedWatch
         .filterNotNull()
         .flatMapLatest { watch ->
-            discoveryClient.connectionModeFor(watch.uid)
+            discoveryClient.connectionModeFor(watch)
         }.map { status ->
             status != ConnectionMode.Disconnected
         }
@@ -152,11 +152,11 @@ class AppManagerViewModel(
     private suspend fun validateCache() {
         selectedWatchController.selectedWatch.first()?.let { watch ->
             // Get a list of packages we have for the given watch
-            val appVersionList = appRepository.getAppVersionsFor(watch.uid)
+            val appVersionList = appRepository.getAppVersionsFor(watch)
                 .map { apps -> apps.map { AppVersion(it.packageName, it.versionCode) } }
                 .first()
             messageClient.sendMessage(
-                watch.uid,
+                watch,
                 Message(
                     RequestValidateCache,
                     CacheValidationSerializer.serialize(AppVersions(appVersionList)),

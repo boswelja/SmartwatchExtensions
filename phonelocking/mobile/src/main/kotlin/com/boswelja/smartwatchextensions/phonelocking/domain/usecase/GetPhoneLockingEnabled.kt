@@ -22,6 +22,6 @@ class GetPhoneLockingEnabled(
     operator fun invoke(): Flow<Result<Boolean>> {
         return selectedWatchController.selectedWatch
             .filterNotNull()
-            .flatMapLatest { invoke(it.uid) }
+            .flatMapLatest { invoke(it) }
     }
 }

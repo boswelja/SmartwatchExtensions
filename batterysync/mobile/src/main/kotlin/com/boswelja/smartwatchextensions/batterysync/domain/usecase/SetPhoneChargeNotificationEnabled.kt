@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 class SetPhoneChargeNotificationEnabled(
     private val settingsRepository: WatchSettingsRepository,
@@ -38,9 +37,7 @@ class SetPhoneChargeNotificationEnabled(
     }
 
     suspend operator fun invoke(phoneChargeNotificationEnabled: Boolean): Boolean {
-        val watchId = selectedWatchController.selectedWatch
-            .map { it?.uid }
-            .first()
+        val watchId = selectedWatchController.selectedWatch.first()
         if (watchId.isNullOrBlank()) return false
         return invoke(watchId, phoneChargeNotificationEnabled)
     }

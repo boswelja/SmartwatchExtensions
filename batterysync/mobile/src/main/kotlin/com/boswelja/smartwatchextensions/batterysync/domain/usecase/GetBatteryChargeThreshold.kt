@@ -27,7 +27,7 @@ class GetBatteryChargeThreshold(
         return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest { watch ->
-                invoke(watch.uid)
+                invoke(watch)
             }
     }
 }

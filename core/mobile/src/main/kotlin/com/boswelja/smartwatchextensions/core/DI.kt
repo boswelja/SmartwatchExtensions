@@ -13,6 +13,6 @@ import org.koin.dsl.module
 val coreModule = module {
     loadKoinModules(coreCommonModule)
     single<SelectedWatchController> {
-        SelectedWatchControllerImpl(androidContext().selectedWatchStateStore, get())
+        SelectedWatchControllerImpl(androidContext().selectedWatchStateStore)
     }
 }

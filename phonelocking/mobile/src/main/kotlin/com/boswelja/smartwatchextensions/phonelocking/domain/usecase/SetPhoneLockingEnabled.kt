@@ -33,6 +33,6 @@ class SetPhoneLockingEnabled(
 
     suspend operator fun invoke(phoneLockingEnabled: Boolean): Boolean {
         val selectedWatch = selectedWatchController.selectedWatch.first() ?: return false
-        return invoke(selectedWatch.uid, phoneLockingEnabled)
+        return invoke(selectedWatch, phoneLockingEnabled)
     }
 }

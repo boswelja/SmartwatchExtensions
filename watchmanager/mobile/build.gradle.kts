@@ -23,6 +23,8 @@ dependencies {
     implementation(projects.watchmanager.common)
     implementation(projects.playServicesWearableExt)
 
+    implementation(libs.watchconnection.common)
+
     implementation(libs.bundles.compose.mobile)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)

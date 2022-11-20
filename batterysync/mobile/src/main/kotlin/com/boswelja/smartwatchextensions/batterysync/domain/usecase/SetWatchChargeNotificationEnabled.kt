@@ -4,7 +4,6 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BAT
 import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 class SetWatchChargeNotificationEnabled(
     private val settingsRepository: WatchSettingsRepository,
@@ -20,9 +19,7 @@ class SetWatchChargeNotificationEnabled(
     }
 
     suspend operator fun invoke(watchChargeNotificationEnabled: Boolean): Boolean {
-        val watchId = selectedWatchController.selectedWatch
-            .map { it?.uid }
-            .first()
+        val watchId = selectedWatchController.selectedWatch.first()
         if (watchId.isNullOrBlank()) return false
         return invoke(watchId, watchChargeNotificationEnabled)
     }

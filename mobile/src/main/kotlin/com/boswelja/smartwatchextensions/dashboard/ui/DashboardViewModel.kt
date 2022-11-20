@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
-import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,19 +27,19 @@ class DashboardViewModel(
      * Flow battery stats for the selected watch.
      */
     val batteryStats = mapStateForSelectedWatch(null) {
-        batteryStatsRepository.getBatteryStatsForWatch(it.uid)
+        batteryStatsRepository.getBatteryStatsForWatch(it)
     }
 
     /**
      * Flow the total number of apps installed on the selected watch.
      */
     val appCount = mapStateForSelectedWatch(0L) {
-        appRepository.countFor(it.uid)
+        appRepository.countFor(it)
     }
 
     private fun <T> mapStateForSelectedWatch(
         defaultValue: T,
-        block: (Watch) -> Flow<T>
+        block: (String) -> Flow<T>
     ): StateFlow<T> =
         selectedWatchController.selectedWatch
             .filterNotNull()

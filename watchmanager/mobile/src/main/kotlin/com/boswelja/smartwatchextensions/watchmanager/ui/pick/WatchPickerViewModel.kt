@@ -7,12 +7,15 @@ import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatch
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class WatchPickerViewModel(
-    registeredWatchRepository: RegisteredWatchRepository,
+    private val registeredWatchRepository: RegisteredWatchRepository,
     private val selectedWatchController: SelectedWatchController
 ) : ViewModel() {
 
@@ -25,7 +28,11 @@ class WatchPickerViewModel(
             null
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val selectedWatch = selectedWatchController.selectedWatch
+        .filterNotNull()
+        .flatMapLatest { registeredWatchRepository.getWatchById(it) }
+        .map { it?.let { Watch(it.uid, it.name) } }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -34,7 +41,7 @@ class WatchPickerViewModel(
 
     fun selectWatch(watch: Watch) {
         viewModelScope.launch {
-            selectedWatchController.selectWatch(watch)
+            selectedWatchController.selectWatch(watch.uid)
         }
     }
 }

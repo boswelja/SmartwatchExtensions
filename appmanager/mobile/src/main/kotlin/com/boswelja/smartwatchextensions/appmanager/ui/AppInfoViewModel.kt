@@ -31,7 +31,7 @@ class AppInfoViewModel(
     suspend fun sendOpenRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchController.selectedWatch.first()?.let { watch ->
             messageClient.sendMessage(
-                watch.uid,
+                watch,
                 Message(
                     RequestOpenPackage,
                     PackageNameSerializer.serialize(app.packageName),
@@ -50,7 +50,7 @@ class AppInfoViewModel(
         return selectedWatchController.selectedWatch.first()?.let { watch ->
             appRepository.delete(app.watchId, app.packageName)
             messageClient.sendMessage(
-                watch.uid,
+                watch,
                 Message(
                     RequestOpenPackage,
                     PackageNameSerializer.serialize(app.packageName),
@@ -65,8 +65,8 @@ class AppInfoViewModel(
      */
     suspend fun getDetailsFor(packageName: String): WatchAppDetailsWithIcon? {
         return selectedWatchController.selectedWatch.first()?.let {
-            val details = appRepository.getDetailsFor(it.uid, packageName).first()
-            WatchAppDetailsWithIcon(details, loadIconOrNull(it.uid, details.packageName))
+            val details = appRepository.getDetailsFor(it, packageName).first()
+            WatchAppDetailsWithIcon(details, loadIconOrNull(it, details.packageName))
         }
     }
 

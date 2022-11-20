@@ -24,8 +24,6 @@ dependencies {
     api(projects.core.common)
     api(projects.playServicesWearableExt)
 
-    api(libs.watchconnection.common)
-
     implementation(libs.sqldelight.runtime)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.android)

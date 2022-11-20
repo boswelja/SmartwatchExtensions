@@ -52,7 +52,7 @@ class GetBatteryStats(
         return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest { watch ->
-                invoke(watch.uid)
+                invoke(watch)
             }
             .catch { throwable ->
                 emit(FeatureData.Error(throwable))

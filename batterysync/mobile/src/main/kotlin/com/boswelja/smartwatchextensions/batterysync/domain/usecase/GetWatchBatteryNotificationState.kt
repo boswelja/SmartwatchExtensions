@@ -36,7 +36,7 @@ class GetWatchBatteryNotificationState(
         return selectedWatchController.selectedWatch
             .filterNotNull()
             .flatMapLatest {
-                invoke(it.uid)
+                invoke(it)
             }
     }
 }
