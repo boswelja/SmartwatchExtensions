@@ -13,9 +13,12 @@ internal class WatchStatusRepositoryImpl(
         return discoveryClient.connectionModeFor(watchId)
             .mapLatest {
                 when (it) {
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Disconnected -> ConnectionMode.Disconnected
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Internet -> ConnectionMode.Internet
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Bluetooth -> ConnectionMode.Bluetooth
+                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Disconnected ->
+                        ConnectionMode.Disconnected
+                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Internet ->
+                        ConnectionMode.Internet
+                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Bluetooth ->
+                        ConnectionMode.Bluetooth
                 }
             }
     }
