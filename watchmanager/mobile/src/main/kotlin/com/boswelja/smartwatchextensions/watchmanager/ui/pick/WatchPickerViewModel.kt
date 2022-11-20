@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.watchconnection.common.Watch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -14,7 +16,9 @@ class WatchPickerViewModel(
     private val selectedWatchController: SelectedWatchController
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val watches = registeredWatchRepository.registeredWatches
+        .mapLatest { it.map { Watch(it.uid, it.name) } }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

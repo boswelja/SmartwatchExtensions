@@ -51,7 +51,7 @@ class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
                 }
             }
             .filterNotNull()
-            .onEach { watch = it }
+            .onEach { watch = Watch(it.uid, it.name) }
             .flatMapLatest {
                 getBatteryStats(it.uid)
             }

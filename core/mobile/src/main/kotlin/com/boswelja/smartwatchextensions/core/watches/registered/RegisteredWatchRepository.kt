@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.core.watches.registered
 
-import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,25 +11,25 @@ interface RegisteredWatchRepository {
     /**
      * Flows the list of registered watches.
      */
-    val registeredWatches: Flow<List<Watch>>
+    val registeredWatches: Flow<List<RegisteredWatch>>
 
     /**
-     * Register a new [Watch].
+     * Register a new watch.
      */
-    suspend fun registerWatch(watch: Watch)
+    suspend fun registerWatch(id: String, name: String)
 
     /**
-     * Deregister an existing [Watch].
+     * Deregister an existing watch.
      */
-    suspend fun deregisterWatch(watch: Watch)
+    suspend fun deregisterWatch(id: String)
 
     /**
-     * Rename an existing [Watch].
+     * Rename an existing watch.
      */
-    suspend fun renameWatch(watch: Watch, newName: String)
+    suspend fun renameWatch(id: String, newName: String)
 
     /**
-     * Flow a given [Watch] by it's [Watch.uid].
+     * Flow a given watch by its ID.
      */
-    fun getWatchById(id: String): Flow<Watch?>
+    fun getWatchById(id: String): Flow<RegisteredWatch?>
 }

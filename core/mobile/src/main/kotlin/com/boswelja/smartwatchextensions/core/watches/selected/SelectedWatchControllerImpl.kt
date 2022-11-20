@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 
 /**
  * A [SelectedWatchController] backed by a [DataStore].
@@ -20,7 +21,9 @@ class SelectedWatchControllerImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val selectedWatch: Flow<Watch?>
-        get() = selectedWatchId.flatMapLatest { id -> registeredWatchRepository.getWatchById(id) }
+        get() = selectedWatchId
+            .flatMapLatest { id -> registeredWatchRepository.getWatchById(id) }
+            .mapLatest { it?.let { Watch(it.uid, it.name) } }
 
     override suspend fun selectWatch(watch: Watch) {
         selectWatch(watch.uid)

@@ -11,6 +11,7 @@ import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -25,7 +26,11 @@ class AppSettingsViewModel(
     /**
      * Flow the currently registered watches.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val registeredWatches = registeredWatchRepository.registeredWatches
+        .mapLatest {
+            it.map { Watch(it.uid, it.name) }
+        }
 
     /**
      * Flow the currently selected watch for QS Tile data.
@@ -40,6 +45,7 @@ class AppSettingsViewModel(
             registeredWatchRepository.registeredWatches.map { it.firstOrNull() }
         }
     }
+        .mapLatest { it?.let { Watch(it.uid, it.name) } }
 
     /**
      * Set a watch for QS Tiles to display data for.

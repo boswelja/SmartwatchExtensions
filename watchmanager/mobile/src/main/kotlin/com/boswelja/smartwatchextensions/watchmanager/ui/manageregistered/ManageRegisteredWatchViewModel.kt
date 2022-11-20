@@ -43,13 +43,13 @@ class ManageRegisteredWatchViewModel(
 
     fun renameWatch(newName: String) {
         viewModelScope.launch {
-            registeredWatchRepository.renameWatch(watch.first()!!, newName)
+            registeredWatchRepository.renameWatch(watch.first()!!.uid, newName)
         }
     }
 
     fun removeWatch() {
         viewModelScope.launch {
-            registeredWatchRepository.deregisterWatch(watch.first()!!)
+            registeredWatchRepository.deregisterWatch(watch.first()!!.uid)
         }
     }
 

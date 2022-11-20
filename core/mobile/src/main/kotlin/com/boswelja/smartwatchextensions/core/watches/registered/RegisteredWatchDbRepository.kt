@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.core.watches.registered
 
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
-import com.boswelja.watchconnection.common.Watch
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
@@ -18,42 +17,38 @@ class RegisteredWatchDbRepository(
     private val dispatcher: CoroutineContext
 ) : RegisteredWatchRepository {
 
-    override val registeredWatches: Flow<List<Watch>>
+    override val registeredWatches: Flow<List<RegisteredWatch>>
         get() = database.registeredWatchQueries
-            .getAll { uid, name, _ ->
-                Watch(uid, name)
-            }
+            .getAll()
             .asFlow()
             .mapToList()
 
-    override suspend fun registerWatch(watch: Watch) {
+    override suspend fun registerWatch(id: String, name: String) {
         withContext(dispatcher) {
             database.registeredWatchQueries.insert(
                 RegisteredWatch(
-                    watch.uid,
-                    watch.name,
-                    watch.platform
+                    id,
+                    name,
+                    ""
                 )
             )
         }
     }
 
-    override suspend fun deregisterWatch(watch: Watch) {
+    override suspend fun deregisterWatch(id: String) {
         withContext(dispatcher) {
-            database.registeredWatchQueries.delete(watch.uid)
+            database.registeredWatchQueries.delete(id)
         }
     }
 
-    override suspend fun renameWatch(watch: Watch, newName: String) {
+    override suspend fun renameWatch(id: String, newName: String) {
         withContext(dispatcher) {
-            database.registeredWatchQueries.rename(newName, watch.uid)
+            database.registeredWatchQueries.rename(newName, id)
         }
     }
 
-    override fun getWatchById(id: String): Flow<Watch?> = database.registeredWatchQueries
-        .get(id) { uid, name, _ ->
-            Watch(uid, name)
-        }
+    override fun getWatchById(id: String): Flow<RegisteredWatch?> = database.registeredWatchQueries
+        .get(id)
         .asFlow()
         .mapToOneOrNull()
 }
