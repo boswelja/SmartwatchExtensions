@@ -13,6 +13,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(projects.watchmanager.common)
     implementation(projects.playServicesWearableExt)

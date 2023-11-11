@@ -13,7 +13,8 @@ android {
     }
 }
 
-dependencies {
+kotlin {
+    jvmToolchain(17)
 }
 
 detekt {

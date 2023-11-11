@@ -1,12 +1,12 @@
 package com.boswelja.smartwatchextensions.batterysync.data.batterystats
 
 import android.content.Context
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.batteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatteryStatsRepository
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -29,10 +29,10 @@ class BatteryStatsRepositoryImpl(
     ): Flow<BatteryStats?> = database
         .watchBatteryStatsQueries
         .getFor(watchId) { _, percent, charging, timestamp ->
-            BatteryStats(percent, charging, timestamp)
+            BatteryStats(percent.toInt(), charging, timestamp)
         }
         .asFlow()
-        .mapToOneOrNull()
+        .mapToOneOrNull(dispatcher)
 
     override suspend fun deleteBatteryStatsForWatch(watchId: String) {
         withContext(dispatcher) {
@@ -47,7 +47,7 @@ class BatteryStatsRepositoryImpl(
         withContext(dispatcher) {
             database.watchBatteryStatsQueries.insert(
                 watchId,
-                newStats.percent,
+                newStats.percent.toLong(),
                 newStats.charging,
                 newStats.timestamp
             )

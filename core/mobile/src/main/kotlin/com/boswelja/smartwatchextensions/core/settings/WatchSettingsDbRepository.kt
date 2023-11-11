@@ -1,11 +1,11 @@
 package com.boswelja.smartwatchextensions.core.settings
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.boswelja.smartwatchextensions.core.settings.database.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.database.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.database.WatchSettingsDatabase
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -30,7 +30,7 @@ class WatchSettingsDbRepository(
     override suspend fun putInt(watchId: String, key: String, value: Int) {
         withContext(dispatcher) {
             database.intSettingQueries.update(
-                IntSetting(watchId, key, value)
+                IntSetting(watchId, key, value.toLong())
             )
         }
     }
@@ -39,27 +39,27 @@ class WatchSettingsDbRepository(
         database.boolSettingQueries
             .get(watchId, key)
             .asFlow()
-            .mapToOneOrNull()
+            .mapToOneOrNull(dispatcher)
             .map { it ?: defaultValue }
 
     override fun getInt(watchId: String, key: String, defaultValue: Int): Flow<Int> =
         database.intSettingQueries
             .get(watchId, key)
             .asFlow()
-            .mapToOneOrNull()
-            .map { it ?: defaultValue }
+            .mapToOneOrNull(dispatcher)
+            .map { it?.toInt() ?: defaultValue }
 
     override fun getIdsWithBooleanSet(key: String, value: Boolean): Flow<List<String>> =
         database.boolSettingQueries
             .getIdsWithSetting(key, value)
             .asFlow()
-            .mapToList()
+            .mapToList(dispatcher)
 
     override fun getIdsWithIntSet(key: String, value: Int): Flow<List<String>> =
         database.intSettingQueries
-            .getIdsWithSetting(key, value)
+            .getIdsWithSetting(key, value.toLong())
             .asFlow()
-            .mapToList()
+            .mapToList(dispatcher)
 
     override suspend fun deleteForWatch(watchId: String) {
         database.transaction {

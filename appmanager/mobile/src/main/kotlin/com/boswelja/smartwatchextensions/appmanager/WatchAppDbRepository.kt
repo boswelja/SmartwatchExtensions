@@ -1,10 +1,10 @@
 package com.boswelja.smartwatchextensions.appmanager
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDb
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOne
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -93,7 +93,7 @@ class WatchAppDbRepository(
                 )
             }
             .asFlow()
-            .mapToOne()
+            .mapToOne(dispatcher)
 
     override fun getAppsFor(watchId: String): Flow<List<WatchApp>> =
         database.watchAppQueries
@@ -101,7 +101,7 @@ class WatchAppDbRepository(
                 WatchApp(package_name, label, version_name, system_app, enabled)
             }
             .asFlow()
-            .mapToList()
+            .mapToList(dispatcher)
 
     override fun getAppVersionsFor(watchId: String): Flow<List<WatchAppVersion>> =
         database.watchAppQueries
@@ -109,11 +109,11 @@ class WatchAppDbRepository(
                 WatchAppVersion(package_name, version_code)
             }
             .asFlow()
-            .mapToList()
+            .mapToList(dispatcher)
 
     override fun countFor(watchId: String): Flow<Long> =
         database.watchAppQueries
             .countFor(watchId)
             .asFlow()
-            .mapToOne()
+            .mapToOne(dispatcher)
 }

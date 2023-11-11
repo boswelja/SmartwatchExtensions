@@ -24,7 +24,6 @@ import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun WatchManagerScreen(
     onWatchClick: (Watch) -> Unit,
@@ -49,10 +48,10 @@ fun WatchManagerScreen(
                         value = versionResult.getOrDefault("Failed to load version")
                     }
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text(text = watch.name)
                         },
-                        supportingText = {
+                        supportingContent = {
                             AnimatedContent(targetState = appVersion) { version ->
                                 if (version != null) {
                                     Text(text = version)
@@ -71,7 +70,7 @@ fun WatchManagerScreen(
                 }
                 item {
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text("Add a Watch")
                         },
                         leadingContent = {

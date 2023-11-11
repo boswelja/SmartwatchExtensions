@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight")
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
@@ -15,9 +15,14 @@ android {
     }
 
     buildFeatures.compose = true
+    buildFeatures.buildConfig = true
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -48,12 +53,14 @@ detekt {
 }
 
 sqldelight {
-    database("WatchSettingsDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.core.settings.database"
-        sourceFolders = listOf("database-settings")
-    }
-    database("RegisteredWatchDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.core.devicemanagement.database"
-        sourceFolders = listOf("database-watches")
+    databases {
+        create("WatchSettingsDatabase") {
+            packageName.set("com.boswelja.smartwatchextensions.core.settings.database")
+            srcDirs("src/main/database-settings")
+        }
+        create("RegisteredWatchDatabase") {
+            packageName.set("com.boswelja.smartwatchextensions.core.devicemanagement.database")
+            srcDirs("src/main/database-watches")
+        }
     }
 }

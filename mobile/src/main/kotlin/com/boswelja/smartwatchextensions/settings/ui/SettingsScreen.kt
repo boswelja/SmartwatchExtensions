@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.outlined.Watch
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -38,7 +37,6 @@ import org.koin.androidx.compose.getViewModel
  * @param onNavigateTo Called when navigation is requested.
  * @param modifier [Modifier].
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSettingsScreen(
     onNavigateTo: (SettingsDestination) -> Unit,
@@ -73,7 +71,7 @@ fun AppSettingsScreen(
         }
         item {
             ListItem(
-                headlineText = { Text(stringResource(R.string.manage_watches_title)) },
+                headlineContent = { Text(stringResource(R.string.manage_watches_title)) },
                 modifier = Modifier
                     .clickable {
                         onNavigateTo(SettingsDestination.WATCH_MANAGER)
@@ -109,7 +107,6 @@ fun AboutAppHeader(
 /**
  * Displays a list of shortcuts to app-related information
  */
-@OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.aboutAppListShortcuts(
     onNavigateTo: (SettingsDestination) -> Unit,
     modifier: Modifier = Modifier
@@ -117,7 +114,7 @@ fun LazyListScope.aboutAppListShortcuts(
     item {
         val context = LocalContext.current
         ListItem(
-            headlineText = { Text(stringResource(R.string.noti_settings_title)) },
+            headlineContent = { Text(stringResource(R.string.noti_settings_title)) },
             leadingContent = { Icon(Icons.Default.Notifications, null) },
             modifier = Modifier.clickable {
                 context.startActivity {
@@ -130,21 +127,21 @@ fun LazyListScope.aboutAppListShortcuts(
     }
     item {
         ListItem(
-            headlineText = { Text(stringResource(R.string.about_github)) },
+            headlineContent = { Text(stringResource(R.string.about_github)) },
             leadingContent = { Icon(Icons.Default.Code, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.SOURCE) }.then(modifier)
         )
     }
     item {
         ListItem(
-            headlineText = { Text(stringResource(R.string.about_changelog)) },
+            headlineContent = { Text(stringResource(R.string.about_changelog)) },
             leadingContent = { Icon(Icons.Default.ChangeHistory, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.CHANGELOG) }.then(modifier)
         )
     }
     item {
         ListItem(
-            headlineText = { Text(stringResource(R.string.about_priv_policy_title)) },
+            headlineContent = { Text(stringResource(R.string.about_priv_policy_title)) },
             leadingContent = { Icon(Icons.Default.Security, null) },
             modifier = Modifier.clickable { onNavigateTo(SettingsDestination.PRIVACY_POLICY) }.then(modifier)
         )

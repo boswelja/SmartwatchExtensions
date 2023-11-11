@@ -1,3 +1,5 @@
+import kotlin.Boolean;
+
 CREATE TABLE boolSetting (
     watch_id TEXT NOT NULL,
     key TEXT NOT NULL,
