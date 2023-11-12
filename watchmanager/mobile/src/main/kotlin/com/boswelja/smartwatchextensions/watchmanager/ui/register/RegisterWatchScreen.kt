@@ -108,7 +108,7 @@ fun WatchItem(
     modifier: Modifier = Modifier
 ) {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(watch.name)
         },
         leadingContent = {

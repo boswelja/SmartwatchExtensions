@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.database
 
-import com.squareup.sqldelight.ColumnAdapter
+import app.cash.sqldelight.ColumnAdapter
 
 internal val watchAppDbAdapter = WatchAppDb.Adapter(
     permissionsAdapter = object : ColumnAdapter<List<String>, String> {

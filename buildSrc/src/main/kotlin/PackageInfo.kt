@@ -5,7 +5,7 @@ object DebugInfo {
 }
 
 object PackageInfo {
-    const val targetSdk = 33
+    const val targetSdk = 34
     const val packageName = "com.boswelja.smartwatchextensions"
 
     fun getVersionName(): String {

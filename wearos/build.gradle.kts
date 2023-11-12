@@ -23,13 +23,7 @@ android {
     }
 
     buildFeatures.compose = true
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    buildFeatures.buildConfig = true
 
     buildTypes {
         getByName("debug") {
@@ -52,9 +46,13 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(arrayOf("META-INF/AL2.0", "META-INF/LGPL2.1"))
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {

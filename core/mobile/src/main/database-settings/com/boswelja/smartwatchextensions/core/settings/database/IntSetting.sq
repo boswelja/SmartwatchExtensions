@@ -1,7 +1,7 @@
 CREATE TABLE intSetting (
     watch_id TEXT NOT NULL,
     key TEXT NOT NULL,
-    value INTEGER AS Int NOT NULL,
+    value INTEGER NOT NULL,
     PRIMARY KEY (watch_id, key)
 );
 

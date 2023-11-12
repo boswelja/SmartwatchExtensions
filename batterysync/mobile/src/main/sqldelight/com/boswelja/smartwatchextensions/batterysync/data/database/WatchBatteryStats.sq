@@ -1,6 +1,8 @@
+import kotlin.Boolean;
+
 CREATE TABLE watchBatteryStats (
     watch_id TEXT NOT NULL PRIMARY KEY,
-    percent INTEGER AS Int NOT NULL,
+    percent INTEGER NOT NULL,
     charging INTEGER AS Boolean NOT NULL,
     timestamp_millis INTEGER NOT NULL
 );

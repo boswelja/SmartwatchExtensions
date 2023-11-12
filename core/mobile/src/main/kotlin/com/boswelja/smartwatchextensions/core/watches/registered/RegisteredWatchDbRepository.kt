@@ -1,11 +1,11 @@
 package com.boswelja.smartwatchextensions.core.watches.registered
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
 import com.boswelja.watchconnection.common.Watch
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -24,7 +24,7 @@ class RegisteredWatchDbRepository(
                 Watch(uid, name)
             }
             .asFlow()
-            .mapToList()
+            .mapToList(dispatcher)
 
     override suspend fun registerWatch(watch: Watch) {
         withContext(dispatcher) {
@@ -55,5 +55,5 @@ class RegisteredWatchDbRepository(
             Watch(uid, name)
         }
         .asFlow()
-        .mapToOneOrNull()
+        .mapToOneOrNull(dispatcher)
 }

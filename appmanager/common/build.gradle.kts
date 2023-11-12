@@ -14,6 +14,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     api(libs.watchconnection.common)
     implementation(libs.kotlinx.serialization.protobuf)

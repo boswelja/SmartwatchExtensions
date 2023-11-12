@@ -1,12 +1,11 @@
 package com.boswelja.smartwatchextensions.appmanager
 
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import app.cash.turbine.test
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.appmanager.database.watchAppDbAdapter
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -15,7 +14,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WatchAppDbRepositoryTest {
 
     private val watchIds = listOf("id1", "id2", "id3")

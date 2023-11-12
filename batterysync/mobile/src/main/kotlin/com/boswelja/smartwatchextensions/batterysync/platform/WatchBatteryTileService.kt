@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.platform
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Icon
+import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.R
@@ -65,7 +66,9 @@ class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
                         R.string.battery_percent,
                         data.data.percent.toString()
                     )
-                    subtitle = watch.name
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        subtitle = watch.name
+                    }
                     state = Tile.STATE_ACTIVE
                     icon = Icon.createWithResource(
                         this@WatchBatteryTileService,
@@ -75,7 +78,9 @@ class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
             }
             is FeatureData.Disabled -> {
                 updateTile {
-                    subtitle = getString(R.string.qs_tile_title)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        subtitle = getString(R.string.qs_tile_title)
+                    }
                     label = getString(R.string.battery_sync_disabled)
                     state = Tile.STATE_INACTIVE
                     icon = Icon.createWithResource(
@@ -86,7 +91,9 @@ class WatchBatteryTileService : FlowTileService<FeatureData<BatteryStats>>() {
             }
             is FeatureData.Error -> {
                 updateTile {
-                    subtitle = getString(R.string.qs_tile_title)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        subtitle = getString(R.string.qs_tile_title)
+                    }
                     label = getString(R.string.qs_tile_unknown_error)
                     state = Tile.STATE_UNAVAILABLE
                     icon = Icon.createWithResource(

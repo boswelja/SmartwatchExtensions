@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight")
 }
 
 android {
@@ -17,6 +17,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -57,7 +61,9 @@ detekt {
 }
 
 sqldelight {
-    database("WatchAppDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.appmanager.database"
+    databases {
+        create("WatchAppDatabase") {
+            packageName.set("com.boswelja.smartwatchextensions.appmanager.database")
+        }
     }
 }

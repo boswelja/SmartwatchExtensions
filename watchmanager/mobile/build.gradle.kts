@@ -18,6 +18,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(projects.core.mobile)
     implementation(projects.watchmanager.common)

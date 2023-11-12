@@ -13,6 +13,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     api(projects.appmanager.common)
 

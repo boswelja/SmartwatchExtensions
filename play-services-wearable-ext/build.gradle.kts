@@ -13,6 +13,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     api(libs.play.services.wearable)
     api(libs.kotlinx.coroutines.playservices)

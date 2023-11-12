@@ -14,6 +14,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.kotlinx.coroutines.core)

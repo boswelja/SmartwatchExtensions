@@ -24,8 +24,8 @@ fun ShortcutSetting(
     summary: (@Composable () -> Unit)? = null
 ) {
     ListItem(
-        headlineText = text,
-        supportingText = summary,
+        headlineContent = text,
+        supportingContent = summary,
         modifier = Modifier.clickable(enabled = enabled, onClick = onClick).then(modifier)
     )
 }
