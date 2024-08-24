@@ -1,52 +1,52 @@
 [versions]
 # AndroidX versions
-androidxActivity = "1.8.0"
-androidxAppCompat = "1.6.1"
-androidxCore = "1.12.0"
-androidxDataStore = "1.0.0"
-androidxEspresso = "3.5.1"
-androidxLifecycle = "2.6.2"
+androidxActivity = "1.9.1"
+androidxAppCompat = "1.7.0"
+androidxCore = "1.13.1"
+androidxDataStore = "1.1.1"
+androidxEspresso = "3.6.1"
+androidxLifecycle = "2.8.4"
 androidxSplashscreen = "1.0.1"
-androidxTest = "1.5.0"
-androidxTestExt = "1.1.5"
+androidxTest = "1.6.1"
+androidxTestExt = "1.2.1"
 androidxWear = "1.3.0"
-androidxWearWatchface = "1.1.1"
-androidxWork = "2.8.1"
+androidxWearWatchface = "1.2.1"
+androidxWork = "2.9.1"
 
 # Compose versions
-accompanist = "0.32.0"
-compose = "1.5.4"
-composeCompiler = "1.5.4"
-material3 = "1.1.2"
-navigationCompose = "2.7.5"
-wearCompose = "1.2.1"
+accompanist = "0.34.0"
+compose = "1.6.8"
+material3 = "1.2.1"
+navigationCompose = "2.7.7"
+wearCompose = "1.3.1"
 
 # Glance versions
-glance = "1.0.0"
+glance = "1.1.0"
 appwidgetConfiguration = "0.2.2"
 
 # KotlinX versions
-kotlinxCoroutines = "1.7.3"
-kotlinxSerialization = "1.4.0"
+kotlinxCoroutines = "1.8.1"
+kotlinxSerialization = "1.7.1"
 
 # Misc versions
-androidGradlePlugin = "8.1.3"
-kotlin = "1.9.20"
+androidGradlePlugin = "8.5.2"
+kotlin = "2.0.10"
 detekt = "1.21.0"
 junit = "4.13.2"
-koin = "3.5.0"
-mockk = "1.12.8"
-robolectric = "4.8.2"
+koin = "3.5.6"
+mockk = "1.13.12"
+robolectric = "4.13"
 sqldelight = "2.0.0"
-turbine = "0.10.0"
+turbine = "1.1.0"
 watchconnection = "7.0.6"
-playServicesWearable = "18.1.0"
+playServicesWearable = "18.2.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 [libraries]
@@ -64,7 +64,7 @@ androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", 
 
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidxEspresso" }
-androidx-test-runner = { module = "androidx.test:runner", version = "1.5.0-alpha02" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxTestExt" }
 
@@ -119,7 +119,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinxSerialization" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-androidx-compose", version = "3.2.0" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 

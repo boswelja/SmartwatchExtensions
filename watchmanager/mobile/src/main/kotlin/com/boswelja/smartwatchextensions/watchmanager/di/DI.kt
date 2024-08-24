@@ -8,12 +8,16 @@ import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchV
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerViewModel
 import com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered.ManageRegisteredWatchViewModel
 import com.boswelja.smartwatchextensions.watchmanager.ui.pick.WatchPickerViewModel
+import com.google.android.gms.wearable.Wearable
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val watchManagerModule = module {
+    single { Wearable.getCapabilityClient(androidContext()) }
+
     singleOf(::WatchVersionRepositoryImpl) bind WatchVersionRepository::class
     singleOf(::AvailableWatchRepositoryImpl) bind AvailableWatchRepository::class
 

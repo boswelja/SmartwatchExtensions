@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
     id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -42,12 +43,22 @@ android {
         isIncludeAndroidResources = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
-
     packaging {
-        resources.excludes.addAll(arrayOf("META-INF/AL2.0", "META-INF/LGPL2.1"))
+        resources {
+            excludes.addAll(
+                listOf(
+                    "META-INF/AL2.0",
+                    "META-INF/LGPL2.1"
+                )
+            )
+
+            merges.addAll(
+                listOf(
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE-notice.md"
+                )
+            )
+        }
     }
 }
 

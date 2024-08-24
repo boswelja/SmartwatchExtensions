@@ -25,10 +25,10 @@ class AvailableWatchRepositoryImpl(
         }
         val capabilities = capabilityClient.getCapability(WATCH_CAPABILITY, CapabilityClient.FILTER_REACHABLE).await()
         send(
-            capabilities.nodes.map {
+            capabilities.nodes.map { node ->
                 AvailableWatch(
-                    it.id,
-                    it.displayName
+                    node.id,
+                    node.displayName
                 )
             }
         )

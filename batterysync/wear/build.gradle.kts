@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -14,9 +15,6 @@ android {
     }
 
     buildFeatures.compose = true
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 kotlin {

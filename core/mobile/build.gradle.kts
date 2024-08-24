@@ -4,6 +4,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("app.cash.sqldelight")
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -16,9 +17,6 @@ android {
 
     buildFeatures.compose = true
     buildFeatures.buildConfig = true
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 kotlin {
