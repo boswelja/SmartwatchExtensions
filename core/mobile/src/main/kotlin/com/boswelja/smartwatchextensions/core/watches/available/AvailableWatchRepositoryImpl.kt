@@ -25,10 +25,10 @@ class AvailableWatchRepositoryImpl(
         }
         val capabilities = capabilityClient.getCapability(WATCH_CAPABILITY, CapabilityClient.FILTER_REACHABLE).await()
         send(
-            capabilities.nodes.map {
+            capabilities.nodes.map { node ->
                 AvailableWatch(
-                    it.id,
-                    it.displayName
+                    node.id,
+                    node.displayName
                 )
             }
         )
@@ -41,6 +41,6 @@ class AvailableWatchRepositoryImpl(
     }
 
     companion object {
-        private const val WATCH_CAPABILITY = "extensions_wear_app"
+        private const val WATCH_CAPABILITY = "extensions_watch_app"
     }
 }

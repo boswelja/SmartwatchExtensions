@@ -25,13 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.watchmanager.R
 import com.boswelja.smartwatchextensions.core.watches.available.AvailableWatch
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterWatchScreen(
     onRegistrationFinished: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RegisterWatchViewModel = getViewModel()
+    viewModel: RegisterWatchViewModel = koinViewModel()
 ) {
     val availableWatches by viewModel.availableWatches.collectAsState()
     var registeringWatch by remember { mutableStateOf<AvailableWatch?>(null) }
@@ -57,6 +57,7 @@ fun RegisterWatchScreen(
 
     registeringWatch?.let {
         ConfirmRegisterDialog(
+            watchName = registeringWatch!!.name,
             onDismissDialog = {
                 registeringWatch = null
             },
@@ -70,6 +71,7 @@ fun RegisterWatchScreen(
 
 @Composable
 fun ConfirmRegisterDialog(
+    watchName: String,
     onDismissDialog: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
@@ -96,7 +98,7 @@ fun ConfirmRegisterDialog(
             Text(stringResource(R.string.register_watch_title))
         },
         text = {
-            Text(stringResource(R.string.register_watch_description))
+            Text(stringResource(R.string.register_watch_description, watchName))
         }
     )
 }

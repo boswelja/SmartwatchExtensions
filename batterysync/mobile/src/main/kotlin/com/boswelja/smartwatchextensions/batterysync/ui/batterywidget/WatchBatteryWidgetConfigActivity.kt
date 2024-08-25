@@ -35,7 +35,7 @@ import com.google.android.glance.appwidget.configuration.AppWidgetConfigurationS
 import com.google.android.glance.appwidget.configuration.rememberAppWidgetConfigurationState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.inject
+import org.koin.compose.koinInject
 
 class WatchBatteryWidgetConfigActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +62,8 @@ fun ConfigurationScreen() {
         return
     }
 
-    val registeredWatchRepository: RegisteredWatchRepository by inject()
-    val batteryStatsRepository: BatteryStatsRepository by inject()
+    val registeredWatchRepository: RegisteredWatchRepository = koinInject()
+    val batteryStatsRepository: BatteryStatsRepository = koinInject()
     val registeredWatches by registeredWatchRepository.registeredWatches.collectAsState(initial = emptyList())
     val watchId = configurationState.getCurrentState<Preferences>()?.get(WatchBatteryWidget.watchIdKey)
     val watch = remember(watchId, registeredWatches) { registeredWatches.firstOrNull { it.uid == watchId }}

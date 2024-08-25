@@ -21,7 +21,7 @@ class RegisterWatchViewModel(
         .map { availableWatches ->
             // Filter out all registered watches
             val registeredWatches = registeredWatchRepository.registeredWatches.first()
-            availableWatches.filter { availableWatch ->
+            availableWatches.filterNot { availableWatch ->
                 registeredWatches.any { registeredWatch ->
                     registeredWatch.uid == availableWatch.id
                 }
