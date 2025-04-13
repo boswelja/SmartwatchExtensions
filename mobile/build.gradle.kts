@@ -8,12 +8,8 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions"
-    compileSdk = PackageInfo.targetSdk
 
     defaultConfig {
-        minSdk = 28
-        targetSdk = PackageInfo.targetSdk
-
         applicationId = PackageInfo.packageName
         versionCode = PackageInfo.getVersionCode('0')
         versionName = PackageInfo.getVersionName()
@@ -67,7 +63,7 @@ android {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 dependencies {

@@ -30,7 +30,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.core.ui.settings.DialogSetting
 import kotlinx.coroutines.Dispatchers
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable screen for displaying app settings.
@@ -42,7 +42,7 @@ fun AppSettingsScreen(
     onNavigateTo: (SettingsDestination) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: AppSettingsViewModel = getViewModel()
+    val viewModel: AppSettingsViewModel = koinViewModel()
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
     val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
 

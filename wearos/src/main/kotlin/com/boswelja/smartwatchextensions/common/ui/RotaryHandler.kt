@@ -8,11 +8,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.InputDeviceCompat
 import androidx.core.view.MotionEventCompat
 import androidx.core.view.ViewConfigurationCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 /**
  * An effect for handling rotary input from the device.

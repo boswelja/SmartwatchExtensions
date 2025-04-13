@@ -18,7 +18,7 @@ import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
 import com.boswelja.smartwatchextensions.phonelocking.platform.PhoneLockingAccessibilityService
 import com.boswelja.smartwatchextensions.phonelocking.R
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable screen for displaying Phone Locking settings.
@@ -29,7 +29,7 @@ fun PhoneLockingSettingsScreen(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: PhoneLockingSettingsViewModel = getViewModel()
+    val viewModel: PhoneLockingSettingsViewModel = koinViewModel()
     val context = LocalContext.current
 
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()

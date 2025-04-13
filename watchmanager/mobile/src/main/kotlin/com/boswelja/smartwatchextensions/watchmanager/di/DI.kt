@@ -10,7 +10,7 @@ import com.boswelja.smartwatchextensions.watchmanager.ui.manageregistered.Manage
 import com.boswelja.smartwatchextensions.watchmanager.ui.pick.WatchPickerViewModel
 import com.google.android.gms.wearable.Wearable
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module

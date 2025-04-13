@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.core.ui.settings.CheckboxSetting
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable screen to let the user control notifications related to phone battery.
@@ -20,7 +20,7 @@ import org.koin.androidx.compose.getViewModel
 fun PhoneBatteryNotiSettingsScreen(
     modifier: Modifier = Modifier
 ) {
-    val viewModel: PhoneBatteryNotiSettingsViewModel = getViewModel()
+    val viewModel: PhoneBatteryNotiSettingsViewModel = koinViewModel()
 
     val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState()
     val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState()

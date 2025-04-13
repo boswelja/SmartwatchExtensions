@@ -70,7 +70,7 @@ class BatterySyncWorker(
                 workerId,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 request
-            ).result.await()
+            ).result // TODO
             return true
         }
 

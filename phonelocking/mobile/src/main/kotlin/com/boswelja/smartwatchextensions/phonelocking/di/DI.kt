@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.phonelocking.di
 import com.boswelja.smartwatchextensions.phonelocking.domain.usecase.GetPhoneLockingEnabled
 import com.boswelja.smartwatchextensions.phonelocking.domain.usecase.SetPhoneLockingEnabled
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsViewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

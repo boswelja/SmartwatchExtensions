@@ -47,7 +47,7 @@ fun BatterySyncSettingsHeader(
                     if (dataAgeMinutes > 0) {
                         resources.getQuantityString(
                             R.plurals.battery_sync_last_updated_minutes,
-                            dataAgeMinutes.toInt(),
+                            dataAgeMinutes,
                             dataAgeMinutes
                         )
                     } else {
@@ -84,8 +84,8 @@ fun BatteryStatsSummaryLarge(
             text()
         }
         LinearProgressIndicator(
-            progress = animatedBattery,
-            modifier = Modifier.fillMaxWidth()
+            progress = { animatedBattery },
+            modifier = Modifier.fillMaxWidth(),
         )
         ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
             secondaryText()

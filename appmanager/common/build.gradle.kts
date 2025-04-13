@@ -7,15 +7,13 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions.appmanager.common"
-    compileSdk = PackageInfo.targetSdk
     defaultConfig {
-        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 dependencies {

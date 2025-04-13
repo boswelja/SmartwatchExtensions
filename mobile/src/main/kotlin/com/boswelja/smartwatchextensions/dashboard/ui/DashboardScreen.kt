@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.watchmanager.ui.pick.WatchPicker
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A screen to display the dashboard.
@@ -23,7 +23,7 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
     onNavigateTo: (DashboardDestination) -> Unit
 ) {
-    val viewModel: DashboardViewModel = getViewModel()
+    val viewModel: DashboardViewModel = koinViewModel()
     val appCount by viewModel.appCount.collectAsState()
 
     val itemModifier = Modifier.padding(horizontal = 16.dp)

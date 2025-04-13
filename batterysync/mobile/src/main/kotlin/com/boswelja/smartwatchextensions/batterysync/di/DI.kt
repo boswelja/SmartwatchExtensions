@@ -28,7 +28,7 @@ import com.boswelja.smartwatchextensions.batterysync.platform.MobileBatterySyncN
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
 import com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti.WatchBatteryNotiSettingsViewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named

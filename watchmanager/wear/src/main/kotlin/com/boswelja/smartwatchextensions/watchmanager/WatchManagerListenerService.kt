@@ -44,7 +44,7 @@ class WatchManagerListenerService : WearableListenerService() {
             )
         }
 
-        val version = Version(PackageInfoCompat.getLongVersionCode(packageInfo), packageInfo.versionName)
+        val version = Version(PackageInfoCompat.getLongVersionCode(packageInfo), packageInfo.versionName!!)
         messageClient.sendMessage(
             targetId,
             RequestAppVersion,

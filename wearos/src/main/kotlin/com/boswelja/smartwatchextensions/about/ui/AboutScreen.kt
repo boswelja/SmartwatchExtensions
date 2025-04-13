@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.SettingsApplications
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -124,7 +124,7 @@ fun Links(
             icon = {
                 Icon(
                     modifier = Modifier.size(ChipDefaults.IconSize),
-                    imageVector = Icons.Outlined.OpenInNew,
+                    imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
                     contentDescription = null
                 )
             },

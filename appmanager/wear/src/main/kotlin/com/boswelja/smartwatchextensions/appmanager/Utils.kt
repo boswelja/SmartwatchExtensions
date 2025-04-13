@@ -10,12 +10,12 @@ internal fun PackageInfo.toApp(packageManager: PackageManager): App {
         versionName = versionName ?: "0",
         versionCode = PackageInfoCompat.getLongVersionCode(this),
         packageName = packageName,
-        label = applicationInfo.loadLabel(packageManager).toString(),
-        isSystemApp = applicationInfo.flags.and(
+        label = applicationInfo!!.loadLabel(packageManager).toString(),
+        isSystemApp = applicationInfo!!.flags.and(
             ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
         ) != 0,
         hasLaunchActivity = packageManager.getLaunchIntentForPackage(packageName) != null,
-        isEnabled = applicationInfo.enabled,
+        isEnabled = applicationInfo?.enabled == true,
         installTime = firstInstallTime,
         updateTime = lastUpdateTime,
         requestedPermissions = packageManager.getLocalizedPermissions(this)

@@ -35,7 +35,7 @@ class RegisterWatchViewModel(
 
     fun registerWatch(watch: AvailableWatch) {
         viewModelScope.launch {
-            registeredWatchRepository.registerWatch(Watch(watch.id, watch.name))
+            registeredWatchRepository.registerWatch(Watch(Watch.createUid("WEAR_OS", watch.id), watch.name))
         }
     }
 }
