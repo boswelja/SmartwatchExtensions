@@ -1,5 +1,7 @@
 package com.boswelja.smartwatchextensions.dndsync
 
+import android.app.NotificationManager
+import android.content.Context
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -9,4 +11,6 @@ import org.koin.dsl.module
  */
 val dndSyncModule = module {
     viewModelOf(::DnDSyncSettingsViewModel)
+
+    factory { get<Context>().getSystemService(NotificationManager::class.java) }
 }
