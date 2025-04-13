@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
 import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable screen to display App Manager.
@@ -23,7 +23,7 @@ import org.koin.androidx.compose.getViewModel
 fun AppListScreen(
     onAppClicked: (WatchAppWithIcon) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AppManagerViewModel = getViewModel()
+    viewModel: AppManagerViewModel = koinViewModel()
 ) {
     val userApps by viewModel.userApps.collectAsState()
     val disabledApps by viewModel.disabledApps.collectAsState()

@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.boswelja.smartwatchextensions.appmanager.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Handles displaying detailed information about an app with the given package name.
@@ -25,7 +25,7 @@ fun AppInfoScreen(
     packageName: String,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AppInfoViewModel = getViewModel()
+    viewModel: AppInfoViewModel = koinViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current

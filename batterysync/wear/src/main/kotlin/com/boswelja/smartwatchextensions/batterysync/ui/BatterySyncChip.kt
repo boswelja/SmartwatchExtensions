@@ -15,7 +15,7 @@ import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.core.fold
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A [Chip] for showing Battery Sync info.
@@ -29,7 +29,7 @@ fun BatterySyncChip(
 ) {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
-    val viewModel: BatteryStatsViewModel = getViewModel()
+    val viewModel: BatteryStatsViewModel = koinViewModel()
     val batteryStatsFeatureData by viewModel.batteryStats.collectAsState()
 
     batteryStatsFeatureData.fold(

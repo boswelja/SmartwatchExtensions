@@ -54,6 +54,6 @@ plugins {
 
 android {
     targetSdk = 34
-    compileSdk = 34
+    compileSdk = 36
     minSdk = 26
 }

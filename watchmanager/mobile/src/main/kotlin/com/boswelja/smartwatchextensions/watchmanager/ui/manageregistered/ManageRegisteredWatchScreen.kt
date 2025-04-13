@@ -57,12 +57,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.core.watches.status.ConnectionMode
 import com.boswelja.smartwatchextensions.watchmanager.R
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ManageRegisteredWatchScreen(
     modifier: Modifier = Modifier,
-    viewModel: ManageRegisteredWatchViewModel = getViewModel()
+    viewModel: ManageRegisteredWatchViewModel = koinViewModel()
 ) {
     val watch by viewModel.watch.collectAsState()
 

@@ -38,7 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.boswelja.watchconnection.common.Watch
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -46,7 +46,7 @@ fun WatchPicker(
     onRegisterNewWatch: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: WatchPickerViewModel = getViewModel()
+    viewModel: WatchPickerViewModel = koinViewModel()
 ) {
     val watches by viewModel.watches.collectAsState()
     val selectedWatch by viewModel.selectedWatch.collectAsState()

@@ -17,7 +17,7 @@ import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_TO_
 import com.boswelja.smartwatchextensions.dndsync.DnDSyncSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.dndsync.R
 import kotlinx.coroutines.Dispatchers
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable screen for displaying DnD Sync settings.
@@ -27,7 +27,7 @@ import org.koin.androidx.compose.getViewModel
 fun DnDSyncSettingsScreen(
     modifier: Modifier = Modifier
 ) {
-    val viewModel: DnDSyncSettingsViewModel = getViewModel()
+    val viewModel: DnDSyncSettingsViewModel = koinViewModel()
     var changingKey = rememberSaveable { "" }
 
     val canSendDnD by viewModel.canSendDnD.collectAsState(false, Dispatchers.IO)

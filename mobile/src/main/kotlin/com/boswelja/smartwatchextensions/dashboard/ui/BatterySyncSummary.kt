@@ -77,7 +77,7 @@ fun BatterySyncSummary(
                 style = MaterialTheme.typography.titleMedium
             )
             LinearProgressIndicator(
-                progress = animatedBattery,
+                progress = { animatedBattery },
                 modifier = Modifier.fillMaxWidth()
             )
         }

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
@@ -31,6 +31,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
+import androidx.core.net.toUri
 
 /**
  * An app bar with a navigate up action.
@@ -54,7 +55,7 @@ fun TopAppBar(
             ) {
                 IconButton(onNavigateUp) {
                     Icon(
-                        Icons.Default.ArrowBack,
+                        Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -133,7 +134,7 @@ fun NavGraphBuilder.appBarGraph(
 ) {
     activity(TopAppBarDestinations.WIKI.route) {
         action = Intent.ACTION_VIEW
-        data = Uri.parse("https://github.com/boswelja/SmartwatchExtensions/wiki")
+        data = "https://github.com/boswelja/SmartwatchExtensions/wiki".toUri()
     }
 
     // Load settings

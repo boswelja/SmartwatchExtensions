@@ -3,9 +3,8 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.ui.AppInfoViewModel
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**

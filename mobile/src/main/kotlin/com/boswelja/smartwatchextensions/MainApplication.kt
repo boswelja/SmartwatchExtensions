@@ -84,7 +84,7 @@ val clientsModule = module {
  */
 val databaseModule = module {
     factory<SqlDriver> { params ->
-        AndroidSqliteDriver(params.get(), get(), params.get())
+        AndroidSqliteDriver(params.get(), get<Context>(), params.get())
     }
     single<CoroutineContext>(named("database")) { Dispatchers.IO }
 }

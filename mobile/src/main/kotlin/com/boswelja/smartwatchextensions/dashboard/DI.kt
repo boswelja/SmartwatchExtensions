@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.dashboard
 
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardViewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**

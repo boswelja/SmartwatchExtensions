@@ -18,7 +18,7 @@ import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A Composable for displaying available Extensions.
@@ -38,7 +38,7 @@ fun Extensions(
     ) {
         val view = LocalView.current
         val coroutineScope = rememberCoroutineScope()
-        val viewModel: ExtensionsViewModel = getViewModel()
+        val viewModel: ExtensionsViewModel = koinViewModel()
 
         val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState()
         val phoneName by viewModel.phoneName

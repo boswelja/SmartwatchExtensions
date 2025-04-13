@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Watch
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
@@ -22,14 +20,14 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
 import com.boswelja.watchconnection.common.Watch
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WatchManagerScreen(
     onWatchClick: (Watch) -> Unit,
     onAddWatchClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: WatchManagerViewModel = getViewModel()
+    viewModel: WatchManagerViewModel = koinViewModel()
 ) {
     val registeredWatches by viewModel.registeredWatches.collectAsState(initial = null)
     Column {

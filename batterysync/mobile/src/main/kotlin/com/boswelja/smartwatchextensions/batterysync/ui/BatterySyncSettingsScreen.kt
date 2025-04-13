@@ -17,7 +17,7 @@ import com.boswelja.smartwatchextensions.batterysync.domain.model.DeviceBatteryN
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.core.ui.settings.HeroSetting
 import com.boswelja.smartwatchextensions.core.ui.settings.ShortcutSetting
-import org.koin.androidx.compose.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
 
 private const val BatteryChargeMin = 0.7f
@@ -33,7 +33,7 @@ fun BatterySyncSettingsScreen(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: BatterySyncViewModel = getViewModel()
+    val viewModel: BatterySyncViewModel = koinViewModel()
 
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     val batteryStats by viewModel.batteryStats.collectAsState()
