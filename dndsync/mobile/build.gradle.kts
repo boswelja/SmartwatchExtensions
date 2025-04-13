@@ -21,9 +21,9 @@ kotlin {
 dependencies {
     api(projects.dndsync.common)
 
-    implementation(projects.core.mobile)
+    implementation(libs.play.services.wearable)
 
-    implementation(libs.watchconnection.mobile.core)
+    implementation(projects.core.mobile)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)

@@ -16,8 +16,6 @@ kotlin {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.lifecycle.runtime)
