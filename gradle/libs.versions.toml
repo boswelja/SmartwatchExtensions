@@ -99,9 +99,6 @@ mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
-watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
-watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
-
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 
 sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
