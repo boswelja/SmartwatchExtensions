@@ -38,7 +38,6 @@ mockk = "1.14.0"
 robolectric = "4.14.1"
 sqldelight = "2.0.2"
 turbine = "1.2.0"
-watchconnection = "7.0.6"
 playServicesWearable = "19.0.0"
 
 [plugins]

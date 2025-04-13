@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.appmanager
 
-import android.content.Context
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.runBlocking

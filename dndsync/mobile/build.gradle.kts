@@ -33,6 +33,6 @@ dependencies {
 }
 
 detekt {
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }

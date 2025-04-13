@@ -6,7 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +53,9 @@ fun WatchPicker(
 
     AnimatedContent(
         targetState = watches,
-        transitionSpec = { fadeIn() with fadeOut() }
+        transitionSpec = {
+            fadeIn() togetherWith fadeOut()
+        }
     ) {
         if (it != null) {
             if (it.isEmpty()) {

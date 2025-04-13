@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync.platform
 
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Icon

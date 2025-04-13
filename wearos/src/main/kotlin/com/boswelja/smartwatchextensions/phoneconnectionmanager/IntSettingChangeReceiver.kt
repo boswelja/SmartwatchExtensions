@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
-import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncSettingsKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySyncConfigRepository
