@@ -8,8 +8,8 @@ import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateBoolSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.sendMessage
+import com.google.android.gms.wearable.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -25,11 +25,9 @@ class SetBatterySyncEnabled(
 
         // Update the watches local value
         val updateSent = messageClient.sendMessage(
-            watchId,
-            Message(
-                UpdateBoolSetting,
-                BoolSettingSerializer.serialize(BoolSetting(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled))
-            )
+            targetId = watchId,
+            path = UpdateBoolSetting,
+            data = BoolSettingSerializer.serialize(BoolSetting(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled))
         )
 
         return if (!updateSent) {

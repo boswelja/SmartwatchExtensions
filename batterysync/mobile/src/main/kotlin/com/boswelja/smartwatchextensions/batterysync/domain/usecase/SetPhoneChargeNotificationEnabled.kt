@@ -6,8 +6,8 @@ import com.boswelja.smartwatchextensions.core.settings.BoolSetting
 import com.boswelja.smartwatchextensions.core.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
 import com.boswelja.smartwatchextensions.core.settings.WatchSettingsRepository
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.sendMessage
+import com.google.android.gms.wearable.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -22,12 +22,10 @@ class SetPhoneChargeNotificationEnabled(
     ): Boolean {
         // Update the watches local value
         val updateSent = messageClient.sendMessage(
-            watchId,
-            Message(
-                UpdateIntSetting,
-                BoolSettingSerializer.serialize(
-                    BoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY, phoneChargeNotificationEnabled)
-                )
+            targetId = watchId,
+            path = UpdateIntSetting,
+            data = BoolSettingSerializer.serialize(
+                BoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY, phoneChargeNotificationEnabled)
             )
         )
         if (!updateSent) return false
