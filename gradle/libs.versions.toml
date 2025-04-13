@@ -101,7 +101,6 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 
 watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
 watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
-watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 

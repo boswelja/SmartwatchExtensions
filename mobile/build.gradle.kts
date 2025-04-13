@@ -84,8 +84,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.protobuf)
 
-    implementation(libs.watchconnection.platform.wearos)
-
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.koin.workmanager)
