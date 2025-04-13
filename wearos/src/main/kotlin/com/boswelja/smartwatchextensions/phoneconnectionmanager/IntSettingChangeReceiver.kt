@@ -7,22 +7,23 @@ import com.boswelja.smartwatchextensions.batterysync.domain.repository.BatterySy
 import com.boswelja.smartwatchextensions.core.settings.IntSetting
 import com.boswelja.smartwatchextensions.core.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.core.settings.UpdateIntSetting
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] for receiving [IntSetting].
+ * A [WearableListenerService] for receiving [IntSetting].
  */
-class IntSettingChangeReceiver : MessageReceiver(), KoinComponent {
+class IntSettingChangeReceiver : WearableListenerService(), KoinComponent {
 
     private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         if (message.path == UpdateIntSetting) {
-            val pref = message.data?.let { IntSettingSerializer.deserialize(it) } ?: return
-            handleIntPreferenceChange(pref.key, pref.value)
+            val pref = IntSettingSerializer.deserialize(message.data)
+            runBlocking { handleIntPreferenceChange(pref.key, pref.value) }
         }
     }
 
