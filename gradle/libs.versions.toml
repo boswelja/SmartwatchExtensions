@@ -38,7 +38,6 @@ mockk = "1.14.0"
 robolectric = "4.14.1"
 sqldelight = "2.0.2"
 turbine = "1.2.0"
-watchconnection = "7.0.6"
 playServicesWearable = "19.0.0"
 
 [plugins]
@@ -98,10 +97,6 @@ mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-
-watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
-watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
-watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 

@@ -19,8 +19,6 @@ kotlin {
 dependencies {
     implementation(projects.core.common)
 
-    api(libs.watchconnection.common)
-
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.androidx.appcompat)
 

@@ -1,26 +1,28 @@
 package com.boswelja.smartwatchextensions.appmanager
 
-import android.content.Context
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] for receiving [AppIcon] and updating the repository
+ * A [WearableListenerService] for receiving [AppIcon] and updating the repository
  */
-class WatchAppIconReceiver : MessageReceiver(), KoinComponent {
+class WatchAppIconReceiver : WearableListenerService(), KoinComponent {
 
     private val watchAppIconRepository: WatchAppIconRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         if (message.path == RawAppIcon) {
-            val iconData = message.data?.let { AppIconSerializer.deserialize(it) } ?: return
-            watchAppIconRepository.storeIconFor(
-                message.sourceUid,
-                iconData.packageName,
-                iconData.iconBytes
-            )
+            val iconData = AppIconSerializer.deserialize(message.data)
+            runBlocking {
+                watchAppIconRepository.storeIconFor(
+                    message.sourceNodeId,
+                    iconData.packageName,
+                    iconData.iconBytes
+                )
+            }
         }
     }
 }

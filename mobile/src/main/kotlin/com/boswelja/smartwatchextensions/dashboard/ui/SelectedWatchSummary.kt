@@ -19,8 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.core.ui.dialog.ConfirmationDialog
 import com.boswelja.smartwatchextensions.core.ui.snackbarVisuals
-import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.smartwatchextensions.core.watches.Watch
+import com.boswelja.smartwatchextensions.core.watches.status.ConnectionMode
 
 /**
  * A Composable for displaying the selected watch and it's status status.

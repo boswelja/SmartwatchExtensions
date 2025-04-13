@@ -42,21 +42,23 @@
 
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />
 
-        <receiver
+        <service
             android:name=".phoneconnectionmanager.IntSettingChangeReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" />
             </intent-filter>
-        </receiver>
+        </service>
 
-        <receiver
+        <service
             android:name=".phoneconnectionmanager.BoolSettingChangeReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" />
             </intent-filter>
-        </receiver>
+        </service>
 
         <receiver
             android:name=".BootHandler"

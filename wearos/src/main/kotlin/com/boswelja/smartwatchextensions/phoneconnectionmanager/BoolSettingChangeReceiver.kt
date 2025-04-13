@@ -17,29 +17,29 @@ import com.boswelja.smartwatchextensions.dndsync.DnDSyncStateRepository
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.phonelocking.PhoneLockingStateRepository
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
  * A [MessageReceiver] for receiving [BoolSetting].
  */
-class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
+class BoolSettingChangeReceiver : WearableListenerService(), KoinComponent {
 
     private val batterySyncConfigRepository: BatterySyncConfigRepository by inject()
     private val dndSyncStateRepository: DnDSyncStateRepository by inject()
     private val phoneLockingStateRepository: PhoneLockingStateRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         if (message.path == UpdateBoolSetting) {
-            val pref = message.data?.let { BoolSettingSerializer.deserialize(it) } ?: return
-            handleBoolPreferenceChange(context, pref.key, pref.value)
+            val pref = BoolSettingSerializer.deserialize(message.data)
+            runBlocking { handleBoolPreferenceChange(pref.key, pref.value) }
         }
     }
 
     private suspend fun handleBoolPreferenceChange(
-        context: Context,
         key: String,
         value: Boolean
     ) {
@@ -53,7 +53,7 @@ class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
                 batterySyncConfigRepository.updateBatterySyncState {
                     it.copy(batterySyncEnabled = value)
                 }
-                PhoneBatteryComplicationProvider.updateAll(context)
+                PhoneBatteryComplicationProvider.updateAll(this)
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY ->
                 batterySyncConfigRepository.updateBatterySyncState {
@@ -68,7 +68,7 @@ class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
                     it.copy(dndSyncToPhone = value)
                 }
                 if (value) {
-                    startDnDListenerService(context)
+                    startDnDListenerService(this)
                 }
             }
             DND_SYNC_WITH_THEATER_KEY -> {
@@ -76,7 +76,7 @@ class BoolSettingChangeReceiver : MessageReceiver(), KoinComponent {
                     it.copy(dndSyncWithTheater = value)
                 }
                 if (value) {
-                    startDnDListenerService(context)
+                    startDnDListenerService(this)
                 }
             }
         }

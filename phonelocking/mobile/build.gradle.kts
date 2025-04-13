@@ -23,9 +23,6 @@ dependencies {
 
     implementation(projects.core.mobile)
 
-    api(libs.watchconnection.common)
-    implementation(libs.watchconnection.mobile.core)
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
@@ -33,6 +30,6 @@ dependencies {
 }
 
 detekt {
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }

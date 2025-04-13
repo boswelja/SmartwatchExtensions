@@ -9,9 +9,8 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.sendMessage
+import com.google.android.gms.wearable.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
@@ -53,11 +52,9 @@ class AppCacheUpdateWorker(
 
     private suspend fun sendCacheState(targetUid: String, cacheHash: AppVersions): Boolean {
         return messageClient.sendMessage(
-            targetUid,
-            Message(
-                RequestValidateCache,
-                CacheValidationSerializer.serialize(cacheHash)
-            )
+            targetId = targetUid,
+            RequestValidateCache,
+            CacheValidationSerializer.serialize(cacheHash)
         )
     }
 

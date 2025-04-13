@@ -8,7 +8,8 @@ import android.view.accessibility.AccessibilityManager
 import com.boswelja.smartwatchextensions.phonelocking.LockPhone
 import com.boswelja.smartwatchextensions.phonelocking.domain.usecase.GetPhoneLockingEnabled
 import com.boswelja.smartwatchextensions.phonelocking.domain.usecase.SetPhoneLockingEnabled
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.receiveMessages
+import com.google.android.gms.wearable.MessageClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -32,8 +33,8 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         coroutineScope.launch {
             // Start listening for lock requests
-            messageClient.incomingMessages().filter { it.path == LockPhone }.collect { message ->
-                tryLockDevice(message.sourceUid)
+            messageClient.receiveMessages().filter { it.path == LockPhone }.collect { message ->
+                tryLockDevice(message.sourceNodeId)
             }
         }
     }

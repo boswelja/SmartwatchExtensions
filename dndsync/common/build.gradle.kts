@@ -16,14 +16,12 @@ kotlin {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.lifecycle.runtime)
 }
 
 detekt {
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }

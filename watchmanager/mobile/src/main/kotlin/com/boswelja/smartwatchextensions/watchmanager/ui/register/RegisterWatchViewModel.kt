@@ -2,10 +2,10 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.watches.available.AvailableWatch
 import com.boswelja.smartwatchextensions.core.watches.available.AvailableWatchRepository
-import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -35,7 +35,12 @@ class RegisterWatchViewModel(
 
     fun registerWatch(watch: AvailableWatch) {
         viewModelScope.launch {
-            registeredWatchRepository.registerWatch(Watch(Watch.createUid("WEAR_OS", watch.id), watch.name))
+            registeredWatchRepository.registerWatch(
+                Watch(
+                    watch.id,
+                    watch.name
+                )
+            )
         }
     }
 }

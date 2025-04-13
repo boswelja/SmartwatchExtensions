@@ -5,24 +5,27 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatus
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.StoreBatteryStatsForWatch
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] to receive [BatteryStats] and store it.
+ * A [WearableListenerService] to receive [BatteryStats] and store it.
  */
 class BatteryStatsReceiver :
-    MessageReceiver(),
+    WearableListenerService(),
     KoinComponent {
 
     private val storeBatteryStatsForWatch: StoreBatteryStatsForWatch by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
-        if (message.path == BatteryStatus) {
-            val batteryStats = message.data?.let { BatteryStatsSerializer.deserialize(it) } ?: return
-            storeBatteryStatsForWatch(message.sourceUid, batteryStats)
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        if (messageEvent.path == BatteryStatus) {
+            val batteryStats = BatteryStatsSerializer.deserialize(messageEvent.data)
+            runBlocking {
+                storeBatteryStatsForWatch(messageEvent.sourceNodeId, batteryStats)
+            }
         }
     }
 }

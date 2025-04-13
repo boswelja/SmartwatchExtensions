@@ -6,7 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -53,7 +53,9 @@ fun WatchPicker(
 
     AnimatedContent(
         targetState = watches,
-        transitionSpec = { fadeIn() with fadeOut() }
+        transitionSpec = {
+            fadeIn() togetherWith fadeOut()
+        }
     ) {
         if (it != null) {
             if (it.isEmpty()) {

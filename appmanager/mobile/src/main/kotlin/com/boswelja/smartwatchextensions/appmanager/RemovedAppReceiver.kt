@@ -1,27 +1,30 @@
 package com.boswelja.smartwatchextensions.appmanager
 
-import android.content.Context
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] for receiving [AppList] changes and updating the repository.
+ * A [WearableListenerService] for receiving [AppList] changes and updating the repository.
  */
-class RemovedAppReceiver : MessageReceiver(), KoinComponent {
+class RemovedAppReceiver : WearableListenerService(), KoinComponent {
 
     private val repository: WatchAppRepository by inject()
     private val iconRepository: WatchAppIconRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         if (message.path == RemovedAppsList) {
-            val packages = message.data?.let { RemovedAppsSerializer.deserialize(it) } ?: return
-            val watchId = message.sourceUid
-            repository.delete(watchId, packages.packages)
+            val packages = RemovedAppsSerializer.deserialize(message.data)
+            val watchId = message.sourceNodeId
 
-            packages.packages.forEach {
-                iconRepository.removeIconFor(watchId, it)
+            runBlocking {
+                repository.delete(watchId, packages.packages)
+
+                packages.packages.forEach {
+                    iconRepository.removeIconFor(watchId, it)
+                }
             }
         }
     }

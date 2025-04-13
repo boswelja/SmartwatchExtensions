@@ -7,14 +7,13 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncNotificationHand
 import com.boswelja.smartwatchextensions.batterysync.batteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SendBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.domain.usecase.SetPhoneBatteryStats
-import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 /**
- * A [MessageReceiver] for receiving [BatteryStats] for the paired phone.
+ * A [WearableListenerService] for receiving [BatteryStats] for the paired phone.
  */
 class PhoneBatteryUpdateReceiver : WearableListenerService() {
 

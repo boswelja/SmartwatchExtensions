@@ -46,13 +46,14 @@
             </intent-filter>
         </activity>
 
-        <receiver
+        <service
             android:name=".devicemanagement.connection.WatchMessageReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" />
             </intent-filter>
-        </receiver>
+        </service>
 
     </application>
 </manifest>

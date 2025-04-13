@@ -21,9 +21,9 @@ kotlin {
 dependencies {
     api(projects.dndsync.common)
 
-    implementation(projects.core.mobile)
+    implementation(libs.play.services.wearable)
 
-    implementation(libs.watchconnection.mobile.core)
+    implementation(projects.core.mobile)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.koin.android)
@@ -33,6 +33,6 @@ dependencies {
 }
 
 detekt {
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
     parallel = true
 }

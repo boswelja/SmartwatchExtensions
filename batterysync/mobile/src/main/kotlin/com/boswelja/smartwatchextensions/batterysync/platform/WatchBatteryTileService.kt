@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync.platform
 
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Icon
@@ -13,7 +14,7 @@ import com.boswelja.smartwatchextensions.core.FeatureData
 import com.boswelja.smartwatchextensions.core.FlowTileService
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.appSettingsStore
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull

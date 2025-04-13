@@ -22,8 +22,7 @@ kotlin {
 dependencies {
     api(projects.appmanager.common)
 
-    api(libs.watchconnection.common)
-    implementation(libs.watchconnection.mobile.core)
+    implementation(libs.play.services.wearable)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.sqldelight.runtime)

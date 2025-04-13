@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.core.watches.registered
 
-import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**

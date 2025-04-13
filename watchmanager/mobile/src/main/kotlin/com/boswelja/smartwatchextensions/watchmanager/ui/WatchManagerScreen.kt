@@ -19,7 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import com.boswelja.smartwatchextensions.core.ui.LoadingIndicator
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
