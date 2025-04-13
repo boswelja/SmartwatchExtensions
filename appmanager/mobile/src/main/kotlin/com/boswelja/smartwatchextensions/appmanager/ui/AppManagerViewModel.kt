@@ -13,10 +13,9 @@ import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
 import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
-import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.receiveMessages
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.NodeClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,8 +24,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 /**
  * A ViewModel for providing data to App Manager.
@@ -35,7 +36,7 @@ import kotlinx.coroutines.launch
 class AppManagerViewModel(
     private val appRepository: WatchAppRepository,
     private val messageClient: MessageClient,
-    private val discoveryClient: DiscoveryClient,
+    private val nodeClient: NodeClient,
     private val selectedWatchController: SelectedWatchController,
     private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
@@ -104,7 +105,7 @@ class AppManagerViewModel(
     /**
      * A boolean indicating whether App Manager cache is currently being updated.
      */
-    val isUpdatingCache = messageClient.incomingMessages()
+    val isUpdatingCache = messageClient.receiveMessages()
         .map {
             when (it.path) {
                 NotifyAppSendingComplete -> false
@@ -125,10 +126,10 @@ class AppManagerViewModel(
      */
     val isWatchConnected = selectedWatchController.selectedWatch
         .filterNotNull()
-        .flatMapLatest { watch ->
-            discoveryClient.connectionModeFor(watch.uid)
-        }.map { status ->
-            status != ConnectionMode.Disconnected
+        .mapLatest { watch ->
+            val connectedNodes = nodeClient.connectedNodes.await()
+            val node = connectedNodes.firstOrNull { it.id == watch.uid }
+            node != null
         }
         .stateIn(
             scope = viewModelScope,
@@ -157,11 +158,8 @@ class AppManagerViewModel(
                 .first()
             messageClient.sendMessage(
                 watch.uid,
-                Message(
-                    RequestValidateCache,
-                    CacheValidationSerializer.serialize(AppVersions(appVersionList)),
-                    Message.Priority.HIGH
-                )
+                RequestValidateCache,
+                CacheValidationSerializer.serialize(AppVersions(appVersionList)),
             )
         }
     }

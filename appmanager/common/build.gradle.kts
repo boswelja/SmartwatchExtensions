@@ -17,7 +17,6 @@ kotlin {
 }
 
 dependencies {
-    api(libs.watchconnection.common)
     implementation(libs.kotlinx.serialization.protobuf)
 
     testImplementation(libs.kotlinx.coroutines.test)

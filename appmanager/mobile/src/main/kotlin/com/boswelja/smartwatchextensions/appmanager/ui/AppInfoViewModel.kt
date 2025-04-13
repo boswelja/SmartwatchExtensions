@@ -9,8 +9,8 @@ import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.core.watches.selected.SelectedWatchController
-import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.smartwatchextensions.wearable.ext.sendMessage
+import com.google.android.gms.wearable.MessageClient
 import kotlinx.coroutines.flow.first
 
 /**
@@ -31,12 +31,9 @@ class AppInfoViewModel(
     suspend fun sendOpenRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchController.selectedWatch.first()?.let { watch ->
             messageClient.sendMessage(
-                watch.uid,
-                Message(
-                    RequestOpenPackage,
-                    PackageNameSerializer.serialize(app.packageName),
-                    Message.Priority.HIGH
-                )
+                targetId = watch.uid,
+                path = RequestOpenPackage,
+                data = PackageNameSerializer.serialize(app.packageName),
             )
         } ?: false
     }
@@ -50,12 +47,10 @@ class AppInfoViewModel(
         return selectedWatchController.selectedWatch.first()?.let { watch ->
             appRepository.delete(app.watchId, app.packageName)
             messageClient.sendMessage(
-                watch.uid,
-                Message(
-                    RequestOpenPackage,
-                    PackageNameSerializer.serialize(app.packageName),
-                    Message.Priority.HIGH
-                )
+                targetId = watch.uid,
+                path = RequestOpenPackage,
+                data = PackageNameSerializer.serialize(app.packageName),
+
             )
         } ?: false
     }
