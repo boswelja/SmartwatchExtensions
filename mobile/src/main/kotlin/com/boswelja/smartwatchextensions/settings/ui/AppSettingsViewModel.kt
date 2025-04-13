@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.platform.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
 import com.boswelja.smartwatchextensions.core.settings.Settings
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map

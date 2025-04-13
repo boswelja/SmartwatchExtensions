@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.core.watches.selected
 
 import androidx.datastore.core.DataStore
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import com.boswelja.smartwatchextensions.core.watches.registered.RegisteredWatchRepository
-import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest

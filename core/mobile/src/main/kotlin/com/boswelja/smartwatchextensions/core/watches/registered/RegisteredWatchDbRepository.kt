@@ -5,7 +5,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.core.devicemanagement.database.RegisteredWatchDatabase
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.smartwatchextensions.core.watches.Watch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -32,7 +32,7 @@ class RegisteredWatchDbRepository(
                 RegisteredWatch(
                     watch.uid,
                     watch.name,
-                    watch.platform
+                    "WEAR_OS"
                 )
             )
         }

@@ -1,24 +1,27 @@
 package com.boswelja.smartwatchextensions.core.watches.status
 
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.tasks.await
 
 internal class WatchStatusRepositoryImpl(
-    private val discoveryClient: DiscoveryClient
+    private val discoveryClient: NodeClient
 ) : WatchStatusRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getStatusFor(watchId: String): Flow<ConnectionMode> {
-        return discoveryClient.connectionModeFor(watchId)
-            .mapLatest {
-                when (it) {
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Disconnected ->
-                        ConnectionMode.Disconnected
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Internet ->
-                        ConnectionMode.Internet
-                    com.boswelja.watchconnection.common.discovery.ConnectionMode.Bluetooth ->
-                        ConnectionMode.Bluetooth
+        return flow<List<Node>> { discoveryClient.connectedNodes.await() }
+            .mapLatest { connectedNodes ->
+                connectedNodes.firstOrNull { it.id == watchId }
+            }
+            .mapLatest { node ->
+                when {
+                    node == null -> ConnectionMode.Disconnected
+                    node.isNearby -> ConnectionMode.Bluetooth
+                    else -> ConnectionMode.Internet
                 }
             }
     }

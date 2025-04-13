@@ -1,23 +1,23 @@
 package com.boswelja.smartwatchextensions.appmanager
 
-import android.content.Context
-import com.boswelja.watchconnection.common.message.MessageReceiver
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * A [MessageReceiver] for receiving [AppList] changes and updating the repository.
+ * A [WearableListenerService] for receiving [AppList] changes and updating the repository.
  */
-class AddedOrUpdatedAppReceiver : MessageReceiver(), KoinComponent {
+class AddedOrUpdatedAppReceiver : WearableListenerService(), KoinComponent {
 
     private val repository: WatchAppRepository by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
+    override fun onMessageReceived(message: MessageEvent) {
         if (message.path == AddedAppsList || message.path == UpdatedAppsList) {
-            val appList = message.data?.let { AddedOrUpdatedAppsSerializer.deserialize(it) } ?: return
-            val apps = appList.mapToWatchAppDetails(message.sourceUid)
-            repository.updateAll(apps)
+            val appList = AddedOrUpdatedAppsSerializer.deserialize(message.data)
+            val apps = appList.mapToWatchAppDetails(message.sourceNodeId)
+            runBlocking { repository.updateAll(apps) }
         }
     }
 }
