@@ -7,9 +7,7 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions.batterysync.common"
-    compileSdk = PackageInfo.targetSdk
     defaultConfig {
-        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }

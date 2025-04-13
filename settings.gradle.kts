@@ -47,3 +47,13 @@ dependencyResolutionManagement {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+plugins {
+    id("com.android.settings") version "8.9.1"
+}
+
+android {
+    targetSdk = 34
+    compileSdk = 34
+    minSdk = 26
+}

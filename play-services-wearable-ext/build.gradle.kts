@@ -6,9 +6,7 @@ plugins {
 
 android {
     namespace = "com.boswelja.smartwatchextensions.wearableinterface"
-    compileSdk = PackageInfo.targetSdk
     defaultConfig {
-        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
